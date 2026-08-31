@@ -3,6 +3,15 @@
 face-lab/tools/rhubarb/
 face-lab/voice-model/
 
+# Credentials and private certificates
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
 # Oversized or unused source models (> GitHub file limit / not loaded by the app)
 /model.glb
 /face-lab/model.glb
