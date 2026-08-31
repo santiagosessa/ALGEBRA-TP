@@ -1,0 +1,19 @@
+# Dependencies and local runtimes
+**/node_modules/
+face-lab/tools/rhubarb/
+face-lab/voice-model/
+
+# Oversized or unused source models (> GitHub file limit / not loaded by the app)
+/model.glb
+/face-lab/model.glb
+/face-lab/models/user-model.glb
+/face-lab/models/user-pbr.glb
+/face-lab/models/avaturn.glb
+
+# Archives, generated previews, and editor backups
+*.zip
+face-lab/*-check.png
+face-lab/after-*.png
+face-lab/final-*.png
+face-lab/gallery-*.png
+*_before_*.pptx
