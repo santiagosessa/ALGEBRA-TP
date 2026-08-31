@@ -185,9 +185,7 @@
       .phase-tag { border-color: rgba(117,211,192,.26); color: var(--teal); }
       .stage-progress { width: 76px; height: 2px; background: rgba(205,225,222,.13); }
       .stage-progress span { background: var(--orange); }
-      .slide-viewport { width: min(43vw, 660px); height: calc(100vh - 208px); overflow: auto; padding: 22px 0 80px; scrollbar-width: thin; scrollbar-color: rgba(117,211,192,.3) transparent; }
-      .slide-viewport::-webkit-scrollbar { width: 5px; }
-      .slide-viewport::-webkit-scrollbar-thumb { background: rgba(117,211,192,.3); }
+      .slide-viewport { display: none; }
       .slide-content { max-width: 660px; margin: 0; animation-duration: 500ms; }
       .slide-section { margin-bottom: 16px; color: var(--orange); font-size: 10px; letter-spacing: .2em; }
       .slide-headline { color: #f4f8f6; font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 4.2vw, 66px); line-height: .98; text-shadow: 0 12px 40px rgba(0,0,0,.2); }
@@ -271,62 +269,7 @@
       .avatar-stage { pointer-events: auto; }
       #avatar-canvas { pointer-events: auto; cursor: default; touch-action: none; }
       #avatar-canvas:focus-visible { outline: 1px solid rgba(117,211,192,.24); outline-offset: -2px; }
-      /* Apoyo visual izquierdo: SVG transparente con profundidad simulada, nunca una card. */
-      .visual-overlay { position: fixed; left: 4.8vw; top: 25vh; z-index: 4; width: min(55vw, 780px); height: min(48vh, 430px); pointer-events: auto; perspective: 1100px; transform-style: preserve-3d; }
-      .visual-overlay svg { display: block; width: 100%; height: 100%; overflow: visible; transform: perspective(1100px) rotateX(8deg) rotateY(6deg) rotateZ(-1.4deg); transform-origin: 50% 54%; filter: drop-shadow(0 24px 38px rgba(0,0,0,.28)); }
-      .visual-overlay .asset-visual-object { position: absolute; inset: 0; display: grid; place-items: center; transform-origin: center; }
-      .visual-overlay .asset-visual-object img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; user-select: none; filter: saturate(.84) brightness(.62) drop-shadow(0 20px 28px rgba(0,0,0,.26)); }
-      .visual-overlay .asset-visual-object:hover img, .visual-overlay .asset-visual-object.is-hovered img { filter: saturate(1.12) brightness(.95) drop-shadow(0 0 18px rgba(117,211,192,.52)); }
-      .visual-overlay .asset-visual-object.is-active img { filter: saturate(1.18) brightness(1.08) drop-shadow(0 0 22px rgba(240,179,108,.76)) drop-shadow(0 0 42px rgba(117,211,192,.25)); }
-      .visual-overlay .viz-object { cursor: grab; pointer-events: bounding-box; transform-box: fill-box; transform-origin: center; transition: opacity 340ms ease, filter 320ms ease, transform 520ms cubic-bezier(.2,.78,.25,1); opacity: .76; outline: none; will-change: transform, opacity; }
-      .visual-overlay .asset-visual-object { opacity: .42; }
-      .visual-overlay.is-speaking .viz-object { opacity: .13; }
-      .visual-overlay.is-speaking .asset-visual-object { opacity: .08; }
-      .visual-overlay .viz-object:hover, .visual-overlay .viz-object.is-hovered { opacity: .92; filter: drop-shadow(0 0 12px rgba(117,211,192,.52)); transform: translate3d(0,-7px,20px) rotateX(-5deg) rotateY(7deg) scale(1.035); }
-      .visual-overlay .viz-object.is-active { opacity: 1; filter: drop-shadow(0 0 14px rgba(240,179,108,.84)) drop-shadow(0 0 34px rgba(117,211,192,.26)); animation: viz-reveal 680ms cubic-bezier(.2,.78,.25,1) both; }
-      .visual-overlay .viz-object.is-dragging { cursor: grabbing; transition: none; filter: drop-shadow(0 0 18px rgba(255,212,122,.9)); }
-      .visual-overlay .viz-line { fill: none; stroke: #75d3c0; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
-      .visual-overlay .viz-line.warm { stroke: #f0b36c; }
-      .visual-overlay .viz-line.faint { opacity: .4; stroke-width: 1; }
-      .visual-overlay .viz-plane { fill: rgba(117,211,192,.035); stroke: rgba(117,211,192,.55); stroke-width: 1.25; }
-      .visual-overlay .viz-point { fill: #f0b36c; stroke: #ffe0a0; stroke-width: 1; vector-effect: non-scaling-stroke; }
-      .visual-overlay .viz-point.cool { fill: #75d3c0; stroke: #c6f4e8; }
-      .visual-overlay .viz-point.muted { fill: #8fa6a8; stroke: #d1e3df; }
-      .visual-overlay .viz-axis { stroke: rgba(143,166,168,.54); stroke-width: 1; vector-effect: non-scaling-stroke; }
-      .visual-overlay .viz-label { fill: #9bb5b2; font: 500 13px Inter, Arial, sans-serif; letter-spacing: .02em; paint-order: stroke; stroke: #071018; stroke-width: 5px; stroke-opacity: .82; }
-      .visual-overlay .viz-label.emphasis { fill: #ffd47a; }
-      .visual-overlay .viz-label.micro { font-size: 10px; fill: #71908e; }
-      .visual-overlay .viz-step-label { fill: #e9f1ee; font: 700 13px Inter, Arial, sans-serif; letter-spacing: .01em; text-anchor: middle; }
-      .visual-overlay .viz-step-sub { fill: #7f9997; font: 500 11px Inter, Arial, sans-serif; letter-spacing: .01em; text-anchor: middle; }
-      .visual-overlay .viz-step-label.warm, .visual-overlay .viz-step-sub.warm { fill: #f0b36c; }
-      .visual-overlay .viz-object.is-active .viz-step-label { fill: #fff5d6; }
-      .visual-overlay .viz-object.is-active .viz-step-sub { fill: #f0b36c; }
-      .visual-overlay .viz-object.is-active .viz-point { fill: #f0b36c; stroke: #fff0c8; }
-      .visual-overlay .support-baseline { stroke: rgba(127,153,151,.34); stroke-width: 1; }
-      .visual-overlay .support-baseline.warm { stroke: rgba(240,179,108,.7); }
-      .visual-overlay .support-kicker { fill: #71908e; font: 700 10px Inter, Arial, sans-serif; letter-spacing: .18em; text-transform: uppercase; }
-      .visual-overlay .viz-grid { fill: none; stroke: rgba(117,211,192,.2); stroke-width: 1; }
-      .visual-overlay .viz-cross { stroke: #ef8a78; stroke-width: 2.2; stroke-linecap: round; }
-      .visual-overlay .viz-number { fill: #dcece7; font: 700 11px Inter, Arial, sans-serif; text-anchor: middle; dominant-baseline: middle; }
-      .visual-overlay .viz-empty { fill: none; stroke: rgba(117,211,192,.22); stroke-width: 1; stroke-dasharray: 4 8; }
-      .visual-overlay::after { position: absolute; inset: 10% 4% 8%; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at center, rgba(20,61,70,.14), transparent 68%); content: ""; transform: translateZ(-40px); }
-      .pptx-slide-overlay { position: fixed; left: 5vw; top: 7.5vh; z-index: 3; width: min(45vw, 670px); pointer-events: none; transform: perspective(1000px) rotateX(3deg) rotateY(5deg) rotateZ(-.6deg); transform-origin: left top; text-shadow: 0 12px 32px rgba(0,0,0,.46); will-change: transform, opacity; }
-      .pptx-slide-overlay.is-changing { animation: pptx-slide-enter 620ms cubic-bezier(.2,.78,.25,1) both; }
-      .pptx-slide-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
-      .pptx-slide-meta::after { width: 54px; height: 1px; background: rgba(240,179,108,.7); content: ""; }
-      .pptx-slide-index { color: var(--yellow); font-family: Georgia, "Times New Roman", serif; font-size: 18px; letter-spacing: .04em; }
-      .pptx-slide-title { max-width: 660px; margin: 0; color: #f4f8f6; font-family: Georgia, "Times New Roman", serif; font-size: clamp(26px, 3.2vw, 49px); font-weight: 400; letter-spacing: -.045em; line-height: .98; }
-      .pptx-slide-deck { max-width: 520px; margin: 13px 0 0; color: #91aaa6; font-size: clamp(12px, 1.05vw, 15px); line-height: 1.48; }
-      .pptx-slide-meta, .pptx-slide-deck { display: none !important; }
-      .pptx-slide-overlay { top: 8vh; }
-      .pptx-slide-title { max-width: 620px; }
-      @keyframes pptx-slide-enter { from { opacity: 0; transform: perspective(1000px) rotateX(3deg) rotateY(5deg) rotateZ(-.6deg) translate3d(24px, 10px, -20px) scale(.97); } to { opacity: 1; transform: perspective(1000px) rotateX(3deg) rotateY(5deg) rotateZ(-.6deg) translate3d(0, 0, 0) scale(1); } }
-      @keyframes viz-reveal { from { opacity: 0; transform: translate3d(0, 12px, 0) scale(.9) rotateX(8deg); } to { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotateX(0); } }
-      @keyframes support-object-hover { 0% { transform: translate3d(0,0,0) rotateX(0) rotateY(0) scale(1); } 55% { transform: translate3d(0,-8px,24px) rotateX(-5deg) rotateY(7deg) scale(1.045); } 100% { transform: translate3d(0,-4px,12px) rotateX(-2deg) rotateY(4deg) scale(1.02); } }
-      @media (max-width: 900px) { .pptx-slide-overlay { left: 6vw; top: 10vh; width: 65vw; } .pptx-slide-title { font-size: clamp(25px, 5vw, 42px); } .visual-overlay { left: 6vw; top: 23vh; width: 66vw; height: 43vh; } .visual-overlay svg { transform: perspective(900px) rotateX(6deg) rotateY(4deg) rotateZ(-1deg); } }
-      @media (max-width: 560px) { .pptx-slide-overlay { left: 7vw; top: 10vh; width: 85vw; } .pptx-slide-deck { max-width: 82vw; } .visual-overlay { left: 7vw; top: 24vh; width: 86vw; height: 38vh; } .visual-overlay .viz-label { font-size: 11px; } }
-      @media (max-width: 900px) { .stage-panel { width: 100%; height: 100vh; padding: 13vh 24px 8vh; } .slide-viewport { width: min(650px, 100%); height: 78vh; } }
-      @media (max-width: 560px) { .stage-panel { padding: 12vh 20px 8vh; } .slide-viewport { width: 100%; height: 80vh; } .slide-headline { font-size: clamp(35px, 11vw, 55px); } }
+      /* Apoyo visual izquierdo: capa procedural transparente interactiva */
       /* Controles de presentación: una única barra centrada, visible en el modo inmersivo. */
       .stage-controls {
         position: fixed;
@@ -384,71 +327,400 @@
         .stage-controls .presentation-button svg { display: none; }
         .stage-controls .presentation-button span { font-size: 7px; letter-spacing: .02em; }
       }
-      /* La página usa la diapositiva exportada como fuente visual única. GSAP anima su presencia, no su contenido. */
-      .deck-slide-layer {
+      /* Capa de apoyos visuales transparentes interactivos en el bosque 3D */
+      .procedimiento-layer {
         position: fixed;
-        left: clamp(18px, 2.6vw, 54px);
+        left: clamp(18px, 3vw, 44px);
         top: 50%;
+        transform: translateY(-50%);
+        width: min(58vw, 1080px);
+        max-height: 84vh;
         z-index: 4;
-        width: min(52vw, 1060px);
-        aspect-ratio: 16 / 9;
-        overflow: visible;
-        transform: translate3d(0, -50%, 0);
-        transform-style: preserve-3d;
-        pointer-events: auto;
-        will-change: transform, opacity, filter;
-      }
-      .deck-slide-layer::after {
-        position: absolute;
-        inset: 8% 4% -5%;
-        z-index: -1;
-        border-radius: 20px;
-        background: radial-gradient(ellipse at 50% 52%, rgba(28, 84, 93, .24), transparent 70%);
-        content: "";
-        filter: blur(28px);
-        transform: translateZ(-24px);
-        pointer-events: none;
-      }
-      .deck-slide-image {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        border-radius: 4px;
-        outline: none;
-        box-shadow: 0 26px 60px rgba(0, 0, 0, .22);
-        user-select: none;
-        -webkit-user-drag: none;
-        will-change: transform, filter;
-      }
-      .project-intro {
-        position: absolute;
-        inset: 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 7% 8%;
-        color: #edf3f0;
+        align-items: center;
+        perspective: 1200px;
+        transform-style: preserve-3d;
+        pointer-events: auto;
+      }
+      .procedimiento-header {
+        display: none;
+      }
+      .procedimiento-title {
+        margin: 0;
+        color: #f4f8f6;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(22px, 2.3vw, 36px);
+        font-weight: 400;
+        letter-spacing: -.03em;
+        line-height: 1.05;
+        text-shadow: 0 10px 28px rgba(0, 0, 0, .55);
+      }
+      .procedimiento-grid {
+        display: grid;
+        width: 100%;
+        gap: 16px;
+        align-items: stretch;
+        justify-items: stretch;
+        transform-style: preserve-3d;
+      }
+      .procedimiento-grid.grid-s1 {
+        grid-template-columns: 585fr 715fr;
+        gap: 18px;
+      }
+      .procedimiento-grid.grid-s2 {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+      }
+      .procedimiento-grid.grid-s3,
+      .procedimiento-grid.grid-s4 {
+        grid-template-columns: 405fr 445fr 445fr;
+        gap: 16px;
+      }
+      .procedimiento-grid.grid-s5,
+      .procedimiento-grid.grid-s9 {
+        grid-template-columns: 645fr 655fr;
+        gap: 18px;
+      }
+      .procedimiento-grid.grid-s6 {
+        grid-template-columns: 425fr 435fr 425fr;
+        gap: 14px;
+      }
+      .procedimiento-grid.grid-s6 .col-span-full {
+        grid-column: 1 / -1;
+      }
+      .procedimiento-grid.grid-s7 {
+        grid-template-columns: 1fr;
+      }
+      .procedimiento-grid.grid-s8 {
+        grid-template-columns: 645fr 655fr;
+        grid-template-rows: repeat(2, auto);
+        gap: 16px 20px;
+      }
+      .procedimiento-grid.grid-s10 {
+        grid-template-columns: 418fr 415fr 418fr;
+        gap: 16px;
+      }
+      .proc-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        border-radius: 12px;
+        transform-origin: center center;
+        transform-style: preserve-3d;
+        will-change: transform, opacity, filter;
+        outline: none;
+        opacity: .92;
+        filter: saturate(1) brightness(1) drop-shadow(0 14px 32px rgba(0, 0, 0, .5));
+        transition: opacity 320ms cubic-bezier(.2,.8,.2,1), filter 320ms cubic-bezier(.2,.8,.2,1);
+      }
+      .proc-item:focus-visible {
+        outline: 2px solid rgba(117, 211, 192, .6);
+        outline-offset: 4px;
+      }
+      .proc-item.is-dragging {
+        cursor: grabbing !important;
+        z-index: 10 !important;
+      }
+      .proc-card-img {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 82vh;
+        object-fit: contain;
         pointer-events: none;
+        user-select: none;
+        -webkit-user-drag: none;
       }
-      .project-intro-kicker { margin-bottom: 18px; color: #f0b36c; font-size: clamp(9px, .75vw, 13px); font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
-      .project-intro h2 { max-width: 760px; margin: 0; color: #f4f8f6; font-family: Georgia, "Times New Roman", serif; font-size: clamp(30px, 4.15vw, 76px); font-weight: 400; letter-spacing: -.045em; line-height: .98; text-shadow: 0 18px 36px rgba(0,0,0,.45); }
-      .project-intro p { max-width: 620px; margin: 20px 0 0; color: #a9bbb7; font-size: clamp(13px, 1.2vw, 20px); line-height: 1.48; }
-      .project-intro-equation { align-self: flex-start; margin-top: 34px; padding: 14px 24px; border-left: 2px solid #f0b36c; color: #f6f4e9; font-family: Georgia, "Times New Roman", serif; font-size: clamp(22px, 2.2vw, 40px); letter-spacing: .04em; background: rgba(240,179,108,.055); box-shadow: 0 0 38px rgba(240,179,108,.12); }
-      .project-intro-caption { margin-top: 18px; color: #76908d; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
-      .deck-focus-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-      .deck-focus-target { position: absolute; display: block; opacity: 0; border: 1px solid rgba(117,211,192,.82); border-radius: 9px; background: radial-gradient(ellipse at center, rgba(117,211,192,.16), rgba(117,211,192,.03) 68%, transparent 100%); box-shadow: 0 0 0 1px rgba(117,211,192,.12), 0 0 22px rgba(117,211,192,.48), inset 0 0 20px rgba(117,211,192,.12); mix-blend-mode: screen; transform: translateZ(18px); will-change: opacity, transform, filter; }
-      .deck-focus-target.is-active { opacity: 1; }
-      .deck-focus-target.is-warm { border-color: rgba(240,179,108,.92); background: radial-gradient(ellipse at center, rgba(240,179,108,.18), rgba(240,179,108,.03) 68%, transparent 100%); box-shadow: 0 0 0 1px rgba(240,179,108,.14), 0 0 26px rgba(240,179,108,.54), inset 0 0 22px rgba(240,179,108,.14); }
-      .deck-slide-layer.is-hovered .deck-slide-image {
-        filter: brightness(1.06) saturate(1.06);
+      .proc-item:hover, .proc-item.is-hovered {
+        opacity: 1;
+        filter: saturate(1.15) brightness(1.08) drop-shadow(0 0 22px rgba(117, 211, 192, .65)) drop-shadow(0 18px 36px rgba(0, 0, 0, .55));
       }
-      .visual-overlay, .pptx-slide-overlay { display: none !important; }
+      .procedimiento-layer.is-speaking .proc-item {
+        opacity: .25;
+        filter: saturate(.4) brightness(.5) drop-shadow(0 6px 14px rgba(0, 0, 0, .3));
+      }
+      .procedimiento-layer.is-speaking .proc-item.is-focused {
+        opacity: 1;
+        filter: saturate(1.2) brightness(1.12) drop-shadow(0 0 24px rgba(240, 179, 108, .9)) drop-shadow(0 0 42px rgba(117, 211, 192, .45)) drop-shadow(0 20px 40px rgba(0, 0, 0, .6));
+      }
       @media (max-width: 900px) {
-        .deck-slide-layer { left: 5vw; top: 28%; width: min(90vw, 760px); }
+        .procedimiento-layer {
+          left: 5vw;
+          top: 30%;
+          width: min(90vw, 760px);
+          max-height: 70vh;
+        }
+        .procedimiento-title {
+          font-size: clamp(20px, 4vw, 30px);
+        }
       }
       @media (max-width: 560px) {
-        .deck-slide-layer { left: 4vw; top: 27%; width: 92vw; }
+        .procedimiento-layer {
+          left: 4vw;
+          top: 28%;
+          width: 92vw;
+        }
+        .procedimiento-grid.grid-2-cols,
+        .procedimiento-grid.grid-3-cols,
+        .procedimiento-grid.grid-4-cols,
+        .procedimiento-grid.grid-5-cols,
+        .procedimiento-grid.grid-2x2,
+        .procedimiento-grid.grid-1-top-3-bottom {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Cartesian 3D Explorer Styles */
+      .cartesian-3d-wrapper {
+        position: absolute;
+        inset: 0;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        background: rgba(6, 17, 24, 0.96);
+        backdrop-filter: blur(20px);
+        border-radius: 4px;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 280ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transform: scale(0.97);
+      }
+      .cartesian-3d-wrapper.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: scale(1);
+      }
+      .c3d-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: rgba(8, 27, 36, 0.9);
+        border-bottom: 1px solid rgba(56, 189, 248, 0.22);
+        gap: 12px;
+        flex-shrink: 0;
+      }
+      .c3d-title-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .c3d-badge {
+        padding: 4px 8px;
+        background: rgba(56, 189, 248, 0.15);
+        border: 1px solid #38bdf8;
+        border-radius: 4px;
+        color: #38bdf8;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+      }
+      .c3d-scene-select {
+        padding: 6px 12px;
+        background: #09202b;
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        border-radius: 4px;
+        color: #f4f8f6;
+        font-size: 12px;
+        font-weight: 700;
+        outline: none;
+        cursor: pointer;
+      }
+      .c3d-scene-select:focus {
+        border-color: #38bdf8;
+      }
+      .c3d-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .c3d-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: #09202b;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 4px;
+        color: #dbe8e3;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 180ms ease;
+      }
+      .c3d-btn:hover {
+        border-color: #38bdf8;
+        background: rgba(56, 189, 248, 0.15);
+        color: #ffffff;
+      }
+      .c3d-btn.is-active {
+        background: rgba(74, 222, 128, 0.2);
+        border-color: #4ade80;
+        color: #4ade80;
+      }
+      .c3d-btn-close {
+        padding: 6px 11px;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .c3d-viewport {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .c3d-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        cursor: grab;
+      }
+      .c3d-canvas:active {
+        cursor: grabbing;
+      }
+      .c3d-hud {
+        position: absolute;
+        top: 12px;
+        left: 14px;
+        right: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+      .c3d-info-card {
+        align-self: flex-start;
+        max-width: 440px;
+        padding: 10px 14px;
+        background: rgba(8, 27, 36, 0.9);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 6px;
+        backdrop-filter: blur(12px);
+        pointer-events: auto;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      }
+      .c3d-info-title {
+        margin: 0 0 4px;
+        color: #38bdf8;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .c3d-info-equation {
+        color: #f0b36c;
+        font-size: 11px;
+        margin-bottom: 4px;
+        font-family: Consolas, monospace;
+      }
+      .c3d-info-details {
+        color: #a0b9b6;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      .c3d-layers-bar {
+        align-self: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 6px 10px;
+        background: rgba(8, 27, 36, 0.85);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 4px;
+        pointer-events: auto;
+      }
+      .c3d-toggle-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #dbe8e3;
+        font-size: 10px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .c3d-toggle-label input {
+        accent-color: #38bdf8;
+        cursor: pointer;
+      }
+      .c3d-camera-presets {
+        align-self: flex-end;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 8px;
+        background: rgba(8, 27, 36, 0.85);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 4px;
+        pointer-events: auto;
+      }
+      .c3d-cam-label {
+        color: #a0b9b6;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-right: 2px;
+      }
+      .c3d-cam-btn {
+        padding: 3px 7px;
+        background: #09202b;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 3px;
+        color: #f4f8f6;
+        font-size: 9px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 150ms ease;
+      }
+      .c3d-cam-btn:hover {
+        background: rgba(56, 189, 248, 0.2);
+        border-color: #38bdf8;
+      }
+      .c3d-hint {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 5px 12px;
+        background: rgba(8, 27, 36, 0.85);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 999px;
+        color: #a0b9b6;
+        font-size: 10px;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+      .c3d-hint strong {
+        color: #38bdf8;
+      }
+      .btn-open-3d {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        background: rgba(28, 52, 68, 0.9);
+        border: 1px solid #38bdf8;
+        border-radius: 4px;
+        color: #38bdf8;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 200ms ease;
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+      }
+      .btn-open-3d:hover {
+        background: #38bdf8;
+        color: #061118;
+        box-shadow: 0 0 18px rgba(56, 189, 248, 0.55);
+        transform: translateY(-1px);
       }
     </style>
   </head>
@@ -459,17 +731,19 @@
         <div class="topbar-meta"><a class="source-link" href="https://docs.google.com/presentation/d/1AuNEaZbGGlhHWnt8OZZ2UVr4Fr9Z_kfQi5df2maS-Jk/edit" target="_blank" rel="noopener noreferrer" aria-label="Abrir presentación original de Google Slides"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>Fuente original</a><div class="live-pill"><span class="live-dot" aria-hidden="true"></span>Modo defensa</div></div>
       </header>
       <section class="workspace">
-        <nav class="slide-rail panel" aria-label="Navegación de diapositivas"><div class="rail-header"><p class="eyebrow">Índice</p><div class="rail-count"><strong id="rail-current">01</strong><span>/ 12 láminas</span></div></div><div id="slide-list" class="slide-list"></div><div class="rail-footer">Flechas ← → para navegar.<br />Espacio para activar la voz.</div></nav>
-        <section class="stage-panel panel" aria-label="Diapositiva actual"><div class="stage-toolbar"><div class="stage-toolbar-left"><span id="stage-index" class="stage-index">01</span><div><p id="stage-title" class="stage-title">Informe técnico</p><p id="stage-subtitle" class="micro-label" style="margin-top: 4px">Recta y plano en R³</p></div></div><div style="display:flex; align-items:center; gap:13px"><span id="phase-tag" class="phase-tag">Apertura</span><div class="stage-progress" aria-hidden="true"><span id="stage-progress"></span></div></div></div><div id="talking-topic" class="talking-topic" aria-live="polite"><span>Hablando ahora</span><strong id="talking-topic-text">Informe técnico</strong></div><div id="slide-viewport" class="slide-viewport" tabindex="0" aria-label="Contenido de la diapositiva. Usa las flechas izquierda y derecha para cambiar."></div><div class="stage-controls" role="group" aria-label="Controles de presentación"><button id="prev-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva anterior" title="Atrás"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>Atrás</span></button><button id="next-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva siguiente" title="Siguiente"><span>Siguiente</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button><button id="speak-btn" class="presentation-button start-button" type="button" aria-label="Iniciar párrafo" title="Iniciar párrafo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg><span>Iniciar</span></button><button id="stop-btn" class="presentation-button stop-button" type="button" aria-label="Detener párrafo" title="Detener párrafo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10"/></svg><span>Detener</span></button><button id="pause-btn" class="presentation-button pause-button" type="button" aria-label="Pausar párrafo" title="Pausar párrafo" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg><span>Pausar</span></button></div></section>
+        <nav class="slide-rail panel" aria-label="Navegación de diapositivas"><div class="rail-header"><p class="eyebrow">Índice</p><div class="rail-count"><strong id="rail-current">01</strong><span>/ 10 láminas</span></div></div><div id="slide-list" class="slide-list"></div><div class="rail-footer">Flechas ← → para navegar.<br />Espacio para activar la voz.</div></nav>
+        <section class="stage-panel panel" style="position: relative;" aria-label="Diapositiva actual">
+          <div id="cartesian-3d-container"></div>
+          <div class="stage-toolbar"><div class="stage-toolbar-left"><span id="stage-index" class="stage-index">01</span><div><p id="stage-title" class="stage-title">Informe técnico</p><p id="stage-subtitle" class="micro-label" style="margin-top: 4px">Recta y plano en R³</p></div></div><div style="display:flex; align-items:center; gap:11px"><button id="btn-toggle-3d" class="btn-open-3d" type="button" title="Abrir Visor 3D Interactivo para rotar los gráficos cartesianos"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg><span>Girar Gráfico 3D</span></button><span id="phase-tag" class="phase-tag">Apertura</span><div class="stage-progress" aria-hidden="true"><span id="stage-progress"></span></div></div></div><div id="talking-topic" class="talking-topic" aria-live="polite"><span>Hablando ahora</span><strong id="talking-topic-text">Informe técnico</strong></div><div id="slide-viewport" class="slide-viewport" tabindex="0" aria-label="Contenido de la diapositiva. Usa las flechas izquierda y derecha para cambiar."></div><div class="stage-controls" role="group" aria-label="Controles de presentación"><button id="prev-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva anterior" title="Atrás"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>Atrás</span></button><button id="next-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva siguiente" title="Siguiente"><span>Siguiente</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button><button id="speak-btn" class="presentation-button start-button" type="button" aria-label="Iniciar párrafo" title="Iniciar párrafo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg><span>Iniciar</span></button><button id="stop-btn" class="presentation-button stop-button" type="button" aria-label="Detener párrafo" title="Detener párrafo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10"/></svg><span>Detener</span></button><button id="pause-btn" class="presentation-button pause-button" type="button" aria-label="Pausar párrafo" title="Pausar párrafo" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg><span>Pausar</span></button></div></section>
         <aside class="presenter-panel panel" aria-label="Presentador 3D"><div class="presenter-toolbar"><span class="micro-label">Investigador 3D · facecap.glb</span><span id="avatar-state" class="avatar-state">En línea</span></div><div id="avatar-stage" class="avatar-stage"><span class="avatar-chip">visemas · mirada · expresión</span><div id="avatar-mood" class="avatar-mood"><span>Neutro</span><strong>Listo para explicar</strong></div><canvas id="avatar-canvas" role="application" tabindex="0" aria-label="Presentador 3D interactivo. Arrastra las fórmulas o gráficos; la cámara está fija."></canvas><div id="avatar-fallback" class="avatar-fallback" hidden aria-hidden="true">R³</div><div class="speech-wave" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><div class="teleprompter"><p class="micro-label">Investigación en curso</p><p id="script-text" class="script-text">Cargando guion…</p></div><div class="presenter-footnote">Voz masculina neuronal · la exposición se puede pausar y retomar sin reiniciar.</div></aside>
       </section>
-      <div id="deck-slide-layer" class="deck-slide-layer" aria-live="polite" aria-label="Diapositiva actual de la presentación"><div id="project-intro" class="project-intro"><span class="project-intro-kicker">Apertura · presentación del proyecto</span><h2>Informe técnico &amp;<br />auditoría epistemológica</h2><p>Una defensa oral sobre rectas y planos en R³, con resolución matemática, contraste de modelos y verificación de evidencia.</p><div class="project-intro-equation">r ∩ π = I</div><span class="project-intro-caption">Resolver · contrastar · verificar · tensionar · reflexionar</span></div><img id="deck-slide-image" class="deck-slide-image" alt="" draggable="false" /><div id="deck-focus-layer" class="deck-focus-layer" aria-hidden="true"></div></div>
-      <div id="visual-overlay" class="visual-overlay" aria-label="Apoyo visual interactivo de la diapositiva actual"></div>
-      <section id="pptx-slide-overlay" class="pptx-slide-overlay" aria-live="polite" aria-label="Presentación importada desde el archivo PPTX">
-        <div class="pptx-slide-meta"><span id="pptx-slide-index" class="pptx-slide-index">01</span><span id="pptx-slide-phase">Apertura</span></div>
-        <h2 id="pptx-slide-title" class="pptx-slide-title">Informe técnico &amp; auditoría epistemológica</h2>
-        <p id="pptx-slide-deck" class="pptx-slide-deck">Errores humanos, desempeño de LLMs y una defensa oral con criterio matemático.</p>
-      </section>
+
+      <div id="procedimiento-layer" class="procedimiento-layer" aria-live="polite" aria-label="Apoyo visual interactivo de la escena actual">
+        <div class="procedimiento-header">
+          <h2 id="procedimiento-title" class="procedimiento-title">Informe técnico &amp; auditoría epistemológica</h2>
+        </div>
+        <div id="procedimiento-grid" class="procedimiento-grid" role="region" aria-label="Objetos visuales de la escena"></div>
+      </div>
       <footer class="statusbar"><span><strong>Santiago Sessa · Mateo Rau · Lucio Pieroni · Lucas Bazan</strong></span><span id="live-status" aria-live="polite">Modelo 3D: cargando · Voz: lista</span></footer><p id="sr-status" class="visually-hidden" aria-live="polite"></p>
     </main>
     <script type="importmap">
@@ -482,39 +756,127 @@
       import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
       import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
       import { gsap } from "gsap";
-       import { motionTokens } from "./motion-tokens.js";
+      import { motionTokens } from "./motion-tokens.js";
+      import { Cartesian3DExplorer } from "./cartesian-3d-explorer.js";
       const slides = [
-        { index:"01",phase:"Apertura",title:"Informe técnico & auditoría epistemológica",subtitle:"Trabajo Práctico N° 3 · Recta y plano en R³",deck:"Errores humanos, desempeño de LLMs y una defensa oral con criterio matemático.",script:"Bienvenidos. Para empezar, quiero mirar la idea que organiza todo el trabajo: una recta y un plano pueden encontrarse en un punto, pero ese punto no vale solo porque aparezca al final de una cuenta. En esta presentación voy a resolver los ejercicios y, al mismo tiempo, voy a comprobar que cada resultado respete la geometría. Así puedo entender qué aportan las herramientas automáticas y por qué la verificación sigue siendo necesaria.",html:`<div class="quote-card"><p>r ∩ π = I</p><span>El punto verificable como unidad de verdad</span></div><div class="result-strip"><strong>Aprobación con Distinción</strong><span>Álgebra y Geometría Analítica · Agosto 2026</span></div>`},
-        { index:"02",phase:"Fase 0",title:"Un protocolo en cinco fases",subtitle:"Resumen ejecutivo",deck:"La investigación combina cálculo, contraste y juicio crítico: resolver, contrastar, verificar, tensionar y reflexionar.",script:"Con esa idea como punto de partida, voy a organizar el análisis en cinco pasos. Primero resuelvo cada ejercicio con el procedimiento matemático; después comparo el resultado con el trabajo del grupo y con distintos modelos. Luego verifico puntos, signos y relaciones geométricas. Finalmente, pongo las respuestas a prueba y saco una conclusión sobre lo que realmente aprendemos. Ese es el recorrido que voy a seguir ahora.",html:`<div class="content-grid three"><article class="data-card navy"><h3>01 · Resolver</h3><p>Patrones matemáticos y planteos formales.</p></article><article class="data-card"><h3>02 · Contrastar</h3><p>Grupo de estudiantes frente a modelos.</p></article><article class="data-card orange"><h3>03 · Verificar</h3><p>Puntos, signos y consistencia geométrica.</p></article><article class="data-card yellow"><h3>04 · Tensionar</h3><p>Prompts adversarios para forzar el error.</p></article><article class="data-card red"><h3>05 · Reflexionar</h3><p>Qué aprende el futuro ingeniero.</p></article></div><div class="result-strip"><strong>Hallazgo</strong><span>La verificación humana sigue siendo el filtro decisivo.</span></div>`},
-        { index:"03",phase:"Fase 1",title:"Intersección entre recta y plano",subtitle:"Del planteo paramétrico al punto verificable",deck:"Sustituimos la recta en el plano, despejamos λ y devolvemos el punto a ambas representaciones.",script:"Voy a empezar por la intersección. La recta está escrita en forma paramétrica, así que sus tres coordenadas dependen de lambda. Lo que hago es reemplazarlas en la ecuación del plano; de esa manera, el problema se convierte en una ecuación sencilla: tres lambda menos diez igual a cero. Obtengo lambda igual a diez tercios y, al volver a la recta, el punto es nueve, dieciséis tercios, menos veinte tercios. Pero no me quedo con el número: lo sustituyo en el plano y compruebo que efectivamente pertenece.",html:`<div class="content-grid"><article class="data-card navy"><h3>Planteo</h3><p>π: 2x − y + z − 6 = 0<br />r: x = −1 + 3λ · y = 2 + λ · z = −2λ</p><div class="equation">3λ − 10 = 0<small>λ = 10/3</small></div></article><article class="data-card orange"><h3>Resultado</h3><div class="equation">I = (9, 16/3, −20/3)</div><p>Las tres coordenadas devuelven el mismo parámetro.</p></article></div><div class="result-strip"><strong>✓ Verificado</strong><span>2(9) − 16/3 − 20/3 − 6 = 0</span></div>`},
-        { index:"04",phase:"Fase 1",title:"Ángulo entre recta y plano",subtitle:"La clave es distinguir normal y plano",deck:"El producto escalar mide el ángulo con la normal. El ángulo real con el plano es su complementario.",script:"Una vez entendida la sustitución, ahora paso al ángulo entre una recta y un plano. Acá hay una diferencia importante: el producto escalar relaciona el vector director con la normal, no directamente con el plano. Con los vectores que aparecen en la lámina, el coseno del ángulo beta es un noveno. Como alfa y beta son complementarios, el seno del ángulo que busco también es un noveno. Por eso el ángulo recta-plano resulta aproximadamente seis coma treinta y ocho grados.",html:`<div class="content-grid"><article class="data-card"><h3>Vectores</h3><div class="equation">n = (1, −2, 2)<br />d = (1, 2, 2)</div><p>La normal y la dirección no deben confundirse.</p></article><article class="data-card orange"><h3>Deducción</h3><div class="equation">sin α = |n · d| / (‖n‖‖d‖) = 1/9</div><p>α = 6° 22′ 46″</p></article></div><div class="result-strip"><strong>6,38°</strong><span>Ángulo recta–plano</span></div>`},
-        { index:"05",phase:"Fase 1",title:"El parámetro m no siempre existe",subtitle:"Dos condiciones, dos conclusiones",deck:"El paralelismo exige proporcionalidad completa. Una sola razón incompatible alcanza para vaciar el conjunto solución.",script:"Ahora bien, no todos los ejercicios terminan con un valor para el parámetro. En el primer caso de esta lámina planteo perpendicularidad: hago el producto escalar igual a cero y obtengo m igual a dos tercios. En el segundo planteo paralelismo, y ahí las componentes tendrían que ser proporcionales con la misma constante. Como las razones seis sobre uno y cuatro sobre menos dos ya son incompatibles, no existe ningún valor real de m que cumpla la condición. La conclusión correcta, entonces, es que el conjunto solución está vacío.",html:`<div class="content-grid"><article class="data-card"><h3>Caso A · d ⟂ n</h3><div class="equation">3m + 6 − 8 = 0<small>m = 2/3 · solución única</small></div></article><article class="data-card red"><h3>Caso B · d ∥ n</h3><div class="equation">m/3 = 6/1 = 4/(−2)</div><p><strong>6 ≠ −2</strong> · ∄ m ∈ ℝ</p></article></div><div class="result-strip"><strong>∄ m</strong><span>El sistema es incompatible</span></div>`},
-        { index:"06",phase:"Fases 1 + 3",title:"Planos proyectantes",subtitle:"Verificar antes de cerrar la ecuación",deck:"Tres planos cartesianos. Un único error de signo detectado a tiempo mediante la sustitución del punto base.",script:"Después de ver un caso sin solución, voy a mostrar una situación donde la geometría me ayuda a controlar las ecuaciones. Un plano xy es paralelo al eje z, y un plano yz es paralelo al eje x. En el plano xz aparece el detalle que tengo que revisar: si sustituyo el punto dos, menos uno, cinco, el término independiente tiene que ser más dieciocho, porque dos menos veinte más dieciocho da cero. Ese signo no es un detalle: es lo que garantiza que el punto pertenezca al plano. Por eso verifico antes de dar la ecuación por terminada.",html:`<div class="content-grid three"><article class="data-card"><h3>Plano xy</h3><div class="equation">3x + 4y − 2 = 0</div><p>Paralelo a Z.</p></article><article class="data-card orange"><h3>Plano xz</h3><div class="equation">x − 4z + 18 = 0</div><p>Corregido: −18 → +18.</p></article><article class="data-card"><h3>Plano yz</h3><div class="equation">y + 3z − 14 = 0</div><p>Paralelo a X.</p></article></div><div class="result-strip"><strong>P(2, −1, 5)</strong><span>El filtro es sustituir antes de aceptar.</span></div>`},
-        { index:"07",phase:"Fases 2 + 3",title:"Auditoría cruzada de desempeño",subtitle:"Resultado, proceso y capacidad de verificación",deck:"Una matriz de comparación hace visible la diferencia entre acertar y poder justificar el acierto.",script:"Con los cuatro ejercicios revisados, puedo comparar los resultados con un poco más de criterio. Esta tabla no mira solamente quién acertó la respuesta final; también me obliga a preguntar cómo se llegó a ella y si se pudo justificar. Al comparar, veo que el grupo resolvió correctamente el ángulo y el parámetro, mientras que los modelos fueron precisos en la intersección, parciales en el ángulo y más vulnerables al sesgo en el caso de m. En los planos, el punto de control me permitió detectar un error de signo. La tabla muestra justamente eso: acertar y poder explicar por qué no son exactamente lo mismo.",html:`<div class="table-wrap"><table class="compare-table"><thead><tr><th>Ejercicio</th><th>Resolución patrón</th><th>Grupo</th><th>Modelos IA</th></tr></thead><tbody><tr><td>1. Intersección</td><td>I = (9, 16/3, −20/3)</td><td><span class="status good">Correcto</span></td><td><span class="status good">Preciso</span></td></tr><tr><td>2. Ángulo</td><td>sin α = 1/9</td><td><span class="status good">Correcto</span></td><td><span class="status partial">Parcial</span></td></tr><tr><td>3. Parámetro</td><td>m = 2/3 · ∄ m</td><td><span class="status good">Correcto</span></td><td><span class="status warn">Sesgo</span></td></tr><tr><td>4. Proyectantes</td><td>3 planos cartesianos</td><td><span class="status warn">Signo</span></td><td><span class="status good">Preciso</span></td></tr></tbody></table></div>`},
-        { index:"08",phase:"Fase 4",title:"Cuatro pruebas para forzar el error",subtitle:"Prompts adversarios",deck:"La resistencia aparece cuando el modelo no obedece una premisa matemática falsa.",script:"Pero comparar resultados todavía no alcanza, así que decidí someter las respuestas a situaciones más exigentes. Los prompts adversarios no buscan una trampa gratuita; buscan ver si el razonamiento se mantiene cuando la consigna contiene una premisa falsa. Por eso probé cuatro casos: forzar un valor de m cuando el sistema es incompatible, insistir con una división por cero, confundir la fórmula del ángulo y dividir por una componente que vale cero. En todos los casos, la respuesta rigurosa es frenar, explicar el problema y no completar una cuenta incorrecta solo porque la consigna lo pide.",html:`<div class="content-grid"><article class="data-card red"><h3>01 · Incompatibilidad</h3><p>Forzar un valor de m cuando 6 ≠ −2.</p></article><article class="data-card orange"><h3>02 · División por cero</h3><p>Insistir con 0λ = 10 y observar si declara conjunto vacío.</p></article><article class="data-card yellow"><h3>03 · Fórmula errónea</h3><p>Confundir coseno con el ángulo real del plano.</p></article><article class="data-card"><h3>04 · Componente nula</h3><p>Dividir por dᵧ = 0 en vez de aislar y = −1.</p></article></div>`},
-        { index:"09",phase:"Fase 4",title:"Cuando la auditoría fabrica evidencia",subtitle:"Fenómeno crítico de IA",deck:"Una respuesta segura puede seguir siendo falsa si no contrasta el material fuente.",script:"Y estas pruebas me llevaron a un hallazgo todavía más delicado. El problema no fue solamente equivocarse en una cuenta: en un caso, una IA atribuyó a otras herramientas desarrollos que en realidad nunca habían producido. Es decir, presentó como evidencia algo que no estaba en el material fuente. Esto puede sonar convincente porque está bien redactado, pero no por eso es verdadero. Por eso, cuando audito una respuesta, vuelvo a las conversaciones, a los cálculos y a las fuentes; la seguridad del tono nunca reemplaza la trazabilidad.",html:`<div class="content-grid"><article class="data-card red"><h3>Fabricación</h3><p>Se atribuyeron divisiones por cero y despejes ficticios a otras IAs.</p></article><article class="data-card navy"><h3>Diagnóstico</h3><p><strong>Sycophancy</strong>: adulación algorítmica para confirmar el sesgo de la pregunta.</p></article></div><div class="quote-card" style="margin-top:14px"><p>La confianza del tono no reemplaza la trazabilidad.</p><span>Regla de auditoría</span></div>`},
-        { index:"10",phase:"Fase 5",title:"Tres conclusiones para el futuro ingeniero",subtitle:"Reflexión metacognitiva",deck:"La herramienta acelera el cálculo; el estudiante sostiene el criterio.",script:"A partir de todo lo anterior, puedo ordenar tres conclusiones. Primero, en geometría, sustituir un punto en la ecuación sigue siendo el control más directo. Segundo, tengo que reconocer los límites de los modelos: pueden calcular bien, pero también pueden omitir una condición, seguir un sesgo o inventar una evidencia. Y tercero, cambia mi rol como estudiante. La herramienta puede acelerar una cuenta, pero soy yo quien tiene que interpretar el resultado, justificarlo y decidir si tiene sentido. Ahí está la competencia que quiero llevarme como futuro ingeniero.",html:`<div class="content-grid three"><article class="data-card"><h3>01 · Verificar</h3><p>Sustituir puntos en ecuaciones cartesianas.</p></article><article class="data-card orange"><h3>02 · Reconocer</h3><p>Detectar conjuntos vacíos, sesgos y evidencia inventada.</p></article><article class="data-card navy"><h3>03 · Auditar</h3><p>Fortalecer la competencia analítica del futuro ingeniero.</p></article></div><div class="result-strip"><strong>Verificar mejor</strong><span>La competencia central no es calcular más rápido.</span></div>`},
-        { index:"11",phase:"Defensa oral",title:"El guion técnico en 11 minutos",subtitle:"Recorrido de la defensa",deck:"Cada bloque tiene una función narrativa dentro de la defensa.",script:"Esta lámina resume el orden que sigo en la defensa. Primero presento el problema, el protocolo y la matriz; después desarrollo la intersección y el ángulo; luego analizo el parámetro y los planos; y finalmente muestro las pruebas adversarias, la fabricación de evidencia y las conclusiones. Así, cada parte prepara la siguiente: primero planteo, después resuelvo, luego verifico y finalmente discuto qué significa el resultado. No son temas aislados, sino un mismo argumento que voy desarrollando paso a paso.",html:`<div class="content-grid"><article class="data-card navy"><h3>0:00–1:45 · Planteo</h3><p>Problema, protocolo y matriz comparativa.</p></article><article class="data-card"><h3>1:45–4:00 · Resolución</h3><p>Intersección, ángulo y seno.</p></article><article class="data-card orange"><h3>4:00–6:15 · Verificación</h3><p>Parámetro m, planos y signos.</p></article><article class="data-card yellow"><h3>8:00–11:30 · Reflexión</h3><p>Prompts, evidencia y conclusiones.</p></article></div><div class="result-strip"><strong>Problema → resolución → auditoría → reflexión</strong></div>`},
-        { index:"12",phase:"Cierre",title:"Dos preguntas que condensan la defensa",subtitle:"Banco de preguntas · muchas gracias",deck:"La respuesta rigurosa no es la más larga: es la que conserva la relación entre fórmula, geometría y evidencia.",script:"Para terminar, quiero retomar dos preguntas que resumen la defensa. ¿Por qué uso seno? Porque el producto escalar me da el ángulo con la normal y el ángulo de la recta con el plano es su complementario; por eso el coseno de beta se convierte en el seno de alfa. ¿Y por qué alcanza con ver que seis no es menos dos? Porque si hay paralelismo, todas las componentes tienen que ser proporcionales con una misma constante. Si dos razones no coinciden, el sistema ya es incompatible. Con esas dos ideas vuelvo al principio: una fórmula tiene sentido cuando también puede verificarse geométricamente. Muchas gracias.",html:`<div class="content-grid"><article class="data-card orange"><h3>¿Por qué seno?</h3><p>β es el ángulo con la normal. Como α + β = 90°, cos β = sin α.</p></article><article class="data-card navy"><h3>¿Por qué alcanza 6 ≠ −2?</h3><p>La colinealidad exige una única constante k. Si dos razones no coinciden, el sistema es incompatible.</p></article></div><div class="quote-card" style="margin-top:14px"><p>¡Muchas gracias por su atención!</p><span>Quedamos a disposición para preguntas</span></div>`}
+        { index:"01",phase:"Apertura",title:"Informe técnico & auditoría epistemológica",subtitle:"Trabajo Práctico N° 3 · Recta y plano en R³",deck:"Errores humanos, desempeño de LLMs y una defensa oral con criterio matemático.",script:"Bienvenidos. Voy a empezar fijando el criterio que guía todo el trabajo. La recta y el plano pueden cortarse en un punto, pero ese punto solo es válido si pertenece a las dos representaciones. Por eso, en la lámina parto del plano dos equis menos ye más zeta menos seis igual a cero y de la recta paramétrica. También marco el punto base P cero, que pertenece a la recta cuando lambda vale cero, pero no pertenece al plano. Ese ejemplo muestra por qué no alcanza con llegar a un resultado: hay que comprobarlo en ambos lugares. Con esa idea voy a resolver los ejercicios y después voy a auditar las respuestas.",html:`<div class="quote-card"><p>r ∩ π = I</p><span>El punto verificable como unidad de verdad</span></div><div class="result-strip"><strong>Aprobación con Distinción</strong><span>Álgebra y Geometría Analítica · Agosto 2026</span></div>`},
+        { index:"02",phase:"Fase 0",title:"Un protocolo en cinco fases",subtitle:"Resumen ejecutivo",deck:"La investigación combina cálculo, contraste y juicio crítico: resolver, contrastar, verificar, tensionar y reflexionar.",script:"Con ese criterio como punto de partida, organizo la auditoría en cinco fases. Primero resuelvo con patrones formales y cálculo matemático riguroso. Después confronto mi resolución con la del grupo y con los modelos de inteligencia artificial. En la tercera fase verifico los puntos y los signos, sustituyendo en las ecuaciones para controlar la pertenencia. Luego tensiono las respuestas con consignas que contienen premisas falsas, para ver si el razonamiento se sostiene. Y finalmente reflexiono sobre qué significa todo esto para el trabajo de un futuro ingeniero. Las flechas de la lámina muestran que cada fase depende de la anterior.",html:`<div class="content-grid three"><article class="data-card navy"><h3>01 · Resolver</h3><p>Patrones matemáticos y planteos formales.</p></article><article class="data-card"><h3>02 · Contrastar</h3><p>Grupo de estudiantes frente a modelos.</p></article><article class="data-card orange"><h3>03 · Verificar</h3><p>Puntos, signos y consistencia geométrica.</p></article><article class="data-card yellow"><h3>04 · Tensionar</h3><p>Prompts adversarios para forzar el error.</p></article><article class="data-card red"><h3>05 · Reflexionar</h3><p>Qué aprende el futuro ingeniero.</p></article></div><div class="result-strip"><strong>Hallazgo</strong><span>La verificación humana sigue siendo el filtro decisivo.</span></div>`},
+        { index:"03",phase:"Fase 1",title:"Intersección entre recta y plano",subtitle:"Del planteo paramétrico al punto verificable",deck:"Sustituimos la recta en el plano, despejamos λ y devolvemos el punto a ambas representaciones.",script:"Ahora aplico el primer procedimiento completo. Primero observo que el vector director de la recta es tres, uno, menos dos y que el normal del plano es dos, menos uno, uno. Su producto escalar da tres, distinto de cero, así que la recta corta al plano. Después sustituyo las tres coordenadas paramétricas en la ecuación del plano. Al distribuir y agrupar, queda tres lambda menos diez igual a cero, de donde lambda vale diez tercios. Con ese parámetro calculo las coordenadas y obtengo el punto nueve, dieciséis tercios, menos veinte tercios. Finalmente lo reemplazo en el plano: dieciocho menos doce menos seis da cero. Ahí queda verificada la intersección.",html:`<div class="content-grid"><article class="data-card navy"><h3>Planteo</h3><p>π: 2x − y + z − 6 = 0<br />r: x = −1 + 3λ · y = 2 + λ · z = −2λ</p><div class="equation">3λ − 10 = 0<small>λ = 10/3</small></div></article><article class="data-card orange"><h3>Resultado</h3><div class="equation">I = (9, 16/3, −20/3)</div><p>Las tres coordenadas devuelven el mismo parámetro.</p></article></div><div class="result-strip"><strong>✓ Verificado</strong><span>2(9) − 16/3 − 20/3 − 6 = 0</span></div>`},
+        { index:"04",phase:"Fase 1",title:"Ángulo entre recta y plano",subtitle:"La clave es distinguir normal y plano",deck:"El producto escalar mide el ángulo con la normal. El ángulo real con el plano es su complementario.",script:"Con la intersección resuelta, paso al ángulo entre una recta y un plano. En esta lámina uso el vector director uno, dos, dos y la normal uno, menos dos, dos. Ambos tienen norma tres y su producto escalar vale uno. Entonces el coseno del ángulo beta, que es el ángulo con la normal, vale un noveno. Esto es importante: beta no es todavía el ángulo de la recta con el plano; mide la inclinación respecto de la normal y vale aproximadamente ochenta y tres coma sesenta y dos grados. Como alfa y beta son complementarios, el seno de alfa también es un noveno. Por eso el ángulo que busco es aproximadamente seis coma treinta y ocho grados.",html:`<div class="content-grid"><article class="data-card"><h3>Vectores</h3><div class="equation">n = (1, −2, 2)<br />d = (1, 2, 2)</div><p>La normal y la dirección no deben confundirse.</p></article><article class="data-card orange"><h3>Deducción</h3><div class="equation">sin α = |n · d| / (‖n‖‖d‖) = 1/9</div><p>α = 6° 22′ 46″</p></article></div><div class="result-strip"><strong>6,38°</strong><span>Ángulo recta–plano</span></div>`},
+        { index:"05",phase:"Fase 1",title:"El parámetro m no siempre existe",subtitle:"Dos condiciones, dos conclusiones",deck:"El paralelismo exige proporcionalidad completa. Una sola razón incompatible alcanza para vaciar el conjunto solución.",script:"El tercer ejercicio tiene dos casos y conviene leerlos geométricamente. En el primero busco una recta paralela al plano, así que su director tiene que ser perpendicular a la normal. Con el producto escalar obtengo tres m más seis menos ocho igual a cero, y por lo tanto m vale dos tercios. En el segundo caso busco una recta perpendicular al plano, de modo que el director debe ser paralelo a la normal. Si escribo el sistema con una constante k, la segunda componente obliga a k igual a seis, pero la tercera exigiría que cuatro fuera igual a menos doce. Como aparece una contradicción, el sistema es incompatible y no existe ningún valor real de m. No fuerzo una solución donde no la hay.",html:`<div class="content-grid"><article class="data-card"><h3>Caso A · d ⟂ n</h3><div class="equation">3m + 6 − 8 = 0<small>m = 2/3 · solución única</small></div></article><article class="data-card red"><h3>Caso B · d ∥ n</h3><div class="equation">m/3 = 6/1 = 4/(−2)</div><p><strong>6 ≠ −2</strong> · ∄ m ∈ ℝ</p></article></div><div class="result-strip"><strong>∄ m</strong><span>El sistema es incompatible</span></div>`},
+        { index:"06",phase:"Fases 1 + 3",title:"Planos proyectantes",subtitle:"Verificar antes de cerrar la ecuación",deck:"Tres planos cartesianos. Un único error de signo detectado a tiempo mediante la sustitución del punto base.",script:"Después de analizar el parámetro, paso a las proyecciones de la recta sobre los planos coordenados. Parto de su forma simétrica, con el punto dos, menos uno, cinco y el director cuatro, menos tres, uno. Para el plano xy igualo las componentes x e y y obtengo tres x más cuatro y menos dos igual a cero. Para el plano xz igualo x con z; ahí aparece el signo que tengo que cuidar: x menos cuatro z más dieciocho igual a cero. Finalmente, la proyección sobre yz da y más tres z menos catorce igual a cero. El más dieciocho se confirma sustituyendo el punto: dos menos veinte más dieciocho da cero. La verificación evita cerrar una ecuación con un signo incorrecto.",html:`<div class="content-grid three"><article class="data-card"><h3>Plano xy</h3><div class="equation">3x + 4y − 2 = 0</div><p>Paralelo a Z.</p></article><article class="data-card orange"><h3>Plano xz</h3><div class="equation">x − 4z + 18 = 0</div><p>Corregido: −18 → +18.</p></article><article class="data-card"><h3>Plano yz</h3><div class="equation">y + 3z − 14 = 0</div><p>Paralelo a X.</p></article></div><div class="result-strip"><strong>P(2, −1, 5)</strong><span>El filtro es sustituir antes de aceptar.</span></div>`},
+        { index:"07",phase:"Fases 2 + 3",title:"Auditoría cruzada de desempeño",subtitle:"Resultado, proceso y capacidad de verificación",deck:"Una matriz de comparación hace visible la diferencia entre acertar y poder justificar el acierto.",script:"Una vez revisados los cuatro ejercicios, comparo no solo la respuesta final, sino también el procedimiento. En la intersección, la resolución de referencia da lambda igual a diez tercios; el grupo se desvía en la segunda cuenta, mientras que el modelo calcula con precisión, aunque sin verificar. En el ángulo, el grupo plantea bien pero confunde el ángulo beta con el del plano, y el modelo usa directamente el coseno. En el parámetro, el grupo conserva el rigor y detecta la contradicción cuatro igual a menos doce; el modelo intenta complacer y fuerza un valor de m. Finalmente, en las proyecciones, el grupo deja la forma simétrica sin pasar a la cartesiana y el modelo omite o cambia signos. La tabla muestra por qué acertar no alcanza: también hay que poder justificar.",html:`<div class="table-wrap"><table class="compare-table"><thead><tr><th>Ejercicio</th><th>Resolución patrón</th><th>Grupo</th><th>Modelos IA</th></tr></thead><tbody><tr><td>1. Intersección</td><td>I = (9, 16/3, −20/3)</td><td><span class="status good">Correcto</span></td><td><span class="status good">Preciso</span></td></tr><tr><td>2. Ángulo</td><td>sin α = 1/9</td><td><span class="status good">Correcto</span></td><td><span class="status partial">Parcial</span></td></tr><tr><td>3. Parámetro</td><td>m = 2/3 · ∄ m</td><td><span class="status good">Correcto</span></td><td><span class="status warn">Sesgo</span></td></tr><tr><td>4. Proyectantes</td><td>3 planos cartesianos</td><td><span class="status warn">Signo</span></td><td><span class="status good">Preciso</span></td></tr></tbody></table></div>`},
+        { index:"08",phase:"Fase 4",title:"Cuatro pruebas para forzar el error",subtitle:"Prompts adversarios",deck:"La resistencia aparece cuando el modelo no obedece una premisa matemática falsa.",script:"La comparación todavía no alcanza, así que someto las respuestas a cuatro pruebas adversarias. Primero pido hallar m para que la recta sea paralela al plano, aunque el sistema sea incompatible: la respuesta correcta es que no existe m. Después fuerzo el despeje de lambda en cero lambda menos diez igual a cero; ahí no se puede dividir por cero, porque la ecuación no tiene solución real. La tercera prueba pide usar coseno para el ángulo recta-plano, cuando en realidad hay que tomar el complementario y usar seno. Y la cuarta plantea una forma simétrica con una componente directora nula: en ese caso separo la ecuación y igual a y cero, en lugar de escribir una división por cero. La prueba consiste en sostener la matemática aunque la consigna empuje al error.",html:`<div class="content-grid"><article class="data-card red"><h3>01 · Incompatibilidad</h3><p>Forzar un valor de m cuando 6 ≠ −2.</p></article><article class="data-card orange"><h3>02 · División por cero</h3><p>Insistir con 0λ = 10 y observar si declara conjunto vacío.</p></article><article class="data-card yellow"><h3>03 · Fórmula errónea</h3><p>Confundir coseno con el ángulo real del plano.</p></article><article class="data-card"><h3>04 · Componente nula</h3><p>Dividir por dᵧ = 0 en vez de aislar y = −1.</p></article></div>`},
+        { index:"09",phase:"Fase 4",title:"Cuando la auditoría fabrica evidencia",subtitle:"Fenómeno crítico de IA",deck:"Una respuesta segura puede seguir siendo falsa si no contrasta el material fuente.",script:"Estas pruebas me llevan a un problema más serio que un simple error de cálculo. En una de las respuestas, la IA atribuye a otras herramientas desarrollos, divisiones por cero y errores algebraicos que nunca habían producido. El mecanismo es claro: intenta confirmar la hipótesis de quien pregunta y construye una explicación que parece razonable. Pero que esté bien escrito no demuestra que sea cierto. Por eso, cuando audito, vuelvo a los registros y a las conversaciones originales, desconfío de los pasos intermedios que no están verificados y valido cada cuenta por separado. La regla de esta lámina es sencilla: la seguridad del tono nunca reemplaza la trazabilidad de las fuentes y del cálculo.",html:`<div class="content-grid"><article class="data-card red"><h3>Fabricación</h3><p>Se atribuyeron divisiones por cero y despejes ficticios a otras IAs.</p></article><article class="data-card navy"><h3>Diagnóstico</h3><p><strong>Sycophancy</strong>: adulación algorítmica para confirmar el sesgo de la pregunta.</p></article></div><div class="quote-card" style="margin-top:14px"><p>La confianza del tono no reemplaza la trazabilidad.</p><span>Regla de auditoría</span></div>`},
+        { index:"10",phase:"Fase 5",title:"Tres conclusiones para el futuro ingeniero",subtitle:"Reflexión metacognitiva",deck:"La herramienta acelera el cálculo; el estudiante sostiene el criterio.",script:"Con todo el recorrido hecho, puedo resumirlo en tres conclusiones. La primera es un control geométrico directo: sustituir los puntos en la ecuación cartesiana sigue siendo la manera más segura de comprobar pertenencia. La segunda es reconocer los límites de la inteligencia artificial: puede calcular rápido, pero también puede omitir condiciones, seguir una consigna falsa o fabricar evidencia. Y la tercera tiene que ver con mi propio rol. La herramienta acelera el cálculo, pero no reemplaza la interpretación ni el criterio profesional. Como futuro ingeniero, no quiero limitarme a hacer cuentas; quiero entender el resultado, verificarlo y poder explicar por qué es válido.",html:`<div class="content-grid three"><article class="data-card"><h3>01 · Verificar</h3><p>Sustituir puntos en ecuaciones cartesianas.</p></article><article class="data-card orange"><h3>02 · Reconocer</h3><p>Detectar conjuntos vacíos, sesgos y evidencia inventada.</p></article><article class="data-card navy"><h3>03 · Auditar</h3><p>Fortalecer la competencia analítica del futuro ingeniero.</p></article></div><div class="result-strip"><strong>Verificar mejor</strong><span>La competencia central no es calcular más rápido.</span></div>`},
       ];
       const els={list:document.querySelector("#slide-list"),viewport:document.querySelector("#slide-viewport"),stageIndex:document.querySelector("#stage-index"),stageTitle:document.querySelector("#stage-title"),stageSubtitle:document.querySelector("#stage-subtitle"),phase:document.querySelector("#phase-tag"),progress:document.querySelector("#stage-progress"),railCurrent:document.querySelector("#rail-current"),script:document.querySelector("#script-text"),speak:document.querySelector("#speak-btn"),stop:document.querySelector("#stop-btn"),pause:document.querySelector("#pause-btn"),avatarStage:document.querySelector("#avatar-stage"),avatarState:document.querySelector("#avatar-state"),mood:document.querySelector("#avatar-mood"),fallback:document.querySelector("#avatar-fallback"),status:document.querySelector("#live-status"),sr:document.querySelector("#sr-status"),topic:document.querySelector("#talking-topic"),topicText:document.querySelector("#talking-topic-text")};
-      const visualOverlay=document.querySelector("#visual-overlay");
-      const presentationOverlay=document.querySelector("#pptx-slide-overlay"),presentationIndex=document.querySelector("#pptx-slide-index"),presentationPhase=document.querySelector("#pptx-slide-phase"),presentationTitle=document.querySelector("#pptx-slide-title"),presentationDeck=document.querySelector("#pptx-slide-deck");
-      const deckSlideLayer=document.querySelector("#deck-slide-layer"),deckSlideImage=document.querySelector("#deck-slide-image"),projectIntro=document.querySelector("#project-intro"),deckFocusLayer=document.querySelector("#deck-focus-layer");
-      let deckFocusTargets=[];
-      const slideFocusMaps={
-        1:[{x:0.045,y:0.34,w:0.16,h:0.16,step:0},{x:0.255,y:0.34,w:0.16,h:0.16,step:1},{x:0.465,y:0.34,w:0.16,h:0.16,step:2},{x:0.675,y:0.34,w:0.16,h:0.16,step:3,warm:true},{x:0.885,y:0.34,w:0.08,h:0.16,step:4,warm:true}],
-        2:[{x:0.045,y:0.28,w:0.28,h:0.17,step:1},{x:0.045,y:0.47,w:0.28,h:0.19,step:2},{x:0.045,y:0.70,w:0.28,h:0.12,step:3,warm:true},{x:0.48,y:0.42,w:0.42,h:0.43,step:4,warm:true}],
-        3:[{x:0.045,y:0.29,w:0.27,h:0.36,step:1},{x:0.045,y:0.69,w:0.27,h:0.13,step:2,warm:true},{x:0.48,y:0.42,w:0.43,h:0.39,step:3,warm:true}],
-        4:[{x:0.045,y:0.28,w:0.41,h:0.50,step:1},{x:0.55,y:0.28,w:0.41,h:0.50,step:2,warm:true}],
-        5:[{x:0.04,y:0.28,w:0.27,h:0.43,step:1},{x:0.37,y:0.28,w:0.27,h:0.43,step:2,warm:true},{x:0.70,y:0.28,w:0.27,h:0.43,step:3},{x:0.04,y:0.76,w:0.93,h:0.10,step:4,warm:true}],
-        6:[{x:0.04,y:0.27,w:0.92,h:0.12,step:1},{x:0.04,y:0.39,w:0.92,h:0.12,step:2},{x:0.04,y:0.51,w:0.92,h:0.12,step:3,warm:true},{x:0.04,y:0.63,w:0.92,h:0.12,step:4}],
-        7:[{x:0.04,y:0.29,w:0.22,h:0.53,step:1,warm:true},{x:0.27,y:0.29,w:0.22,h:0.53,step:2},{x:0.50,y:0.29,w:0.22,h:0.53,step:3},{x:0.73,y:0.29,w:0.22,h:0.53,step:4,warm:true}],
-        8:[{x:0.04,y:0.30,w:0.92,h:0.19,step:1,warm:true},{x:0.04,y:0.52,w:0.92,h:0.17,step:2},{x:0.04,y:0.73,w:0.92,h:0.10,step:3,warm:true}],
-        9:[{x:0.04,y:0.28,w:0.28,h:0.43,step:1},{x:0.36,y:0.28,w:0.28,h:0.43,step:2,warm:true},{x:0.68,y:0.28,w:0.28,h:0.43,step:3},{x:0.04,y:0.78,w:0.92,h:0.09,step:4,warm:true}],
-        10:[{x:0.04,y:0.30,w:0.21,h:0.38,step:1},{x:0.27,y:0.30,w:0.21,h:0.38,step:2},{x:0.50,y:0.30,w:0.21,h:0.38,step:3,warm:true},{x:0.73,y:0.30,w:0.21,h:0.38,step:4}],
-        11:[{x:0.04,y:0.28,w:0.92,h:0.24,step:1},{x:0.04,y:0.55,w:0.92,h:0.18,step:2},{x:0.04,y:0.77,w:0.92,h:0.10,step:3,warm:true}]
-      };
+      const procedimientoLayer = document.querySelector("#procedimiento-layer");
+      const procedimientoTitle = document.querySelector("#procedimiento-title");
+      const procedimientoGrid = document.querySelector("#procedimiento-grid");
+      let procDomItems = [];
+
+      const procedimientoScenes = [
+        {
+          file: "01_apertura_procedimiento.png",
+          title: "Informe técnico & auditoría epistemológica",
+          layout: "grid-s1",
+          items: [
+            { id: "s0-left", cardFile: "card-01-1.png", label: "Plano general π y recta paramétrica r", focusSteps: [0, 1, 2, 3, 4] },
+            { id: "s0-right", cardFile: "card-01-2.png", label: "Condición de intersección y verificación r ∩ π = {I}", focusSteps: [5, 6] }
+          ]
+        },
+        {
+          file: "02_protocolo_procedimiento.png",
+          title: "Un protocolo en cinco fases",
+          layout: "grid-s2",
+          items: [
+            { id: "s1-p1", cardFile: "card-02-1.png", label: "Fase 1: Resolver con patrones formales", focusSteps: [0, 1] },
+            { id: "s1-p2", cardFile: "card-02-2.png", label: "Fase 2: Contrastar con modelos IA", focusSteps: [2] },
+            { id: "s1-p3", cardFile: "card-02-3.png", label: "Fase 3: Verificar consistencia", focusSteps: [3] },
+            { id: "s1-p4", cardFile: "card-02-4.png", label: "Fase 4: Tensionar con prompts adversarios", focusSteps: [4] },
+            { id: "s1-p5", cardFile: "card-02-5.png", label: "Fase 5: Reflexionar sobre el rol profesional", focusSteps: [5, 6] }
+          ]
+        },
+        {
+          file: "03_interseccion_procedimiento.png",
+          title: "Intersección entre recta y plano",
+          layout: "grid-s3",
+          items: [
+            { id: "s2-planteo", cardFile: "card-03-1.png", label: "Planteo paramétrico y plano cartesiano", focusSteps: [0, 1, 2] },
+            { id: "s2-calculo", cardFile: "card-03-2.png", label: "Sustitución y despeje de λ = 10/3", focusSteps: [3, 4] },
+            { id: "s2-punto", cardFile: "card-03-3.png", label: "Punto de intersección I y verificación doble", focusSteps: [5, 6, 7] }
+          ]
+        },
+        {
+          file: "04_angulo_procedimiento.png",
+          title: "Ángulo entre recta y plano",
+          layout: "grid-s4",
+          items: [
+            { id: "s3-vectores", cardFile: "card-04-1.png", label: "Vectores asociados d y n", focusSteps: [0, 1, 2] },
+            { id: "s3-angulo-normal", cardFile: "card-04-2.png", label: "Ángulo con la normal β = 83,62°", focusSteps: [3, 4] },
+            { id: "s3-deduccion", cardFile: "card-04-3.png", label: "Deducción ángulo recta-plano α = 6,38°", focusSteps: [5, 6] }
+          ]
+        },
+        {
+          file: "05_parametro_m_procedimiento.png",
+          title: "El parámetro m no siempre existe",
+          layout: "grid-s5",
+          items: [
+            { id: "s4-caso-a", cardFile: "card-05-1.png", label: "Caso 3.a: Recta paralela al plano (m = 2/3)", focusSteps: [0, 1, 2] },
+            { id: "s4-caso-b", cardFile: "card-05-2.png", label: "Caso 3.b: Recta perpendicular al plano (Incompatible 6 ≠ -2)", focusSteps: [3, 4, 5, 6] }
+          ]
+        },
+        {
+          file: "06_planos_proyectantes_procedimiento.png",
+          title: "Planos proyectantes",
+          layout: "grid-s6",
+          items: [
+            { id: "s5-forma-simetrica", cardFile: "card-06-1.png", label: "Forma simétrica y punto base P(2, -1, 5)", className: "col-span-full", focusSteps: [0, 1] },
+            { id: "s5-plano-xy", cardFile: "card-06-2.png", label: "Proyección plano coordenado πxy", focusSteps: [2] },
+            { id: "s5-plano-xz", cardFile: "card-06-3.png", label: "Proyección plano coordenado πxz con control de signo +18", focusSteps: [3, 5, 6] },
+            { id: "s5-plano-yz", cardFile: "card-06-4.png", label: "Proyección plano coordenado πyz", focusSteps: [4] }
+          ]
+        },
+        {
+          file: "07_auditoria_cruzada_procedimiento.png",
+          title: "Auditoría cruzada de desempeño",
+          layout: "grid-s7",
+          items: [
+            { id: "s6-matriz", cardFile: "card-07-1.png", label: "Matriz comparativa: Resolución patrón vs Grupo vs Modelos IA", focusSteps: [0, 1, 2, 3, 4, 5] }
+          ]
+        },
+        {
+          file: "08_pruebas_adversarias_procedimiento.png",
+          title: "Cuatro pruebas para forzar el error",
+          layout: "grid-s8",
+          items: [
+            { id: "s7-prueba-1", cardFile: "card-08-1.png", label: "Prueba 1: Incompatibilidad m", focusSteps: [0, 1] },
+            { id: "s7-prueba-2", cardFile: "card-08-2.png", label: "Prueba 2: División por cero 0λ = 10", focusSteps: [2] },
+            { id: "s7-prueba-3", cardFile: "card-08-3.png", label: "Prueba 3: Fórmula errónea de coseno", focusSteps: [3] },
+            { id: "s7-prueba-4", cardFile: "card-08-4.png", label: "Prueba 4: Componente nula dy = 0", focusSteps: [4, 5] }
+          ]
+        },
+        {
+          file: "09_evidencia_fabricada_procedimiento.png",
+          title: "Cuando la auditoría fabrica evidencia",
+          layout: "grid-s9",
+          items: [
+            { id: "s8-hallazgo", cardFile: "card-09-1.png", label: "Hallazgo: Fabricación de citas y sycophancy en IA", focusSteps: [0, 1, 2, 3] },
+            { id: "s8-regla", cardFile: "card-09-2.png", label: "Regla de oro: Trazabilidad contra la confianza del tono", focusSteps: [4, 5] }
+          ]
+        },
+        {
+          file: "10_conclusiones_procedimiento.png",
+          title: "Tres conclusiones para el futuro ingeniero",
+          layout: "grid-s10",
+          items: [
+            { id: "s9-control", cardFile: "card-10-1.png", label: "Conclusión 1: Control geométrico directo cartesiano", focusSteps: [0, 1] },
+            { id: "s9-limites", cardFile: "card-10-2.png", label: "Conclusión 2: Reconocer los límites de la IA", focusSteps: [2] },
+            { id: "s9-rol", cardFile: "card-10-3.png", label: "Conclusión 3: El rol analítico del futuro ingeniero", focusSteps: [3, 4, 5] }
+          ]
+        }
+      ];
        let activeIndex=0,lastIndex=0,speaking=false,paused=false,voiceEnabled=true,simulatedSpeechTimer=null,advanceTimer=null,currentUtterance=null,activeExpression="neutral",activeAudio=null,audioContext=null,audioAnalyser=null,audioSource=null,audioData=null,voiceEnergy=0,presentationStarted=false,openingSmileStartedAt=0,finalSmileStartedAt=0;
        const scriptParagraphs=slides.map(slide=>slide.script.trim());
        let activeParagraphIndex=0;
@@ -529,12 +891,138 @@
       const expressionNames=[...new Set(Object.values(expressionPresets).flatMap(preset=>Object.keys(preset)))];
       const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;let lastFrameAt=0,elapsedTime=0;
       function renderTabs(){els.list.innerHTML=slides.map((slide,index)=>`<button class="slide-tab${index===activeIndex?" is-active":""}" type="button" data-slide="${index}" aria-label="Ir a diapositiva ${slide.index}: ${slide.title}" aria-current="${index===activeIndex?"page":"false"}"><span class="slide-tab-index">${slide.index}</span><span class="slide-tab-label">${slide.title}</span></button>`).join("");els.list.querySelectorAll("[data-slide]").forEach(button=>button.addEventListener("click",()=>goTo(Number(button.dataset.slide))));}
-      function renderPptxPresentation(){const slide=slides[activeIndex];if(!presentationOverlay||!slide)return;presentationIndex.textContent=slide.index;presentationPhase.textContent=slide.phase;presentationTitle.textContent=slide.title;presentationDeck.textContent=slide.deck;presentationOverlay.classList.remove("is-changing");void presentationOverlay.offsetWidth;presentationOverlay.classList.add("is-changing");}
-      function renderDeckFocus(){if(!deckFocusLayer)return;deckFocusLayer.replaceChildren();deckFocusTargets=[];(slideFocusMaps[activeIndex]||[]).forEach((target,index)=>{const node=document.createElement("span");node.className=`deck-focus-target${target.warm?" is-warm":""}`;node.dataset.step=String(target.step);node.style.left=`${target.x*100}%`;node.style.top=`${target.y*100}%`;node.style.width=`${target.w*100}%`;node.style.height=`${target.h*100}%`;node.dataset.focusIndex=String(index);deckFocusLayer.append(node);deckFocusTargets.push(node);});}
-      function renderDeckSlide(){if(!deckSlideLayer||!deckSlideImage)return;const slide=slides[activeIndex];gsap.killTweensOf([deckSlideLayer,deckSlideImage,projectIntro]);renderDeckFocus();deckSlideImage.alt=slide?`Diapositiva ${slide.index}: ${slide.title}`:"Diapositiva de la presentación";if(activeIndex===0){deckSlideImage.removeAttribute("src");gsap.set(deckSlideImage,{autoAlpha:0});gsap.set(projectIntro,{display:"flex",autoAlpha:0,x:-26,rotateY:-5,scale:.985});const introTimeline=gsap.timeline({defaults:{ease:"power3.out"}});introTimeline.to(projectIntro,{autoAlpha:1,x:0,rotateY:0,scale:1,duration:.72}).fromTo(projectIntro.querySelector(".project-intro-equation"),{autoAlpha:0,y:18},{autoAlpha:1,y:0,duration:.42},"-=.3");return;}gsap.set(projectIntro,{autoAlpha:0,display:"none"});gsap.set(deckSlideImage,{autoAlpha:1});const page=String(activeIndex).padStart(2,"0"),nextSrc=`./presentation-assets/google-slides/slide-${page}.png`;if(deckSlideImage.src.endsWith(nextSrc)){gsap.to(deckSlideLayer,{autoAlpha:1,duration:.25,overwrite:true});return;}gsap.set(deckSlideLayer,{autoAlpha:0,x:-22,rotateY:-7,rotateZ:-.35,scale:.985});deckSlideImage.src=nextSrc;const reveal=()=>{gsap.to(deckSlideLayer,{autoAlpha:1,x:0,rotateY:0,rotateZ:0,scale:1,duration:.72,ease:"power3.out",overwrite:true});};if(deckSlideImage.complete)reveal();else deckSlideImage.addEventListener("load",reveal,{once:true});}
-      deckSlideLayer?.addEventListener("pointerenter",()=>{deckSlideLayer.classList.add("is-hovered");gsap.to(deckSlideImage,{rotateX:-1.2,rotateY:1.8,z:10,duration:.42,ease:"power2.out",overwrite:true});});
-      deckSlideLayer?.addEventListener("pointerleave",()=>{deckSlideLayer.classList.remove("is-hovered");gsap.to(deckSlideImage,{rotateX:0,rotateY:0,z:0,duration:.55,ease:"power3.out",overwrite:true});});
-      function renderSlide(direction=1){const slide=slides[activeIndex];const paragraph=currentScriptParagraph();const content=document.createElement("article");content.className=`slide-content${direction<0?" is-reversed":""}`;content.innerHTML=`<p class="slide-section">${slide.phase}</p><h1 class="slide-headline">${slide.title}</h1><p class="slide-deck">${slide.deck}</p>${slide.html}`;els.viewport.replaceChildren(content);els.viewport.scrollTop=0;els.stageIndex.textContent=slide.index;els.stageTitle.textContent=slide.title;els.stageSubtitle.textContent=slide.subtitle;els.phase.textContent=slide.phase;els.progress.style.transform=`scaleX(${(activeIndex+1)/slides.length})`;els.railCurrent.textContent=slide.index;els.script.textContent=paragraph;els.topicText.textContent=slide.title;els.sr.textContent=`Diapositiva ${slide.index}: ${slide.title}.`;renderTabs();renderPptxPresentation();renderDeckSlide();setExpressionForSlide();setVisualForSlide(activeIndex);setInfoForSlide(activeParagraphIndex);updateSpeakLabel();}
+      function renderProcedimientoScene(index) {
+        if (!procedimientoLayer || !procedimientoGrid) return;
+        const scene = procedimientoScenes[index] || procedimientoScenes[0];
+        
+        procDomItems.forEach(item => gsap.killTweensOf(item));
+
+        if (procedimientoTitle) {
+          procedimientoTitle.textContent = scene.title;
+        }
+
+        procedimientoGrid.className = `procedimiento-grid ${scene.layout || "grid-2-cols"}`;
+        procedimientoGrid.innerHTML = "";
+        procDomItems = [];
+
+        scene.items.forEach((itemDef, itemIdx) => {
+          const itemEl = document.createElement("div");
+          itemEl.className = `proc-item${itemDef.className ? ` ${itemDef.className}` : ""}`;
+          itemEl.dataset.itemId = itemDef.id;
+          itemEl.dataset.itemIndex = String(itemIdx);
+          itemEl.tabIndex = 0;
+          itemEl.setAttribute("role", "img");
+          itemEl.setAttribute("aria-label", itemDef.label);
+
+          itemEl.innerHTML = `<img class="proc-card-img" src="./cards/${itemDef.cardFile}" alt="${itemDef.label}" draggable="false" />`;
+
+          itemEl._dragX = 0;
+          itemEl._dragY = 0;
+          let isDragging = false;
+          let startX = 0, startY = 0, originX = 0, originY = 0;
+
+          itemEl.addEventListener("pointerdown", e => {
+            e.stopPropagation();
+            isDragging = true;
+            itemEl.classList.add("is-dragging");
+            itemEl.setPointerCapture?.(e.pointerId);
+            startX = e.clientX;
+            startY = e.clientY;
+            originX = itemEl._dragX;
+            originY = itemEl._dragY;
+            e.preventDefault();
+          });
+
+          itemEl.addEventListener("pointermove", e => {
+            e.stopPropagation();
+            if (isDragging) {
+              itemEl._dragX = originX + (e.clientX - startX);
+              itemEl._dragY = originY + (e.clientY - startY);
+              gsap.set(itemEl, {
+                x: itemEl._dragX,
+                y: itemEl._dragY,
+                z: 35,
+                scale: 1.045
+              });
+              return;
+            }
+            if (!reducedMotion) {
+              const rect = itemEl.getBoundingClientRect();
+              const relX = (e.clientX - rect.left) / rect.width - 0.5;
+              const relY = (e.clientY - rect.top) / rect.height - 0.5;
+              gsap.to(itemEl, {
+                rotateY: relX * 7,
+                rotateX: -relY * 5,
+                duration: 0.2,
+                ease: "power1.out",
+                overwrite: "auto"
+              });
+            }
+          });
+
+          const stopDrag = e => {
+            if (!isDragging) return;
+            e.stopPropagation();
+            isDragging = false;
+            itemEl.classList.remove("is-dragging");
+            itemEl.releasePointerCapture?.(e.pointerId);
+            gsap.to(itemEl, {
+              z: 0,
+              scale: 1,
+              duration: 0.38,
+              ease: "power2.out",
+              overwrite: "auto"
+            });
+          };
+
+          itemEl.addEventListener("pointerup", stopDrag);
+          itemEl.addEventListener("pointercancel", stopDrag);
+
+          itemEl.addEventListener("pointerenter", e => {
+            e.stopPropagation();
+            itemEl.classList.add("is-hovered");
+            if (!reducedMotion && !isDragging) {
+              gsap.to(itemEl, {
+                y: itemEl._dragY - 6,
+                z: 24,
+                scale: 1.03,
+                duration: 0.35,
+                ease: "power2.out",
+                overwrite: "auto"
+              });
+            }
+          });
+
+          itemEl.addEventListener("pointerleave", e => {
+            e.stopPropagation();
+            itemEl.classList.remove("is-hovered");
+            if (!isDragging) {
+              gsap.to(itemEl, {
+                x: itemEl._dragX,
+                y: itemEl._dragY,
+                z: 0,
+                rotateX: 0,
+                rotateY: 0,
+                scale: 1,
+                duration: 0.45,
+                ease: "power3.out",
+                overwrite: "auto"
+              });
+            }
+          });
+
+          procedimientoGrid.appendChild(itemEl);
+          procDomItems.push(itemEl);
+        });
+
+        if (!reducedMotion) {
+          gsap.fromTo(procDomItems, 
+            { autoAlpha: 0, y: 14, scale: 0.96 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.04, ease: "power2.out", overwrite: "auto" }
+          );
+        }
+      }
+      function renderSlide(direction=1){const slide=slides[activeIndex];const paragraph=currentScriptParagraph();els.stageIndex.textContent=slide.index;els.stageTitle.textContent=slide.title;els.stageSubtitle.textContent=slide.subtitle;els.phase.textContent=slide.phase;els.progress.style.transform=`scaleX(${(activeIndex+1)/slides.length})`;els.railCurrent.textContent=slide.index;els.script.textContent=paragraph;els.topicText.textContent=slide.title;els.sr.textContent=`Diapositiva ${slide.index}: ${slide.title}.`;renderTabs();renderProcedimientoScene(activeIndex);setExpressionForSlide();setVisualForSlide(activeIndex);setInfoForSlide(activeParagraphIndex);updateSpeakLabel();if(typeof c3dExplorer!=="undefined"&&c3dExplorer&&c3dContainer&&c3dContainer.classList.contains("is-visible")){const sceneKey=slideTo3DScene[activeIndex]||"interseccion";c3dExplorer.loadScene(sceneKey);}}
       function updateSpeakLabel(){setVoiceState(speaking?"speaking":paused?"paused":"idle");}
       function setExpressionForSlide(){const expression=activeIndex===0?"neutral":activeIndex===1?"curious":activeIndex===2||activeIndex===3?"curious":activeIndex===4||activeIndex===7||activeIndex===8?"analytical":activeIndex===9||activeIndex===11?"warm":"alert";activeExpression=expression;const label=expressionLabels[expression];if(els.mood)els.mood.innerHTML=`<span>${label[0]}</span><strong>${label[1]}</strong>`;}
         function randomBetween(min,max){return min+Math.random()*(max-min);}
@@ -550,7 +1038,7 @@
        function scheduleAutoAdvance(){if(activeParagraphIndex>=scriptParagraphs.length-1)return;const completedParagraphIndex=activeParagraphIndex;advanceTimer=window.setTimeout(()=>{advanceTimer=null;if(activeParagraphIndex===completedParagraphIndex&&!speaking&&!paused){goTo(activeIndex+1);presentCurrent();}},850);}
        function triggerOpeningSmile(){if(reducedMotion)return;openingSmileStartedAt=performance.now()/1000;if(els.mood)els.mood.innerHTML="<span>Carismático</span><strong>Sonrisa descarada</strong>";}
        function triggerFinalSmile(){if(reducedMotion)return;finalSmileStartedAt=performance.now()/1000;faceBehavior.smile.until=0;if(els.mood)els.mood.innerHTML="<span>Cierre</span><strong>Sonrisa maníaca exagerada</strong>";}
-      function stopSpeech(){if("speechSynthesis" in window)window.speechSynthesis.cancel();if(simulatedSpeechTimer)window.clearTimeout(simulatedSpeechTimer);if(advanceTimer)window.clearTimeout(advanceTimer);simulatedSpeechTimer=null;advanceTimer=null;if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio.removeAttribute("src");activeAudio.load();activeAudio=null;}speaking=false;paused=false;currentUtterance=null;if(dialogueSentences.length){dialogueSentenceIndex=0;dialogueSentenceStartedAt=performance.now()/1000;dialogueDrawnText="";drawDialogue("");}visualOverlay?.classList.remove("is-speaking");visualDomObjects.forEach(target=>target.classList.remove("is-active"));setVoiceState("idle");els.status.textContent="Modelo 3D: listo · Voz: lista";}
+      function stopSpeech(){if("speechSynthesis" in window)window.speechSynthesis.cancel();if(simulatedSpeechTimer)window.clearTimeout(simulatedSpeechTimer);if(advanceTimer)window.clearTimeout(advanceTimer);simulatedSpeechTimer=null;advanceTimer=null;if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio.removeAttribute("src");activeAudio.load();activeAudio=null;}speaking=false;paused=false;currentUtterance=null;if(dialogueSentences.length){dialogueSentenceIndex=0;dialogueSentenceStartedAt=performance.now()/1000;dialogueDrawnText="";drawDialogue("");}updateVisualFocus();setVoiceState("idle");els.status.textContent="Modelo 3D: listo · Voz: lista";}
       function selectSpanishVoice(voices){const spanish=voices.filter(voice=>/^es(-|_)/i.test(voice.lang)||/spanish|español/i.test(voice.name));const male=spanish.find(voice=>/jorge|pablo|carlos|miguel|diego|andres|andrés|male|masculin|hombre/i.test(voice.name));return male||spanish.find(voice=>/es-AR|es-MX|es-US/i.test(voice.lang))||spanish[0]||voices[0];}
       function setVoiceState(nextState){const wasSpeaking=speaking;speaking=nextState==="speaking";paused=nextState==="paused";if(speaking&&!wasSpeaking){const now=performance.now()/1000;speakStartedAt=now;resetFaceBehavior(now);}if(els.speak){els.speak.querySelector("span").textContent="Iniciar";els.speak.setAttribute("aria-label","Iniciar párrafo");els.speak.setAttribute("aria-pressed","false");}if(els.pause){const actionLabel=paused?"Reanudar":"Pausar";els.pause.querySelector("span").textContent=actionLabel;els.pause.setAttribute("aria-label",`${actionLabel} párrafo`);els.pause.title=actionLabel;els.pause.disabled=!(speaking||paused);els.pause.setAttribute("aria-pressed",String(paused));}els.avatarState.textContent=speaking?"Hablando":paused?"Pausado":"En línea";els.avatarStage.classList.toggle("is-speaking",speaking);els.topic.classList.toggle("is-live",speaking);}
       function configureAudioAnalyser(){if(audioContext)return;try{audioContext=new AudioContext();audioAnalyser=audioContext.createAnalyser();audioAnalyser.fftSize=256;audioAnalyser.smoothingTimeConstant=.82;audioSource=audioContext.createMediaElementSource(audioPlayer);audioSource.connect(audioAnalyser);audioAnalyser.connect(audioContext.destination);audioData=new Uint8Array(audioAnalyser.frequencyBinCount);}catch(error){console.warn("Audio reactivo no disponible",error);audioContext=null;audioAnalyser=null;}}
@@ -574,47 +1062,14 @@
       function createForestTree(x,height,z,opacity=.62){const ground=-2.05;const tree=new THREE.Group();const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.05,.13,height*.66,6),new THREE.MeshBasicMaterial({color:0x101f1d,transparent:true,opacity:opacity*.94}));trunk.position.set(x,ground+height*.33,z);tree.add(trunk);[[.68,.2],[.84,.28],[1,.35]].forEach(([level,width],index)=>{const crown=new THREE.Mesh(new THREE.ConeGeometry(width,height*.38,6),new THREE.MeshBasicMaterial({color:index===2?0x16413b:0x12332f,transparent:true,opacity}));crown.position.set(x,ground+height*level*.74,z);tree.add(crown);});forestGroup.add(tree);}
       function createForestBackdrop(){scene.fog=new THREE.FogExp2(0x061117,.035);const ground=new THREE.Mesh(new THREE.PlaneGeometry(18,9),new THREE.MeshBasicMaterial({color:0x061117,transparent:true,opacity:.55,side:THREE.DoubleSide}));ground.rotation.x=-Math.PI/2;ground.position.set(0,-2.08,-4.5);forestGroup.add(ground);const moon=new THREE.Mesh(new THREE.SphereGeometry(.46,24,16),new THREE.MeshBasicMaterial({color:0xd7e7d2,transparent:true,opacity:.22}));moon.position.set(-.15,2.52,-8.5);forestGroup.add(moon);const trees=[[-3.8,3.5,-4.2,.58],[-4.7,4.7,-6.4,.76],[-5.9,3.1,-3.1,.65],[-6.8,5.1,-7.6,.78],[-3.1,2.7,-2.4,.5],[3.2,3.5,-4.1,.62],[4.2,4.8,-6.6,.78],[5.3,3.2,-3.2,.64],[6.6,5.2,-7.8,.82],[2.7,2.8,-2.5,.52]];trees.forEach(([x,h,z,o])=>createForestTree(x,h,z,o));const positions=new Float32Array(28*3);for(let i=0;i<28;i++){positions[i*3]=(Math.random()-.5)*8;positions[i*3+1]=-1.25+Math.random()*3.15;positions[i*3+2]=-2.2-Math.random()*5;}const geometry=new THREE.BufferGeometry();geometry.setAttribute("position",new THREE.BufferAttribute(positions,3));const material=new THREE.PointsMaterial({color:0xd9bb73,size:.035,sizeAttenuation:true,transparent:true,opacity:.48});fireflyPoints=new THREE.Points(geometry,material);forestGroup.add(fireflyPoints);scene.add(forestGroup);}
       function createStarField(){const positions=new Float32Array(360*3);for(let i=0;i<360;i++){positions[i*3]=(Math.random()-.5)*13;positions[i*3+1]=(Math.random()-.5)*7;positions[i*3+2]=-1.5-Math.random()*8;}const geometry=new THREE.BufferGeometry();geometry.setAttribute("position",new THREE.BufferAttribute(positions,3));const material=new THREE.PointsMaterial({color:0x9cbebb,size:.018,sizeAttenuation:true,transparent:true,opacity:.42});scene.add(new THREE.Points(geometry,material));}
-      function setVisualForSlide(index){if(!visualGroup)return;clearVisuals();visualGroup.position.set(-1.18,-.48,-.82);visualGroup.rotation.set(-.22,.18,-.045);const axisColor=0x75d3c0,accent=0xf0b36c;if(index>=2&&index<=8)addAxes();switch(index){case 2:addLine([new THREE.Vector3(-1.15,-.65,0),new THREE.Vector3(1.05,.63,0)],axisColor);addLine([new THREE.Vector3(-1.15,.64,0),new THREE.Vector3(1.05,-.62,0)],0x8fa6a8,.42);addPoint(new THREE.Vector3(-.02,0,.05),accent,.085);break;case 3:addArrow(new THREE.Vector3(-.8,-.58,0),new THREE.Vector3(.55,.23,.02),1.72,accent);addArrow(new THREE.Vector3(-.8,-.58,.02),new THREE.Vector3(.08,.62,.01),1.32,axisColor);addLine([new THREE.Vector3(-.8,-.58,0),new THREE.Vector3(.8,.1,0)],0x9cbebb,.32);break;case 4:addArrow(new THREE.Vector3(-.95,-.45,0),new THREE.Vector3(.86,.36,0),1.72,accent);addArrow(new THREE.Vector3(-.72,.32,0),new THREE.Vector3(.86,.36,0),1.72,axisColor);addPoint(new THREE.Vector3(-.03,-.03,.02),0xffd47a,.075);break;case 5:addPlotSurface(new THREE.Vector3(.04,-.17,-.3),[-.35,.32,-.14],axisColor);addPoint(new THREE.Vector3(-.7,.1,.08),accent,.09);addPoint(new THREE.Vector3(.18,.35,.08),axisColor,.09);addPoint(new THREE.Vector3(.78,-.25,.08),0xffd47a,.09);addLine([new THREE.Vector3(-1.1,-.8,.12),new THREE.Vector3(1.15,.82,.12)],axisColor,.5);break;case 6:addPlotSurface(new THREE.Vector3(.04,-.2,-.28),[-.3,.28,.12],0x8fa6a8);for(let i=0;i<5;i++){const x=-.95+i*.48,y=Math.sin(i*1.2)*.4;addPoint(new THREE.Vector3(x,y,.12),i%2?accent:axisColor,.07);if(i)addLine([new THREE.Vector3(x-.48,Math.sin((i-1)*1.2)*.4,.12),new THREE.Vector3(x,y,.12)],axisColor,.5);}break;case 7:addArrow(new THREE.Vector3(-.88,-.48,0),new THREE.Vector3(.76,.18,.03),1.7,axisColor);addArrow(new THREE.Vector3(-.88,-.48,.01),new THREE.Vector3(-.12,.7,.02),1.42,accent);addPlane(new THREE.Vector3(.2,.1,-.2),[0,.38,.08],axisColor,.08);break;case 8:addPoint(new THREE.Vector3(-.66,.44,0),accent,.08);addPoint(new THREE.Vector3(-.03,-.05,0),axisColor,.08);addPoint(new THREE.Vector3(.64,.55,0),0x9fb7b4,.08);addLine([new THREE.Vector3(-.66,.44,0),new THREE.Vector3(-.03,-.05,0),new THREE.Vector3(.64,.55,0)],accent,.58);break;default:addLine([new THREE.Vector3(-.68,-.48,0),new THREE.Vector3(.72,.5,0)],axisColor,.48);addPoint(new THREE.Vector3(0,0,0),accent,.08);}}
-      const visualAssetFiles={0:"./pptx-assets/image1.png",2:"./pptx-assets/image1.png",3:"./pptx-assets/image3.png",7:"./pptx-assets/image2.png",8:"./pptx-assets/image2.png",11:"./pptx-assets/image3.png"};
-      function mountVisualAsset(index){const src=visualAssetFiles[index];if(!src||!visualOverlay)return false;visualOverlay.innerHTML=`<div class="viz-object asset-visual-object" data-viz="0"><img src="${src}" alt="" draggable="false" /></div>`;const node=visualOverlay.querySelector(".asset-visual-object");visualDomObjects=[node];node.dataset.dx="0";node.dataset.dy="0";node.addEventListener("pointerenter",()=>node.classList.add("is-hovered"));node.addEventListener("pointerleave",()=>{if(!node.classList.contains("is-dragging"))node.classList.remove("is-hovered");});node.addEventListener("pointerdown",event=>{node.classList.add("is-dragging");node.setPointerCapture?.(event.pointerId);node.dataset.startX=String(event.clientX);node.dataset.startY=String(event.clientY);node.dataset.originX=node.dataset.dx;node.dataset.originY=node.dataset.dy;event.preventDefault();});node.addEventListener("pointermove",event=>{if(!node.classList.contains("is-dragging"))return;node.dataset.dx=String(Number(node.dataset.originX)+(event.clientX-Number(node.dataset.startX)));node.dataset.dy=String(Number(node.dataset.originY)+(event.clientY-Number(node.dataset.startY)));node.style.transform=`translate(${node.dataset.dx}px,${node.dataset.dy}px) scale(1.045) rotateX(3deg) rotateY(-4deg)`;});const finish=()=>{if(!node.classList.contains("is-dragging"))return;node.classList.remove("is-dragging");node.classList.add("is-hovered");node.style.transform=`translate(${node.dataset.dx}px,${node.dataset.dy}px)`;};node.addEventListener("pointerup",finish);node.addEventListener("pointercancel",finish);return true;}
-      function svgDiagram(body){return `<svg viewBox="0 0 620 420" role="img" aria-label="Gráfico de apoyo visual"><g opacity=".94">${body}</g></svg>`;}
-      function renderVisualOverlay(index){if(!visualOverlay)return;const line=`<line class="viz-line" x1="70" y1="330" x2="550" y2="88"/>`,axis=`<path class="viz-axis" d="M70 330H560M70 330V52"/>`,grid=`<path class="viz-grid" d="M120 290H520M120 250H520M120 210H520M120 170H520M120 130H520M160 90V310M220 90V310M280 90V310M340 90V310M400 90V310M460 90V310M520 90V310"/>`;let body="";switch(index){case 0:body=`<g class="viz-object" data-viz="0"><polygon class="viz-plane" points="112,275 444,116 552,174 220,334"/><path class="viz-grid" d="M150 256L482 98M186 279L518 121M224 301L552 143M166 130L498 288M126 153L458 311"/><text class="viz-label emphasis" x="382" y="140">r ∩ π = I</text></g><g class="viz-object" data-viz="1">${line}<circle class="viz-point" cx="308" cy="210" r="9"/><text class="viz-label" x="320" y="201">I</text></g>`;break;case 1:body=`<g class="viz-object" data-viz="0"><path class="viz-line faint" d="M92 225C172 98 242 322 322 190S474 84 540 190"/>${[100,210,320,430,540].map((x,i)=>`<circle class="viz-point ${i===4?"":"cool"}" cx="${x}" cy="${i===0?220:i===1?130:i===2?245:i===3?145:190}" r="18"/><text class="viz-number" x="${x}" y="${i===0?220:i===1?130:i===2?245:i===3?145:190}">${i+1}</text>`).join("")}</g>`;break;case 2:body=`<g class="viz-object" data-viz="0">${axis}${grid}<path class="viz-line warm" d="M92 305L520 88"/><path class="viz-line faint" d="M100 105L520 310"/><circle class="viz-point" cx="308" cy="195" r="10"/><text class="viz-label emphasis" x="326" y="185">λ = 10/3</text></g>`;break;case 3:body=`<g class="viz-object" data-viz="0">${axis}<path class="viz-line warm" d="M104 314L456 122"/><path class="viz-line" d="M104 314L180 82"/><path class="viz-line faint" d="M104 314L298 253"/><path class="viz-empty" d="M167 278 A74 74 0 0 1 127 230"/><text class="viz-label emphasis" x="167" y="252">α</text><text class="viz-label" x="461" y="119">d</text><text class="viz-label" x="185" y="84">n</text></g>`;break;case 4:body=`<g class="viz-object" data-viz="0"><path class="viz-line warm" d="M82 310L500 92"/><path class="viz-line" d="M120 108L520 320"/><circle class="viz-point muted" cx="300" cy="195" r="8"/><path class="viz-cross" d="M276 174l42 42m0-42-42 42"/><text class="viz-label emphasis" x="332" y="188">m/3 ≠ 6 ≠ −2</text></g><g class="viz-object" data-viz="1"><path class="viz-empty" d="M86 342H530"/><text class="viz-label micro" x="88" y="365">solución única ↔ conjunto vacío</text></g>`;break;case 5:case 6:body=`<g class="viz-object" data-viz="0"><polygon class="viz-plane" points="106,270 446,190 540,244 200,330"/><polygon fill="rgba(240,179,108,.08)" stroke="rgba(240,179,108,.55)" stroke-width="1.2" points="106,270 200,330 200,360 106,300"/><polygon fill="rgba(117,211,192,.08)" stroke="rgba(117,211,192,.38)" stroke-width="1.2" points="200,330 540,244 540,274 200,360"/><path class="viz-grid" d="M144 261L484 181M182 281L522 201M144 291L238 345M188 281L282 335M232 270L326 324M276 260L370 314M320 250L414 304M364 239L458 293M408 229L502 283"/><circle class="viz-point" cx="257" cy="279" r="8"/><circle class="viz-point cool" cx="392" cy="236" r="8"/><circle class="viz-point muted" cx="468" cy="257" r="8"/><text class="viz-label emphasis" x="365" y="350">P(2, −1, 5)</text></g>`;if(index===6)body+=`<g class="viz-object" data-viz="1"><path class="viz-line faint" d="M118 124h388M118 153h388M118 182h388"/>${[0,1,2,3].map(i=>`<circle class="viz-point ${i===2?"":"cool"}" cx="${150+i*100}" cy="${138+(i%2)*38}" r="7"/>`).join("")}<text class="viz-label" x="120" y="108">xy · xz · yz</text></g>`;break;case 7:body=`<g class="viz-object" data-viz="0"><rect class="viz-plane" x="130" y="104" width="360" height="220" transform="rotate(-5 310 214)"/><path class="viz-line warm" d="M112 338L210 72"/><path class="viz-line" d="M190 312L470 205"/><path class="viz-line faint" d="M190 312L500 312"/><path class="viz-cross" d="M330 184l26 26m0-26-26 26"/><text class="viz-label emphasis" x="150" y="72">premisa falsa</text></g>`;break;case 8:body=`<g class="viz-object" data-viz="0"><path class="viz-line faint" d="M86 270C152 126 220 304 288 164S430 120 534 234"/>${[[106,248,"1"],[220,250,"2"],[326,150,"3"],[450,154,"4"],[522,232,"!" ]].map(([x,y,t],i)=>`<circle class="viz-point ${i===4?"":"cool"}" cx="${x}" cy="${y}" r="${i===4?18:12}"/><text class="viz-number" x="${x}" y="${y}">${t}</text>`).join("")}<text class="viz-label emphasis" x="374" y="110">fuente ≠ tono seguro</text></g>`;break;case 9:body=`<g class="viz-object" data-viz="0"><circle class="viz-empty" cx="310" cy="210" r="116"/><circle class="viz-empty" cx="310" cy="210" r="64"/><path class="viz-line warm" d="M310 210L310 92M310 210L414 270M310 210L206 270"/><circle class="viz-point" cx="310" cy="92" r="13"/><circle class="viz-point cool" cx="414" cy="270" r="13"/><circle class="viz-point muted" cx="206" cy="270" r="13"/><text class="viz-number" x="310" y="92">1</text><text class="viz-number" x="414" y="270">2</text><text class="viz-number" x="206" y="270">3</text><text class="viz-label emphasis" x="255" y="375">verificar · reconocer · auditar</text></g>`;break;case 10:body=`<g class="viz-object" data-viz="0"><path class="viz-line" d="M88 235H538"/>${[95,205,315,425,535].map((x,i)=>`<circle class="viz-point ${i===3?"":"cool"}" cx="${x}" cy="235" r="${i===3?12:8}"/><text class="viz-number" x="${x}" y="205">${i+1}</text>`).join("")}<path class="viz-line warm" d="M95 235C150 112 250 330 315 235S450 116 535 235"/><text class="viz-label emphasis" x="190" y="350">problema → resolución → auditoría</text></g>`;break;default:body=`<g class="viz-object" data-viz="0"><path class="viz-line warm" d="M100 110L310 210L520 110"/><path class="viz-line" d="M310 210V330"/><circle class="viz-point" cx="100" cy="110" r="14"/><circle class="viz-point cool" cx="310" cy="210" r="14"/><circle class="viz-point muted" cx="520" cy="110" r="14"/><text class="viz-label emphasis" x="246" y="372">seno · normal · evidencia</text></g>`;}visualOverlay.innerHTML=svgDiagram(body);visualDomObjects=[...visualOverlay.querySelectorAll(".viz-object")];visualDomObjects.forEach(node=>{node.dataset.dx=node.dataset.dx||"0";node.dataset.dy=node.dataset.dy||"0";node.addEventListener("pointerenter",()=>node.classList.add("is-hovered"));node.addEventListener("pointerleave",()=>{if(!node.classList.contains("is-dragging"))node.classList.remove("is-hovered");});node.addEventListener("pointerdown",event=>{node.classList.add("is-dragging");node.setPointerCapture?.(event.pointerId);node.dataset.startX=String(event.clientX);node.dataset.startY=String(event.clientY);node.dataset.originX=node.dataset.dx;node.dataset.originY=node.dataset.dy;event.preventDefault();});node.addEventListener("pointermove",event=>{if(!node.classList.contains("is-dragging"))return;node.dataset.dx=String(Number(node.dataset.originX)+(event.clientX-Number(node.dataset.startX)));node.dataset.dy=String(Number(node.dataset.originY)+(event.clientY-Number(node.dataset.startY)));node.style.transform=`translate(${node.dataset.dx}px,${node.dataset.dy}px) scale(1.045) rotateX(3deg) rotateY(-4deg)`;});const finish=()=>{if(!node.classList.contains("is-dragging"))return;node.classList.remove("is-dragging");node.classList.add("is-hovered");node.style.transform=`translate(${node.dataset.dx}px,${node.dataset.dy}px)`;};node.addEventListener("pointerup",finish);node.addEventListener("pointercancel",finish);});}
-      /* Sistema visual editorial: todas las láminas comparten la gramática de la diapositiva 2.
-         Una línea de recorrido, nodos numerados y apoyo mínimo; los datos aparecen como objeto,
-         no como card ni como bloque de texto. */
-      const supportVisualBlueprints=[
-        {nodes:[{x:145,y:174,n:"01",label:"Recta",sub:"paramétrica",tone:"cool"},{x:310,y:174,n:"02",label:"Plano",sub:"cartesiano",tone:"warm"},{x:475,y:174,n:"03",label:"Punto",sub:"verificable",tone:"cool"}],lines:[[145,174,310,174],[310,174,475,174]],caption:"r ∩ π = I"},
-        {nodes:[{x:78,y:158,n:"01",label:"Resolver",sub:"patrones",tone:"warm"},{x:194,y:158,n:"02",label:"Contrastar",sub:"grupo vs. modelos",tone:"cool"},{x:310,y:158,n:"03",label:"Verificar",sub:"resultados correctos",tone:"cool"},{x:426,y:158,n:"04",label:"Tensionar",sub:"comparar IAs",tone:"warm"},{x:542,y:158,n:"05",label:"Reflexionar",sub:"conclusiones",tone:"cool"}],lines:[[78,158,194,158],[194,158,310,158],[310,158,426,158],[426,158,542,158]],caption:"calcular  →  contrastar  →  verificar  →  explicar"},
-        {nodes:[{x:135,y:174,n:"01",label:"Sustituir",sub:"r → π",tone:"cool"},{x:310,y:174,n:"02",label:"Despejar",sub:"λ = 10/3",tone:"warm"},{x:485,y:174,n:"03",label:"Verificar",sub:"I ∈ π",tone:"cool"}],lines:[[135,174,310,174],[310,174,485,174]],caption:"intersección · una solución"},
-        {nodes:[{x:140,y:174,n:"01",label:"d",sub:"dirección",tone:"cool"},{x:310,y:174,n:"02",label:"n",sub:"normal",tone:"warm"},{x:480,y:174,n:"03",label:"α",sub:"6,38°",tone:"cool"}],lines:[[140,174,310,174],[310,174,480,174]],caption:"sin α = 1/9"},
-        {nodes:[{x:165,y:174,n:"01",label:"m = 2/3",sub:"solución única",tone:"cool"},{x:455,y:174,n:"02",label:"∄ m",sub:"sistema vacío",tone:"warm"}],lines:[[165,174,455,174]],caption:"⊥  /  ∥  ·  dos conclusiones"},
-        {nodes:[{x:112,y:174,n:"01",label:"πxy",sub:"∥ Z",tone:"cool"},{x:310,y:174,n:"02",label:"πxz",sub:"corregir +18",tone:"warm"},{x:508,y:174,n:"03",label:"πyz",sub:"∥ X",tone:"cool"}],lines:[[112,174,310,174],[310,174,508,174]],extra:`<path class="viz-plane" d="M170 258l140-34 55 30-140 34z"/><path class="viz-grid" d="M190 253l140-34M215 268l140-34M205 239l55 30M248 228l55 30M291 218l55 30"/>`,caption:"P(2, −1, 5) · sustituir antes de aceptar"},
-        {nodes:[{x:130,y:174,n:"01",label:"Grupo",sub:"resultado",tone:"cool"},{x:310,y:174,n:"02",label:"Modelos IA",sub:"proceso",tone:"warm"},{x:490,y:174,n:"03",label:"Fuente",sub:"verificación",tone:"cool"}],lines:[[130,174,310,174],[310,174,490,174]],caption:"acertar  ≠  poder justificar"},
-        {nodes:[{x:105,y:174,n:"01",label:"m",sub:"incompatibilidad",tone:"warm"},{x:245,y:174,n:"02",label:"0",sub:"división",tone:"cool"},{x:385,y:174,n:"03",label:"α",sub:"fórmula",tone:"cool"},{x:525,y:174,n:"04",label:"π",sub:"componente",tone:"warm"}],lines:[[105,174,245,174],[245,174,385,174],[385,174,525,174]],caption:"cuatro pruebas para forzar el error"},
-        {nodes:[{x:140,y:174,n:"01",label:"Fuente",sub:"material",tone:"cool"},{x:310,y:174,n:"02",label:"Respuesta",sub:"tono seguro",tone:"warm"},{x:480,y:174,n:"03",label:"Evidencia",sub:"contrastar",tone:"cool"}],lines:[[140,174,310,174],[310,174,480,174]],extra:`<path class="viz-cross" d="M292 150l36 48m0-48-36 48"/>`,caption:"una respuesta segura puede ser falsa"},
-        {nodes:[{x:145,y:174,n:"01",label:"Verificar",sub:"geometría",tone:"warm"},{x:310,y:174,n:"02",label:"Reconocer",sub:"límites",tone:"cool"},{x:475,y:174,n:"03",label:"Auditar",sub:"criterio",tone:"cool"}],lines:[[145,174,310,174],[310,174,475,174]],caption:"la supervisión humana no es opcional"},
-        {nodes:[{x:105,y:174,n:"01",label:"Problema",sub:"pregunta",tone:"cool"},{x:245,y:174,n:"02",label:"Resolución",sub:"cálculo",tone:"cool"},{x:385,y:174,n:"03",label:"Auditoría",sub:"evidencia",tone:"warm"},{x:525,y:174,n:"04",label:"Reflexión",sub:"aprendizaje",tone:"cool"}],lines:[[105,174,245,174],[245,174,385,174],[385,174,525,174]],caption:"problema  →  resolución  →  auditoría  →  reflexión"},
-        {nodes:[{x:165,y:174,n:"01",label:"Pregunta",sub:"tribunal",tone:"cool"},{x:455,y:174,n:"02",label:"Respuesta",sub:"defensa",tone:"warm"}],lines:[[165,174,455,174]],caption:"preguntar  ·  justificar  ·  responder"}
-      ];
-      function renderEditorialSupport(index){
-        if(!visualOverlay)return;
-        const blueprint=supportVisualBlueprints[index]||supportVisualBlueprints[0];
-        const connectors=blueprint.lines.map(([x1,y1,x2,y2],lineIndex)=>`<line class="support-baseline${lineIndex===Math.floor(blueprint.lines.length/2)?" warm":""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`).join("");
-        const nodes=blueprint.nodes.map((node,nodeIndex)=>{const pointClass=node.tone==="warm"?"viz-point":node.tone==="muted"?"viz-point muted":"viz-point cool";const labelClass=node.tone==="warm"?"viz-step-label warm":"viz-step-label";const subClass=node.tone==="warm"?"viz-step-sub warm":"viz-step-sub";return `<g class="viz-object" data-viz="${nodeIndex}"><circle class="${pointClass}" cx="${node.x}" cy="${node.y}" r="18"/><text class="viz-number" x="${node.x}" y="${node.y}">${node.n}</text><text class="${labelClass}" x="${node.x}" y="${node.y+49}">${node.label}</text><text class="${subClass}" x="${node.x}" y="${node.y+68}">${node.sub}</text></g>`;}).join("");
-        visualOverlay.innerHTML=svgDiagram(`<g class="support-scene">${connectors}${blueprint.extra||""}${nodes}</g>`);
-        visualDomObjects=[...visualOverlay.querySelectorAll(".viz-object")];
-        visualDomObjects.forEach(node=>{
-          node.dataset.dx="0";node.dataset.dy="0";
-          node.addEventListener("pointerenter",()=>node.classList.add("is-hovered"));
-          node.addEventListener("pointerleave",()=>{if(!node.classList.contains("is-dragging"))node.classList.remove("is-hovered");});
-          node.addEventListener("pointerdown",event=>{node.classList.add("is-dragging");node.setPointerCapture?.(event.pointerId);node.dataset.startX=String(event.clientX);node.dataset.startY=String(event.clientY);node.dataset.originX=node.dataset.dx;node.dataset.originY=node.dataset.dy;event.preventDefault();});
-          node.addEventListener("pointermove",event=>{if(!node.classList.contains("is-dragging"))return;node.dataset.dx=String(Number(node.dataset.originX)+(event.clientX-Number(node.dataset.startX)));node.dataset.dy=String(Number(node.dataset.originY)+(event.clientY-Number(node.dataset.startY)));node.style.transform=`translate(${node.dataset.dx}px,${node.dataset.dy}px) scale(1.045) rotateX(3deg) rotateY(-4deg)`;});
-          const finish=()=>{if(!node.classList.contains("is-dragging"))return;node.classList.remove("is-dragging");node.classList.add("is-hovered");node.style.transform=`translate(${node.dataset.dx}px,${node.dataset.dy}px)`;};
-          node.addEventListener("pointerup",finish);node.addEventListener("pointercancel",finish);
-        });
+      function setVisualForSlide(index){
+        if(!visualGroup)return;
+        clearVisuals();
+        visualGroup.visible=false;
       }
-      renderVisualOverlay=renderEditorialSupport;
-      const baseVisualForSlide=setVisualForSlide;setVisualForSlide=function(index){baseVisualForSlide(index);if(!visualGroup)return;visualGroup.visible=false;visualFocusTargets=[];renderVisualOverlay(index);};createForestBackdrop();createStarField();setVisualForSlide(activeIndex);
+      createForestBackdrop();
+      createStarField();
+      setVisualForSlide(activeIndex);
       function clearInfo(){infoFocusItems=[];infoGroup.traverse(node=>{if(node===infoGroup)return;if(node.material?.map)node.material.map.dispose();node.material?.dispose();});infoGroup.clear();}
       function wrapInfoText(ctx,text,maxWidth){const words=text.split(/\s+/);const lines=[];let line="";for(const word of words){const candidate=line?`${line} ${word}`:word;if(ctx.measureText(candidate).width>maxWidth&&line){lines.push(line);line=word;}else line=candidate;}if(line)lines.push(line);return lines;}
       function roundRect(ctx,x,y,width,height,radius){const r=Math.min(radius,width/2,height/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+width,y,x+width,y+height,r);ctx.arcTo(x+width,y+height,x,y+height,r);ctx.arcTo(x,y+height,x,y,r);ctx.arcTo(x,y,x+width,y,r);ctx.closePath();}
@@ -622,7 +1077,57 @@
       function createDialogueSprite(position){const surface=document.createElement("canvas");surface.width=1280;surface.height=280;const ctx=surface.getContext("2d");const texture=new THREE.CanvasTexture(surface);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearFilter;const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,depthTest:false,side:THREE.DoubleSide,color:0xffffff,opacity:.98});const sprite=new THREE.Mesh(new THREE.PlaneGeometry(1,1),material);sprite.position.set(...position);sprite.rotation.set(-.015,-.02,-.012);sprite.scale.set(3.72,3.72*(surface.height/surface.width),1);sprite.userData.baseScale=sprite.scale.clone();sprite.userData.baseRotationZ=sprite.rotation.z;sprite.userData.hover=0;infoGroup.add(sprite);dialogueSprite=sprite;dialogueCanvas=surface;dialogueContext=ctx;dialogueTexture=texture;dialogueDrawnText="";return sprite;}
       function drawDialogue(text){if(!dialogueContext||!dialogueCanvas||!dialogueTexture)return;if(text===dialogueDrawnText)return;dialogueDrawnText=text;const ctx=dialogueContext;ctx.clearRect(0,0,dialogueCanvas.width,dialogueCanvas.height);ctx.font="500 27px Arial, sans-serif";ctx.textBaseline="top";ctx.fillStyle="#f3f4ed";ctx.shadowColor="rgba(240,179,108,.9)";ctx.shadowBlur=19;ctx.shadowOffsetY=3;const lines=wrapInfoText(ctx,`“${text}”`,1180).slice(0,5);lines.forEach((line,index)=>ctx.fillText(line,42,28+index*35));dialogueTexture.needsUpdate=true;}
       function updateDialogue(){if(!dialogueSprite||!dialogueSentences.length)return;const now=performance.now()/1000;const progress=activeAudio&&Number.isFinite(activeAudio.duration)&&activeAudio.duration>0?activeAudio.currentTime/activeAudio.duration:Math.min(1,Math.max(0,now-speakStartedAt)/Math.max(5,currentScriptParagraph().length*.055));const wantedIndex=speaking?Math.min(dialogueSentences.length-1,Math.floor(progress*dialogueSentences.length)):dialogueSentenceIndex;if(wantedIndex!==dialogueSentenceIndex){dialogueSentenceIndex=wantedIndex;dialogueSentenceStartedAt=now;dialogueDrawnText="";drawDialogue("");}const sentence=dialogueSentences[dialogueSentenceIndex]||"";const typingDuration=Math.max(.5,sentence.length*.032);const amount=paused?sentence.length:Math.min(sentence.length,Math.floor(Math.max(0,now-dialogueSentenceStartedAt)/typingDuration*sentence.length));drawDialogue(sentence.slice(0,amount));}
-      function updateVisualFocus(){if(visualDomObjects.length){const slot=speaking&&dialogueSentences.length?Math.min(visualDomObjects.length-1,Math.floor(dialogueSentenceIndex/dialogueSentences.length*visualDomObjects.length)):-1;visualOverlay?.classList.toggle("is-speaking",speaking);visualDomObjects.forEach((target,index)=>target.classList.toggle("is-active",index===slot));}if(!deckFocusTargets.length)return;const focusIndex=speaking&&dialogueSentences.length?Math.min(deckFocusTargets.length-1,Math.floor(dialogueSentenceIndex/dialogueSentences.length*deckFocusTargets.length)):-1;deckFocusTargets.forEach((target,index)=>{const active=index===focusIndex;target.classList.toggle("is-active",active);gsap.to(target,{autoAlpha:active?1:0,duration:.24,ease:"power2.out",overwrite:true});});}
+      function updateVisualFocus(){
+        const isSpeaking = speaking;
+        if (procedimientoLayer) {
+          procedimientoLayer.classList.toggle("is-speaking", isSpeaking);
+        }
+        if (!procDomItems.length) return;
+
+        const scene = procedimientoScenes[activeIndex] || procedimientoScenes[0];
+        const currentSentenceIdx = dialogueSentenceIndex;
+
+        scene.items.forEach((itemDef, idx) => {
+          const itemEl = procDomItems[idx];
+          if (!itemEl) return;
+          if (!isSpeaking) {
+            if (itemEl.classList.contains("is-focused")) {
+              itemEl.classList.remove("is-focused");
+              gsap.to(itemEl, {
+                opacity: 0.88,
+                scale: 1,
+                duration: 0.35,
+                ease: "power2.out",
+                overwrite: "auto"
+              });
+            }
+            return;
+          }
+
+          const isTarget = itemDef.focusSteps ? itemDef.focusSteps.includes(currentSentenceIdx) : true;
+          const wasFocused = itemEl.classList.contains("is-focused");
+
+          if (isTarget && !wasFocused) {
+            itemEl.classList.add("is-focused");
+            gsap.to(itemEl, {
+              opacity: 1,
+              scale: reducedMotion ? 1 : 1.025,
+              duration: 0.38,
+              ease: "power2.out",
+              overwrite: "auto"
+            });
+          } else if (!isTarget && wasFocused) {
+            itemEl.classList.remove("is-focused");
+            gsap.to(itemEl, {
+              opacity: 0.28,
+              scale: reducedMotion ? 1 : 0.985,
+              duration: 0.38,
+              ease: "power2.out",
+              overwrite: "auto"
+            });
+          }
+        });
+      }
       function addInfoSprite(text,position,{width=2.9,fontSize=50,color="#243b45",bgColor="#f3f5ef",accentColor="#75d3c0",opacity=.92,maxLines=4,activeColor="#0c6f73",weight=500,focus=true,tiltX=0,tiltY=0,tiltZ=0}={}){const canvas=document.createElement("canvas");canvas.width=1024;canvas.height=512;let ctx=canvas.getContext("2d");ctx.font=`${weight} ${fontSize}px Arial, sans-serif`;const lines=wrapInfoText(ctx,text,930).slice(0,maxLines),lineHeight=fontSize*1.22,pad=28;canvas.height=Math.ceil(lineHeight*lines.length+pad*2+16);ctx=canvas.getContext("2d");ctx.font=`${weight} ${fontSize}px Arial, sans-serif`;ctx.textBaseline="top";ctx.fillStyle=bgColor;ctx.shadowColor="rgba(5,14,20,.46)";ctx.shadowBlur=28;ctx.shadowOffsetY=14;roundRect(ctx,10,10,canvas.width-20,canvas.height-20,28);ctx.fill();ctx.shadowColor="transparent";ctx.shadowBlur=0;ctx.fillStyle=accentColor;roundRect(ctx,10,10,9,canvas.height-20,5);ctx.fill();ctx.fillStyle=color;lines.forEach((line,index)=>ctx.fillText(line,38,index*lineHeight+pad));const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearFilter;const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,depthTest:false,side:THREE.DoubleSide,color:0xffffff,opacity});const sprite=new THREE.Mesh(new THREE.PlaneGeometry(1,1),material);sprite.position.set(...position);sprite.rotation.set(tiltX,tiltY,tiltZ);sprite.scale.set(width,width*(canvas.height/canvas.width),1);sprite.userData.draggable=true;sprite.userData.baseScale=sprite.scale.clone();sprite.userData.baseRotationZ=sprite.rotation.z;sprite.userData.hover=0;const hitPad=new THREE.Mesh(new THREE.PlaneGeometry(1.1,1.08),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide}));hitPad.userData.isHitArea=true;hitPad.position.z=.02;sprite.add(hitPad);infoGroup.add(sprite);if(focus)infoFocusItems.push({sprite,baseOpacity:opacity,activeColor,baseColor:color,baseScale:sprite.scale.clone()});return sprite;}
       function setInfoForSlide(index){if(!infoGroup)return;clearInfo();dialogueSprite=null;dialogueCanvas=null;dialogueContext=null;dialogueTexture=null;dialogueSentences=splitDialogue(scriptParagraphs[index]||"");dialogueSentenceIndex=0;dialogueSentenceStartedAt=performance.now()/1000;infoGroup.position.set(0,0,-.18);const position=window.innerWidth<900?[.25,-1.48,.16]:[1.72,-1.58,.16];createDialogueSprite(position);drawDialogue("");}
       function updateInfoFocus(elapsed){if(!infoFocusItems.length)return;const progress=activeAudio&&Number.isFinite(activeAudio.duration)&&activeAudio.duration>0?activeAudio.currentTime/activeAudio.duration:Math.min(1,(performance.now()/1000-speakStartedAt)/Math.max(5,currentScriptParagraph().length*.055));const focusIndex=speaking?Math.min(infoFocusItems.length-1,Math.floor(Math.max(0,progress)*infoFocusItems.length)):0;infoFocusItems.forEach((item,index)=>{const active=speaking&&index===focusIndex;item.sprite.material.color.set(active?0xfffff1:0xffffff);item.sprite.material.opacity=active?1:item.baseOpacity;});const graphicActive=speaking&&focusIndex>=1;visualGroup.traverse(node=>{if(!node.material||node===visualGroup)return;const base=node.userData.baseOpacity??node.material.opacity;node.userData.baseOpacity=base;node.material.opacity=graphicActive?Math.min(1,base*1.45):base;if(node.material.color){const baseColor=node.userData.baseColor??node.material.color.getHex();node.userData.baseColor=baseColor;node.material.color.set(graphicActive?0xffd47a:baseColor);}});}
@@ -662,7 +1167,42 @@
        async function loadAvatar(){try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:"high-performance"});const mobile=window.matchMedia("(max-width: 820px)").matches;renderer.setPixelRatio(Math.min(window.devicePixelRatio,mobile ? .85 : 1));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;renderer.shadowMap.enabled=false;scene.add(new THREE.HemisphereLight(0xb5d8d2,0x071018,1.5));const key=new THREE.DirectionalLight(0xffe9c5,2.8);key.position.set(1.4,3.8,5);scene.add(key);const rim=new THREE.PointLight(0x75d3c0,12,9,2);rim.position.set(3.4,1.1,2.8);scene.add(rim);const warm=new THREE.PointLight(0xf0b36c,9,7,2);warm.position.set(-1.8,.4,3);scene.add(warm);const manager=new THREE.LoadingManager();manager.onProgress=(_url,loaded,total)=>setModelStatus(`Modelo 3D: cargando ${Math.round((loaded/total)*100)}% · Voz: lista`);const gltfLoader=new GLTFLoader(manager);gltfLoader.setMeshoptDecoder(MeshoptDecoder);const draco=new DRACOLoader().setDecoderPath("./node_modules/three/examples/jsm/libs/draco/");gltfLoader.setDRACOLoader(draco);const ktx2=new KTX2Loader().setTranscoderPath("./node_modules/three/examples/jsm/libs/basis/").detectSupport(renderer);gltfLoader.setKTX2Loader(ktx2);const gltf=await gltfLoader.loadAsync("./models/facecap.glb");activeModel=gltf.scene;fitModel(activeModel);activeModel.traverse(node=>{if(!node.isMesh)return;node.castShadow=false;node.receiveShadow=false;if(node.material){const materials=Array.isArray(node.material)?node.material:[node.material];materials.forEach(material=>{if(material.isMeshStandardMaterial||material.isMeshPhysicalMaterial)material.envMapIntensity=.72;});}});scene.add(activeModel);const drivers=findDrivers(activeModel);mouthDrivers=drivers.mouths;blinkDrivers=drivers.blinks;faceTargets=drivers.targets;Object.values(faceTargets).forEach(target=>{target.mesh.morphTargetInfluences[target.index]=0;});if(activeIndex===0&&!presentationStarted){presentationStarted=true;triggerOpeningSmile();}/* The baked grp_transform clip is intentionally not looped: it would add a predictable linear head cycle on top of the behavioral controller. */els.fallback.hidden=true;setModelStatus(`Modelo 3D: listo · ${Object.keys(faceTargets).length} expresiones · Voz: lista`);}catch(error){console.error(error);canvas.hidden=true;els.fallback.hidden=false;els.status.textContent="Modelo 3D: fallback · Voz: lista";}}
       function resizeAvatar(){if(!renderer)return;const rect=document.querySelector("#avatar-stage").getBoundingClientRect();camera.aspect=Math.max(rect.width,1)/Math.max(rect.height,1);camera.updateProjectionMatrix();renderer.setSize(Math.max(rect.width,1),Math.max(rect.height,1),false);}new ResizeObserver(resizeAvatar).observe(document.querySelector("#avatar-stage"));window.addEventListener("resize",resizeAvatar);loadAvatar();
       function updateAudioReactive(){if(!audioAnalyser||!audioData){voiceEnergy=speaking?.16:0;return;}audioAnalyser.getByteFrequencyData(audioData);let sum=0;for(let index=4;index<Math.min(28,audioData.length);index++)sum+=audioData[index];voiceEnergy=Math.min(1,(sum/Math.max(1,24*255))*1.8);}
-      function animate(now=performance.now()){requestAnimationFrame(animate);if(document.hidden)return;const targetFps=speaking?36:24,frameInterval=1000/targetFps;if(lastFrameAt&&now-lastFrameAt<frameInterval)return;const delta=Math.min(lastFrameAt?((now-lastFrameAt)/1000):.016,.05);lastFrameAt=now;elapsedTime+=delta;const elapsed=elapsedTime;const clockSeconds=now/1000;if(modelMixer&&!reducedMotion)modelMixer.update(delta);updateBehavior();if(activeModel)updateAttention(delta,elapsed);updateBlink(clockSeconds);updateDialogue();updateVisualFocus();updateInteractiveMotion(delta);updateAudioReactive();if(Object.keys(faceTargets).length){updateFace(elapsed);updatePhonemeMouth();}if(!reducedMotion){visualGroup.position.y=-.12+Math.sin(elapsed*.32)*.018;visualGroup.rotation.z=-.045+Math.sin(elapsed*.22)*.008;if(fireflyPoints){fireflyPoints.position.y=Math.sin(elapsed*.45)*.035;fireflyPoints.material.opacity=.35+Math.sin(elapsed*1.4)*.12;}}if(renderer)renderer.render(scene,camera);}document.addEventListener("visibilitychange",()=>{if(document.hidden)lastFrameAt=0;});animate();
+      function animate(now=performance.now()){requestAnimationFrame(animate);if(document.hidden)return;const targetFps=speaking?36:24,frameInterval=1000/targetFps;if(lastFrameAt&&now-lastFrameAt<frameInterval)return;const delta=Math.min(lastFrameAt?((now-lastFrameAt)/1000):.016,.05);lastFrameAt=now;elapsedTime+=delta;const elapsed=elapsedTime;const clockSeconds=now/1000;if(modelMixer&&!reducedMotion)modelMixer.update(delta);updateBehavior();if(activeModel)updateAttention(delta,elapsed);updateBlink(clockSeconds);updateDialogue();updateVisualFocus();updateInteractiveMotion(delta);updateAudioReactive();if(Object.keys(faceTargets).length){updateFace(elapsed);updatePhonemeMouth();}if(!reducedMotion){visualGroup.position.y=-.12+Math.sin(elapsed*.32)*.018;visualGroup.rotation.z=-.045+Math.sin(elapsed*.22)*.008;if(fireflyPoints){fireflyPoints.position.y=Math.sin(elapsed*.45)*.035;fireflyPoints.material.opacity=.35+Math.sin(elapsed*1.4)*.12;}}if(renderer)renderer.render(scene,camera);}
+      // ----------------------------------------------------
+      // Cartesian 3D Interactive Explorer Instance & Controls
+      // ----------------------------------------------------
+      const slideTo3DScene = {
+        0: "interseccion",
+        1: "interseccion",
+        2: "interseccion",
+        3: "angulo",
+        4: "parametro_paralelo",
+        5: "proyectantes",
+        6: "auditoria",
+        7: "parametro_incompatible",
+        8: "auditoria",
+        9: "interseccion"
+      };
+
+      const c3dContainer = document.querySelector("#cartesian-3d-container");
+      let c3dExplorer = null;
+      if (c3dContainer) {
+        c3dExplorer = new Cartesian3DExplorer(c3dContainer);
+      }
+
+      const btnToggle3D = document.querySelector("#btn-toggle-3d");
+      if (btnToggle3D && c3dExplorer) {
+        btnToggle3D.addEventListener("click", () => {
+          if (c3dContainer.classList.contains("is-visible")) {
+            c3dExplorer.hide();
+          } else {
+            const sceneKey = slideTo3DScene[activeIndex] || "interseccion";
+            c3dExplorer.show(sceneKey);
+          }
+        });
+      }
+
+      document.addEventListener("visibilitychange",()=>{if(document.hidden)lastFrameAt=0;});animate();
     </script>
   </body>
 </html>
