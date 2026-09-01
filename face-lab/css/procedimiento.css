@@ -1,10 +1,10 @@
 /* Capa de apoyos visuales transparentes interactivos en el bosque 3D */
 .procedimiento-layer {
   position: fixed;
-  left: clamp(24px, 4vw, 56px);
+  left: var(--deck-left);
   top: 50%;
   transform: translateY(-50%);
-  width: min(64vw, 1240px);
+  width: var(--deck-width);
   max-height: 88vh;
   z-index: 4;
   display: flex;
@@ -105,6 +105,8 @@
   position: relative;
   width: 100%;
   transform-style: preserve-3d;
+  transform-origin: center center;
+  backface-visibility: visible;
 }
 
 .proc-item:focus-visible {
@@ -128,10 +130,6 @@
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-}
-
-.app-shell.has-active-3d-graph .proc-card-img {
-  max-height: 86vh;
 }
 
 .proc-item:hover {

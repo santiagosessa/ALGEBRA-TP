@@ -8,7 +8,9 @@ export class ProcedimientoView {
     this.slides = options.slides;
 
     this.procDomItems = [];
+    this.procDomSurfaces = [];
     this.currentSceneIndex = 0;
+    this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
   renderScene(index) {
@@ -17,10 +19,12 @@ export class ProcedimientoView {
     const scene = this.scenes[index] || this.scenes[0];
 
     this.procDomItems.forEach(item => gsap.killTweensOf(item));
+    this.procDomSurfaces.forEach(surface => gsap.killTweensOf(surface));
 
     this.gridEl.className = `procedimiento-grid ${scene.layout || "grid-s1"}`;
     this.gridEl.innerHTML = "";
     this.procDomItems = [];
+    this.procDomSurfaces = [];
 
     scene.items.forEach((itemDef, itemIdx) => {
       const itemEl = document.createElement("div");
@@ -82,43 +86,73 @@ export class ProcedimientoView {
       itemEl.addEventListener("pointercancel", endDrag);
 
       const surfaceEl = itemEl.querySelector(".proc-card-surface");
-      surfaceEl.addEventListener("mousemove", e => {
-        if (isDragging) return;
-        const rect = surfaceEl.getBoundingClientRect();
-        const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-        const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-        gsap.to(surfaceEl, {
-          rotateY: nx * 4,
-          rotateX: -ny * 4,
-          duration: 0.25,
-          ease: "power2.out",
-          overwrite: "auto"
-        });
+      this.procDomSurfaces.push(surfaceEl);
+      gsap.set(surfaceEl, {
+        transformPerspective: 900,
+        transformOrigin: "center center",
+        force3D: true
       });
 
-      surfaceEl.addEventListener("mouseleave", () => {
-        if (isDragging) return;
-        gsap.to(surfaceEl, {
-          rotateY: 0,
-          rotateX: 0,
-          duration: 0.45,
-          ease: "power2.out",
-          overwrite: "auto"
+      if (!this.reducedMotion) {
+        // quickTo evita una cola de tweens por cada movimiento del cursor y
+        // mantiene la ilusión 3D suave sin escalar ni rasterizar la imagen.
+        const rotateXTo = gsap.quickTo(surfaceEl, "rotateX", {
+          duration: 0.3,
+          ease: "power3.out"
         });
-      });
+        const rotateYTo = gsap.quickTo(surfaceEl, "rotateY", {
+          duration: 0.3,
+          ease: "power3.out"
+        });
+        const liftTo = gsap.quickTo(surfaceEl, "z", {
+          duration: 0.38,
+          ease: "power3.out"
+        });
+
+        surfaceEl.addEventListener("mouseenter", () => liftTo(10));
+        surfaceEl.addEventListener("mousemove", e => {
+          if (isDragging) return;
+          const rect = surfaceEl.getBoundingClientRect();
+          const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+          const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+          rotateYTo(nx * 5);
+          rotateXTo(-ny * 5);
+          liftTo(10 + Math.min(4, Math.abs(nx) + Math.abs(ny)));
+        });
+
+        surfaceEl.addEventListener("mouseleave", () => {
+          if (isDragging) return;
+          rotateYTo(0);
+          rotateXTo(0);
+          liftTo(0);
+        });
+      }
 
       this.gridEl.appendChild(itemEl);
       this.procDomItems.push(itemEl);
     });
 
-    // Enter animation
+    // Entrada 3D de las cards sin escala: conserva el detalle de los assets.
+    gsap.fromTo(
+      this.procDomSurfaces,
+      { rotateX: 7, rotateY: -5, z: -24 },
+      {
+        rotateX: 0,
+        rotateY: 0,
+        z: 0,
+        duration: this.reducedMotion ? 0 : 0.65,
+        stagger: 0.05,
+        ease: "power3.out"
+      }
+    );
+
     gsap.fromTo(
       this.procDomItems,
       { opacity: 0, y: 16 },
       {
         opacity: 0.92,
         y: 0,
-        duration: 0.4,
+        duration: this.reducedMotion ? 0 : 0.4,
         stagger: 0.05,
         ease: "power2.out"
       }
