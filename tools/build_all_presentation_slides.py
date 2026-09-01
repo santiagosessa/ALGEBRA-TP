@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "procedimiento antigravity imagenes"
+OUT_DIR = ROOT / "procedimiento_imagenes"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 W, H = 1920, 1080

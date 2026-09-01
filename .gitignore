@@ -3,6 +3,17 @@
 face-lab/tools/rhubarb/
 face-lab/voice-model/
 
+# Build cache, temporary outputs, and local artifacts
+.agents/
+.gemini/
+.claude/
+test-results/
+*antigravity*
+procedimiento_imagenes/
+avatar_extracted.png
+tripo_*.glb
+Cuadro_Comparativo_*.pdf
+
 # Credentials and private certificates
 .env
 .env.*

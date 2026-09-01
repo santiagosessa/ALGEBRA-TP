@@ -6,8 +6,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "procedimiento antigravity imagenes" / "transparentes"
-CROP_DIR = ROOT / "procedimiento antigravity imagenes" / "recortadas"
+OUT_DIR = ROOT / "procedimiento_imagenes" / "transparentes"
+CROP_DIR = ROOT / "procedimiento_imagenes" / "recortadas"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 CROP_DIR.mkdir(parents=True, exist_ok=True)
 
