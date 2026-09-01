@@ -7,8 +7,10 @@ export class PresentationController {
     this.onPause = options.onPause || (() => {});
     this.onResume = options.onResume || (() => {});
     this.onStop = options.onStop || (() => {});
+    this.onOpeningExit = options.onOpeningExit || (() => {});
 
     this.activeIndex = 0;
+    this.isOpening = Boolean(options.startInOpening);
     this.speaking = false;
     this.paused = false;
 
@@ -64,6 +66,13 @@ export class PresentationController {
 
   goTo(index) {
     const nextIndex = Math.max(0, Math.min(this.slides.length - 1, index));
+
+    if (this.isOpening) {
+      if (nextIndex === 0) return;
+      this.exitOpening();
+      return;
+    }
+
     if (nextIndex === this.activeIndex) return;
     this.activeIndex = nextIndex;
     this.updateUI();
@@ -76,6 +85,12 @@ export class PresentationController {
 
   prev() {
     this.goTo(this.activeIndex - 1);
+  }
+
+  exitOpening(autoPlay = false) {
+    if (!this.isOpening) return;
+    this.isOpening = false;
+    this.onOpeningExit(autoPlay);
   }
 
   setVoiceState(state) {

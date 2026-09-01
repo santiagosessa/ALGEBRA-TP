@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { slides } from "./data/slides.js";
+import { openingNarration, slides } from "./data/slides.js";
 import { procedimientoScenes } from "./data/procedimiento-scenes.js";
 import { ForestEnvironment } from "./avatar/forest-env.js";
 import { AvatarController } from "./avatar/avatar-controller.js";
@@ -36,6 +36,9 @@ class App {
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.lastFrameAt = 0;
     this.elapsedTime = 0;
+    this.openingUtterance = null;
+    this.openingVoiceActive = false;
+    this.appShell = document.querySelector(".app-shell");
 
     this.initLighting();
     this.initModules();
@@ -125,6 +128,8 @@ class App {
         avatarState: document.querySelector("#avatar-state"),
         avatarStage: document.querySelector("#avatar-stage")
       },
+      startInOpening: true,
+      onOpeningExit: autoPlay => this.enterPresentation(autoPlay),
       onSlideChange: index => {
         this.speech.setSlide(index);
         this.procedimientoView.renderScene(index);
@@ -141,16 +146,20 @@ class App {
         }
       },
       onPlay: () => {
-        this.speech.play();
+        if (this.presentation.isOpening) this.playOpeningNarration();
+        else this.speech.play();
       },
       onPause: () => {
-        this.speech.pause();
+        if (this.presentation.isOpening) this.pauseOpeningNarration();
+        else this.speech.pause();
       },
       onResume: () => {
-        this.speech.resume();
+        if (this.presentation.isOpening) this.resumeOpeningNarration();
+        else this.speech.resume();
       },
       onStop: () => {
-        this.speech.stop();
+        if (this.presentation.isOpening) this.stopOpeningNarration();
+        else this.speech.stop();
       }
     });
 
@@ -220,8 +229,10 @@ class App {
 
   async start() {
     this.presentation.updateUI();
-    this.procedimientoView.renderScene(0);
+    this.appShell?.classList.add("is-opening");
+    this.avatar.setOpeningMode(true);
     this.speech.setSlide(0);
+    this.speech.infoGroup.visible = false;
 
     const loaded = await this.avatar.load();
     if (loaded) {
@@ -231,6 +242,88 @@ class App {
     }
 
     this.animate();
+  }
+
+  setOpeningVoiceState(state) {
+    const isSpeaking = state === "speaking";
+    this.openingVoiceActive = isSpeaking;
+    this.avatar.speaking = isSpeaking;
+    this.presentation.setVoiceState(state);
+  }
+
+  playOpeningNarration() {
+    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+      this.presentation.exitOpening(true);
+      return;
+    }
+
+    this.openingUtterance = null;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(openingNarration.script);
+    utterance.lang = "es-AR";
+    utterance.rate = 0.92;
+    utterance.pitch = 0.98;
+    utterance.volume = 1;
+    const voices = window.speechSynthesis.getVoices();
+    utterance.voice = voices.find(voice => voice.lang.toLowerCase().startsWith("es-ar"))
+      || voices.find(voice => voice.lang.toLowerCase().startsWith("es"))
+      || null;
+
+    utterance.onstart = () => this.setOpeningVoiceState("speaking");
+    utterance.onend = () => {
+      if (this.openingUtterance !== utterance) return;
+      this.openingUtterance = null;
+      this.setOpeningVoiceState("idle");
+      this.presentation.exitOpening(true);
+    };
+    utterance.onerror = () => {
+      if (this.openingUtterance !== utterance) return;
+      this.openingUtterance = null;
+      this.setOpeningVoiceState("idle");
+      this.presentation.exitOpening(true);
+    };
+
+    this.openingUtterance = utterance;
+    this.setOpeningVoiceState("speaking");
+    window.speechSynthesis.speak(utterance);
+  }
+
+  pauseOpeningNarration() {
+    if (!this.openingUtterance) return;
+    window.speechSynthesis.pause();
+    this.setOpeningVoiceState("paused");
+  }
+
+  resumeOpeningNarration() {
+    if (!this.openingUtterance) return;
+    window.speechSynthesis.resume();
+    this.setOpeningVoiceState("speaking");
+  }
+
+  stopOpeningNarration() {
+    window.speechSynthesis?.cancel();
+    this.openingUtterance = null;
+    this.setOpeningVoiceState("idle");
+  }
+
+  enterPresentation(autoPlay = false) {
+    this.stopOpeningNarration();
+    this.appShell?.classList.remove("is-opening");
+    this.avatar.setOpeningMode(false);
+    this.speech.infoGroup.visible = true;
+    this.procedimientoView.renderScene(this.presentation.activeIndex);
+    this.speech.setSlide(this.presentation.activeIndex);
+    if (this.c3dExplorer) {
+      this.appShell?.classList.add("has-active-3d-graph");
+      document.querySelector("#btn-toggle-3d")?.classList.add("is-active");
+      const slideTo3DScene = {
+        0: "interseccion", 1: "interseccion", 2: "interseccion",
+        3: "angulo", 4: "parametro_paralelo", 5: "proyectantes",
+        6: "auditoria", 7: "parametro_incompatible", 8: "auditoria", 9: "proyectantes"
+      };
+      this.c3dExplorer.show(slideTo3DScene[this.presentation.activeIndex] || "interseccion");
+    }
+    if (autoPlay) this.speech.play();
   }
 
   animate(now = performance.now()) {
@@ -247,7 +340,7 @@ class App {
 
     const currentCue = this.avatar.speaking ? this.speech.getCurrentMouthCue() : null;
     const speechProgress = this.speech.getSpeechProgress();
-    this.avatar.voiceEnergy = this.speech.voiceEnergy;
+    this.avatar.voiceEnergy = this.openingVoiceActive ? 0.34 : this.speech.voiceEnergy;
 
     this.avatar.update(delta, this.elapsedTime, this.reducedMotion, currentCue, speechProgress);
 

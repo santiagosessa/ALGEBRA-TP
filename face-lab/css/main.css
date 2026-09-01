@@ -17,6 +17,7 @@
   --font-mono: "SF Mono", Monaco, "Cascadia Code", "Consolas", monospace;
   --deck-left: clamp(24px, 4vw, 56px);
   --deck-width: min(64vw, 1240px);
+  --deck-gap: clamp(14px, 2vh, 24px);
 }
 
 *, *::before, *::after {
@@ -73,6 +74,14 @@ html, body {
   text-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
   pointer-events: none;
   transition: opacity 280ms ease, transform 280ms ease;
+}
+
+/* La apertura funciona como una cortina: deja solo al expositor y los controles. */
+.app-shell.is-opening .slide-corner-title,
+.app-shell.is-opening .stage-panel,
+.app-shell.is-opening .biblio-toggle-btn {
+  visibility: hidden;
+  opacity: 0;
 }
 
 /* Workspace */

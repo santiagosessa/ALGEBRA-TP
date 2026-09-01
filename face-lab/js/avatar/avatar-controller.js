@@ -37,6 +37,8 @@ export class AvatarController {
     this.lookAtPresentation = false;
     this.speaking = false;
     this.voiceEnergy = 0;
+    this.openingMode = false;
+    this.layoutXTarget = 2.05;
 
     this.openingSmileStartedAt = 0;
     this.finalSmileStartedAt = 0;
@@ -109,12 +111,23 @@ export class AvatarController {
     const center = bounds.getCenter(new THREE.Vector3());
     root.position.sub(center);
     root.scale.setScalar(3.8 / Math.max(size.y, 0.001));
-    root.position.x = 2.05;
+    root.position.x = this.openingMode ? 0 : this.layoutXTarget;
     root.position.y = 0.02;
     root.position.z = -0.62;
     root.rotation.y = motionTokens.attention.audienceYaw;
     root.rotation.x = 0.008;
     root.rotation.z = -0.008;
+  }
+
+  setOpeningMode(isOpening) {
+    this.openingMode = isOpening;
+    this.layoutXTarget = isOpening ? 0 : 2.05;
+    this.lookAtPresentation = false;
+    if (this.activeModel) {
+      this.faceBehavior.head.targetYaw = motionTokens.attention.audienceYaw;
+      this.faceBehavior.head.targetPitch = 0.008;
+      this.faceBehavior.head.targetRoll = -0.008;
+    }
   }
 
   findDrivers(root) {
@@ -179,6 +192,7 @@ export class AvatarController {
     const now = performance.now() / 1000;
 
     if (reducedMotion) {
+      this.activeModel.position.x = this.layoutXTarget;
       this.activeModel.rotation.y = motionTokens.attention.audienceYaw;
       this.activeModel.rotation.x = 0.008;
       this.activeModel.rotation.z = -0.008;
@@ -207,6 +221,7 @@ export class AvatarController {
     }
 
     // Head attention rotation
+    this.activeModel.position.x = THREE.MathUtils.damp(this.activeModel.position.x, this.layoutXTarget, 4.8, delta);
     const head = this.faceBehavior.head;
     const targetYaw = Math.min(-motionTokens.attention.minimumAwayYaw, head.targetYaw);
     this.activeModel.rotation.y = THREE.MathUtils.damp(this.activeModel.rotation.y, targetYaw, 4.2, delta);

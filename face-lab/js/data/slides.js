@@ -1,3 +1,7 @@
+export const openingNarration = {
+  script: "Soy el expositor del trabajo realizado por Santiago Sessa, Lucio Pieroni, Lucas Bazán y Mateo Rau. Este trabajo se desarrolló manualmente a partir de la bibliografía proporcionada por las profesoras y, en paralelo, mediante herramientas de inteligencia artificial. Luego comparamos los resultados de ambos grupos. Finalmente, una inteligencia artificial auditó el proceso y esa auditoría fue revisada por los mismos integrantes. A partir de ese trabajo elaboramos una conclusión final."
+};
+
 export const slides = [
   {
     index: "01",
