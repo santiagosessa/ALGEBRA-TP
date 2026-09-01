@@ -1,23 +1,13 @@
-import * as THREE from "three";
-
 function splitDialogue(text) {
   return text.replace(/\s+/g, " ").trim().split(/(?<=[.!?])\s+/).filter(Boolean);
 }
 
-function wrapInfoText(ctx, text, maxWidth) {
-  const words = text.split(/\s+/);
-  const lines = [];
-  let line = "";
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
-    if (ctx.measureText(candidate).width > maxWidth && line) {
-      lines.push(line);
-      line = word;
-    } else line = candidate;
-  }
-  if (line) lines.push(line);
-  return lines;
-}
+const PUNCTUATION_CADENCE = {
+  ",": { duck: 0.82, attack: 0.08, hold: 0.07, release: 0.2 },
+  ".": { duck: 0.7, attack: 0.1, hold: 0.12, release: 0.28 },
+  "?": { duck: 0.7, attack: 0.1, hold: 0.12, release: 0.28 },
+  "!": { duck: 0.7, attack: 0.1, hold: 0.12, release: 0.28 }
+};
 
 export const SLIDE_AUDIO_DURATIONS = [
   34.47, // Slide 1
@@ -35,7 +25,7 @@ export const SLIDE_AUDIO_DURATIONS = [
 export class SpeechSystem {
   constructor(options) {
     this.slides = options.slides;
-    this.scene = options.scene;
+    this.dialogueEl = options.dialogueEl || null;
     this.onStatus = options.onStatus || (() => {});
     this.onStateChange = options.onStateChange || (() => {});
     this.onSentenceChange = options.onSentenceChange || (() => {});
@@ -49,6 +39,7 @@ export class SpeechSystem {
     this.audioAnalyser = null;
     this.audioData = null;
     this.audioSource = null;
+    this.audioGain = null;
 
     this.activeAudio = null;
     this.speaking = false;
@@ -62,13 +53,8 @@ export class SpeechSystem {
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = 0;
     this.dialogueDrawnText = "";
-
-    this.infoGroup = new THREE.Group();
-    this.scene.add(this.infoGroup);
-    this.dialogueSprite = null;
-    this.dialogueCanvas = null;
-    this.dialogueContext = null;
-    this.dialogueTexture = null;
+    this.punctuationMarkers = [];
+    this.nextPunctuationMarkerIndex = 0;
 
     this.loadLipSyncCues();
   }
@@ -123,6 +109,57 @@ export class SpeechSystem {
     return Math.max(0, Math.min(1, this.getCurrentAudioTime() / duration));
   }
 
+  buildPunctuationMarkers() {
+    const totalChars = this.dialogueSentences.reduce((acc, sentence) => acc + sentence.length, 0);
+    this.punctuationMarkers = [];
+    if (!totalChars) return;
+
+    let offset = 0;
+    this.dialogueSentences.forEach(sentence => {
+      [...sentence].forEach((character, index) => {
+        const cadence = PUNCTUATION_CADENCE[character];
+        if (!cadence) return;
+        this.punctuationMarkers.push({
+          progress: Math.min(0.999, (offset + index + 0.9) / totalChars),
+          cadence
+        });
+      });
+      offset += sentence.length;
+    });
+  }
+
+  clearPunctuationCadence() {
+    if (!this.audioGain || !this.audioContext) return;
+    const now = this.audioContext.currentTime;
+    const gain = this.audioGain.gain;
+    gain.cancelScheduledValues(now);
+    gain.setValueAtTime(gain.value, now);
+    gain.linearRampToValueAtTime(1, now + 0.08);
+  }
+
+  applyPunctuationCadence(currentTime, duration) {
+    if (!this.speaking || this.paused || !this.activeAudio || duration <= 0) return;
+
+    const progress = currentTime / duration;
+    let lastCadence = null;
+    while (this.punctuationMarkers[this.nextPunctuationMarkerIndex]?.progress <= progress) {
+      lastCadence = this.punctuationMarkers[this.nextPunctuationMarkerIndex].cadence;
+      this.nextPunctuationMarkerIndex += 1;
+    }
+    if (!lastCadence || !this.audioGain || !this.audioContext) return;
+
+    const now = this.audioContext.currentTime;
+    const gain = this.audioGain.gain;
+    const attackEnd = now + lastCadence.attack;
+    const holdEnd = attackEnd + lastCadence.hold;
+    const releaseEnd = holdEnd + lastCadence.release;
+    gain.cancelScheduledValues(now);
+    gain.setValueAtTime(Math.min(1, Math.max(0.65, gain.value)), now);
+    gain.linearRampToValueAtTime(lastCadence.duck, attackEnd);
+    gain.setValueAtTime(lastCadence.duck, holdEnd);
+    gain.linearRampToValueAtTime(1, releaseEnd);
+  }
+
   configureAudioAnalyser() {
     if (this.audioContext) return;
     try {
@@ -131,85 +168,36 @@ export class SpeechSystem {
       this.audioAnalyser.fftSize = 256;
       this.audioAnalyser.smoothingTimeConstant = 0.82;
       this.audioSource = this.audioContext.createMediaElementSource(this.audioPlayer);
-      this.audioSource.connect(this.audioAnalyser);
+      this.audioGain = this.audioContext.createGain();
+      this.audioGain.gain.value = 1;
+      this.audioSource.connect(this.audioGain);
+      this.audioGain.connect(this.audioAnalyser);
       this.audioAnalyser.connect(this.audioContext.destination);
       this.audioData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
     } catch (error) {
       console.warn("Audio reactivo no disponible", error);
       this.audioContext = null;
       this.audioAnalyser = null;
+      this.audioGain = null;
     }
-  }
-
-  createDialogueSprite(position) {
-    const surface = document.createElement("canvas");
-    surface.width = 860;
-    surface.height = 260;
-    const ctx = surface.getContext("2d");
-    const texture = new THREE.CanvasTexture(surface);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.minFilter = THREE.LinearFilter;
-
-    const material = new THREE.MeshBasicMaterial({
-      map: texture,
-      transparent: true,
-      depthWrite: false,
-      depthTest: false,
-      side: THREE.DoubleSide,
-      color: 0xffffff,
-      opacity: 0.98
-    });
-
-    const sprite = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
-    sprite.position.set(...position);
-    sprite.rotation.set(-0.012, -0.02, -0.01);
-    sprite.scale.set(2.45, 2.45 * (surface.height / surface.width), 1);
-    sprite.userData.baseScale = sprite.scale.clone();
-    sprite.userData.baseRotationZ = sprite.rotation.z;
-    sprite.userData.hover = 0;
-
-    this.infoGroup.add(sprite);
-    this.dialogueSprite = sprite;
-    this.dialogueCanvas = surface;
-    this.dialogueContext = ctx;
-    this.dialogueTexture = texture;
-    this.dialogueDrawnText = "";
   }
 
   setSlide(index) {
     this.activeSlideIndex = index;
     this.stop();
-    this.infoGroup.clear();
-    this.dialogueSprite = null;
-    this.dialogueCanvas = null;
-    this.dialogueContext = null;
-    this.dialogueTexture = null;
     this.dialogueSentences = splitDialogue(this.slides[index]?.script || "");
+    this.buildPunctuationMarkers();
+    this.nextPunctuationMarkerIndex = 0;
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = performance.now() / 1000;
-    this.infoGroup.position.set(0, 0, -0.18);
-
-    const position = window.innerWidth < 900 ? [0.65, -1.48, 0.16] : [2.26, -1.56, 0.18];
-    this.createDialogueSprite(position);
     this.drawDialogue("");
   }
 
   drawDialogue(text) {
-    if (!this.dialogueContext || !this.dialogueCanvas || !this.dialogueTexture) return;
+    if (!this.dialogueEl) return;
     if (text === this.dialogueDrawnText) return;
     this.dialogueDrawnText = text;
-    const ctx = this.dialogueContext;
-    ctx.clearRect(0, 0, this.dialogueCanvas.width, this.dialogueCanvas.height);
-    ctx.font = "500 27px Arial, sans-serif";
-    ctx.textBaseline = "top";
-    ctx.textAlign = "left";
-    ctx.fillStyle = "#f3f4ed";
-    ctx.shadowColor = "rgba(240,179,108,.9)";
-    ctx.shadowBlur = 18;
-    ctx.shadowOffsetY = 3;
-    const lines = wrapInfoText(ctx, `“${text}”`, 810).slice(0, 4);
-    lines.forEach((line, index) => ctx.fillText(line, 24, 22 + index * 36));
-    this.dialogueTexture.needsUpdate = true;
+    this.dialogueEl.textContent = text ? `“${text}”` : "";
   }
 
   getSentenceIndexAndProgress(currentTime, duration) {
@@ -235,10 +223,12 @@ export class SpeechSystem {
   }
 
   updateDialogue() {
-    if (!this.dialogueSprite || !this.dialogueSentences.length) return;
+    if (!this.dialogueSentences.length) return;
     const now = performance.now() / 1000;
     const audioDuration = this.getAudioDuration();
     const currentTime = this.getCurrentAudioTime();
+
+    this.applyPunctuationCadence(currentTime, audioDuration);
 
     const { index: wantedIndex, sentenceProgress } = this.speaking
       ? this.getSentenceIndexAndProgress(currentTime, audioDuration)
@@ -263,6 +253,7 @@ export class SpeechSystem {
     this.stop();
     this.speaking = true;
     this.paused = false;
+    this.nextPunctuationMarkerIndex = 0;
     this.speakStartedAt = performance.now() / 1000;
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = this.speakStartedAt;
@@ -275,6 +266,7 @@ export class SpeechSystem {
       this.audioPlayer.currentTime = 0;
 
       this.audioPlayer.onended = () => {
+        this.clearPunctuationCadence();
         this.activeAudio = null;
         this.speaking = false;
         this.paused = false;
@@ -284,6 +276,7 @@ export class SpeechSystem {
       };
 
       this.audioPlayer.onerror = () => {
+        this.clearPunctuationCadence();
         this.activeAudio = null;
         this.speaking = false;
         this.paused = false;
@@ -303,6 +296,7 @@ export class SpeechSystem {
 
   pause() {
     if (this.activeAudio) {
+      this.clearPunctuationCadence();
       this.activeAudio.pause();
       this.speaking = false;
       this.paused = true;
@@ -323,6 +317,7 @@ export class SpeechSystem {
   }
 
   stop() {
+    this.clearPunctuationCadence();
     if (this.activeAudio) {
       this.activeAudio.pause();
       this.activeAudio.currentTime = 0;
@@ -332,6 +327,7 @@ export class SpeechSystem {
     }
     this.speaking = false;
     this.paused = false;
+    this.nextPunctuationMarkerIndex = 0;
     if (this.dialogueSentences.length) {
       this.dialogueSentenceIndex = 0;
       this.dialogueSentenceStartedAt = performance.now() / 1000;

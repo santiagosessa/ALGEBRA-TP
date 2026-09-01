@@ -83,7 +83,7 @@ class App {
 
     this.speech = new SpeechSystem({
       slides,
-      scene: this.scene,
+      dialogueEl: document.querySelector("#dialogue-overlay"),
       onStatus: text => {
         if (statusEl) statusEl.textContent = text;
       },
@@ -232,7 +232,6 @@ class App {
     this.appShell?.classList.add("is-opening");
     this.avatar.setOpeningMode(true);
     this.speech.setSlide(0);
-    this.speech.infoGroup.visible = false;
 
     const loaded = await this.avatar.load();
     if (loaded) {
@@ -310,7 +309,6 @@ class App {
     this.stopOpeningNarration();
     this.appShell?.classList.remove("is-opening");
     this.avatar.setOpeningMode(false);
-    this.speech.infoGroup.visible = true;
     this.procedimientoView.renderScene(this.presentation.activeIndex);
     this.speech.setSlide(this.presentation.activeIndex);
     if (this.c3dExplorer) {

@@ -39,6 +39,7 @@ export class AvatarController {
     this.voiceEnergy = 0;
     this.openingMode = false;
     this.layoutXTarget = 2.42;
+    this.openingMouthPhase = Math.random() * Math.PI * 2;
 
     this.openingSmileStartedAt = 0;
     this.finalSmileStartedAt = 0;
@@ -241,7 +242,7 @@ export class AvatarController {
 
     // Face morphs
     this.updateFace(elapsed);
-    this.updateMouth(cue);
+    this.updateMouth(cue, elapsed);
   }
 
   updateBlink(now) {
@@ -307,13 +308,30 @@ export class AvatarController {
     if (finalAge >= 4.6) this.finalSmileStartedAt = 0;
   }
 
-  updateMouth(cue) {
+  updateMouth(cue, elapsed = 0) {
     if (!Object.keys(this.faceTargets).length) return;
     if (!this.speaking) {
       this.driveTarget("jawOpen", 0, 0.2);
       this.driveTarget("mouthClose", 0.025, 0.2);
       this.driveTarget("mouthFunnel", 0, 0.2);
       this.driveTarget("mouthPucker", 0, 0.2);
+      return;
+    }
+
+    if (this.openingMode) {
+      // La voz del navegador no tiene cues de lipsync: usamos una apertura
+      // orgánica y continua, sin convertirla en un tic mecánico.
+      const t = elapsed + this.openingMouthPhase;
+      const pulse = Math.max(0, Math.sin(t * 8.6)) * 0.62
+        + Math.max(0, Math.sin(t * 14.1 + 0.8)) * 0.38;
+      const jaw = Math.min(0.25, 0.055 + pulse * (0.13 + this.voiceEnergy * 0.12));
+      const close = Math.max(0, 0.12 - pulse * 0.12);
+      this.driveTarget("jawOpen", jaw, 0.2);
+      this.driveTarget("mouthClose", close, 0.16);
+      this.driveTarget("mouthPress_L", close * 0.55, 0.16);
+      this.driveTarget("mouthPress_R", close * 0.55, 0.16);
+      this.driveTarget("mouthFunnel", pulse * 0.045, 0.15);
+      this.driveTarget("mouthPucker", pulse * 0.025, 0.15);
       return;
     }
 
