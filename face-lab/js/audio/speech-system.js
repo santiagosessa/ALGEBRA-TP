@@ -19,13 +19,6 @@ function wrapInfoText(ctx, text, maxWidth) {
   return lines;
 }
 
-const PUNCTUATION_PAUSES = {
-  ",": { hold: 0.14, fadeOut: 0.075, fadeIn: 0.105 },
-  ".": { hold: 0.30, fadeOut: 0.105, fadeIn: 0.145 },
-  "?": { hold: 0.30, fadeOut: 0.105, fadeIn: 0.145 },
-  "!": { hold: 0.30, fadeOut: 0.105, fadeIn: 0.145 }
-};
-
 export const SLIDE_AUDIO_DURATIONS = [
   34.47, // Slide 1
   36.20, // Slide 2
@@ -56,7 +49,6 @@ export class SpeechSystem {
     this.audioAnalyser = null;
     this.audioData = null;
     this.audioSource = null;
-    this.audioGain = null;
 
     this.activeAudio = null;
     this.speaking = false;
@@ -70,10 +62,6 @@ export class SpeechSystem {
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = 0;
     this.dialogueDrawnText = "";
-    this.punctuationMarkers = [];
-    this.nextPunctuationMarkerIndex = 0;
-    this.punctuationPauseTimer = null;
-    this.isPunctuationPause = false;
 
     this.infoGroup = new THREE.Group();
     this.scene.add(this.infoGroup);
@@ -135,91 +123,6 @@ export class SpeechSystem {
     return Math.max(0, Math.min(1, this.getCurrentAudioTime() / duration));
   }
 
-  buildPunctuationMarkers() {
-    const totalChars = this.dialogueSentences.reduce((acc, sentence) => acc + sentence.length, 0);
-    if (!totalChars) {
-      this.punctuationMarkers = [];
-      return;
-    }
-
-    const markers = [];
-    let offset = 0;
-    this.dialogueSentences.forEach(sentence => {
-      [...sentence].forEach((character, index) => {
-        const pause = PUNCTUATION_PAUSES[character];
-        if (pause) {
-          markers.push({
-            progress: Math.min(0.999, (offset + index + 0.9) / totalChars),
-            duration: pause
-          });
-        }
-      });
-      offset += sentence.length;
-    });
-    this.punctuationMarkers = markers;
-  }
-
-  clearPunctuationPause() {
-    if (this.punctuationPauseTimer) {
-      window.clearTimeout(this.punctuationPauseTimer);
-      this.punctuationPauseTimer = null;
-    }
-    this.isPunctuationPause = false;
-    this.restoreAudioGain();
-  }
-
-  fadeAudioTo(value, duration) {
-    if (!this.audioGain || !this.audioContext) return;
-    const now = this.audioContext.currentTime;
-    const gain = this.audioGain.gain;
-    gain.cancelScheduledValues(now);
-    gain.setValueAtTime(gain.value, now);
-    gain.linearRampToValueAtTime(value, now + duration);
-  }
-
-  restoreAudioGain() {
-    if (!this.audioGain || !this.audioContext) return;
-    const now = this.audioContext.currentTime;
-    const gain = this.audioGain.gain;
-    gain.cancelScheduledValues(now);
-    gain.setValueAtTime(1, now);
-  }
-
-  maybePauseAtPunctuation(currentTime, duration) {
-    if (!this.speaking || this.paused || this.isPunctuationPause || !this.activeAudio || duration <= 0) return;
-
-    const progress = currentTime / duration;
-    const marker = this.punctuationMarkers[this.nextPunctuationMarkerIndex];
-    if (!marker || progress < marker.progress) return;
-
-    this.nextPunctuationMarkerIndex += 1;
-    this.isPunctuationPause = true;
-    this.fadeAudioTo(0.08, marker.duration.fadeOut);
-    this.punctuationPauseTimer = window.setTimeout(() => {
-      this.punctuationPauseTimer = null;
-      if (!this.speaking || this.paused || !this.activeAudio) {
-        this.restoreAudioGain();
-        this.isPunctuationPause = false;
-        return;
-      }
-
-      this.activeAudio.pause();
-      this.punctuationPauseTimer = window.setTimeout(() => {
-        this.punctuationPauseTimer = null;
-        this.isPunctuationPause = false;
-        this.fadeAudioTo(1, marker.duration.fadeIn);
-        if (!this.speaking || this.paused || !this.activeAudio) {
-          this.restoreAudioGain();
-          return;
-        }
-        this.activeAudio.play().catch(error => {
-          console.warn("No se pudo reanudar la pausa de puntuación:", error);
-          this.restoreAudioGain();
-        });
-      }, marker.duration.hold * 1000);
-    }, marker.duration.fadeOut * 1000);
-  }
-
   configureAudioAnalyser() {
     if (this.audioContext) return;
     try {
@@ -228,17 +131,13 @@ export class SpeechSystem {
       this.audioAnalyser.fftSize = 256;
       this.audioAnalyser.smoothingTimeConstant = 0.82;
       this.audioSource = this.audioContext.createMediaElementSource(this.audioPlayer);
-      this.audioGain = this.audioContext.createGain();
-      this.audioGain.gain.value = 1;
-      this.audioSource.connect(this.audioGain);
-      this.audioGain.connect(this.audioAnalyser);
+      this.audioSource.connect(this.audioAnalyser);
       this.audioAnalyser.connect(this.audioContext.destination);
       this.audioData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
     } catch (error) {
       console.warn("Audio reactivo no disponible", error);
       this.audioContext = null;
       this.audioAnalyser = null;
-      this.audioGain = null;
     }
   }
 
@@ -286,8 +185,6 @@ export class SpeechSystem {
     this.dialogueContext = null;
     this.dialogueTexture = null;
     this.dialogueSentences = splitDialogue(this.slides[index]?.script || "");
-    this.buildPunctuationMarkers();
-    this.nextPunctuationMarkerIndex = 0;
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = performance.now() / 1000;
     this.infoGroup.position.set(0, 0, -0.18);
@@ -343,8 +240,6 @@ export class SpeechSystem {
     const audioDuration = this.getAudioDuration();
     const currentTime = this.getCurrentAudioTime();
 
-    this.maybePauseAtPunctuation(currentTime, audioDuration);
-
     const { index: wantedIndex, sentenceProgress } = this.speaking
       ? this.getSentenceIndexAndProgress(currentTime, audioDuration)
       : { index: this.dialogueSentenceIndex, sentenceProgress: 1 };
@@ -360,9 +255,7 @@ export class SpeechSystem {
     const sentence = this.dialogueSentences[this.dialogueSentenceIndex] || "";
     const amount = this.paused
       ? sentence.length
-      : this.isPunctuationPause
-        ? Math.min(sentence.length, Math.ceil(sentenceProgress * sentence.length))
-        : Math.min(sentence.length, Math.floor(sentenceProgress * sentence.length));
+      : Math.min(sentence.length, Math.floor(sentenceProgress * sentence.length));
     this.drawDialogue(sentence.slice(0, amount));
   }
 
@@ -370,7 +263,6 @@ export class SpeechSystem {
     this.stop();
     this.speaking = true;
     this.paused = false;
-    this.nextPunctuationMarkerIndex = 0;
     this.speakStartedAt = performance.now() / 1000;
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = this.speakStartedAt;
@@ -383,7 +275,6 @@ export class SpeechSystem {
       this.audioPlayer.currentTime = 0;
 
       this.audioPlayer.onended = () => {
-        this.clearPunctuationPause();
         this.activeAudio = null;
         this.speaking = false;
         this.paused = false;
@@ -393,7 +284,6 @@ export class SpeechSystem {
       };
 
       this.audioPlayer.onerror = () => {
-        this.clearPunctuationPause();
         this.activeAudio = null;
         this.speaking = false;
         this.paused = false;
@@ -413,7 +303,6 @@ export class SpeechSystem {
 
   pause() {
     if (this.activeAudio) {
-      this.clearPunctuationPause();
       this.activeAudio.pause();
       this.speaking = false;
       this.paused = true;
@@ -424,7 +313,6 @@ export class SpeechSystem {
 
   resume() {
     if (this.activeAudio) {
-      this.restoreAudioGain();
       this.activeAudio.play().then(() => {
         this.speaking = true;
         this.paused = false;
@@ -435,7 +323,6 @@ export class SpeechSystem {
   }
 
   stop() {
-    this.clearPunctuationPause();
     if (this.activeAudio) {
       this.activeAudio.pause();
       this.activeAudio.currentTime = 0;
@@ -445,7 +332,6 @@ export class SpeechSystem {
     }
     this.speaking = false;
     this.paused = false;
-    this.nextPunctuationMarkerIndex = 0;
     if (this.dialogueSentences.length) {
       this.dialogueSentenceIndex = 0;
       this.dialogueSentenceStartedAt = performance.now() / 1000;
@@ -457,10 +343,6 @@ export class SpeechSystem {
   }
 
   updateAudioReactive() {
-    if (this.isPunctuationPause) {
-      this.voiceEnergy = 0;
-      return;
-    }
     if (!this.audioAnalyser || !this.audioData) {
       this.voiceEnergy = this.speaking ? 0.16 : 0;
       return;

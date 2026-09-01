@@ -38,7 +38,7 @@ export class AvatarController {
     this.speaking = false;
     this.voiceEnergy = 0;
     this.openingMode = false;
-    this.layoutXTarget = 2.05;
+    this.layoutXTarget = 2.42;
 
     this.openingSmileStartedAt = 0;
     this.finalSmileStartedAt = 0;
@@ -121,7 +121,7 @@ export class AvatarController {
 
   setOpeningMode(isOpening) {
     this.openingMode = isOpening;
-    this.layoutXTarget = isOpening ? 0 : 2.05;
+    this.layoutXTarget = isOpening ? 0 : 2.42;
     this.lookAtPresentation = false;
     if (this.activeModel) {
       this.faceBehavior.head.targetYaw = motionTokens.attention.audienceYaw;
@@ -200,13 +200,13 @@ export class AvatarController {
     }
 
     // Behavior updates
-    if (!this.faceBehavior.glance.active && now > this.faceBehavior.glance.nextAt) {
+    if (!this.openingMode && !this.faceBehavior.glance.active && now > this.faceBehavior.glance.nextAt) {
       this.faceBehavior.glance.active = true;
       this.faceBehavior.glance.until = now + randomBetween(1.7, 3.4);
       this.lookAtPresentation = true;
       this.setHeadAttentionTarget(now, true);
     }
-    if (this.faceBehavior.glance.active && now > this.faceBehavior.glance.until) {
+    if (!this.openingMode && this.faceBehavior.glance.active && now > this.faceBehavior.glance.until) {
       this.faceBehavior.glance.active = false;
       this.lookAtPresentation = false;
       this.faceBehavior.glance.nextAt = now + randomBetween(6.5, 12.5);
@@ -216,7 +216,14 @@ export class AvatarController {
       this.faceBehavior.smile.until = now + randomBetween(0.95, 1.8);
       this.faceBehavior.smile.nextAt = now + randomBetween(8.5, 18);
     }
-    if (now > this.faceBehavior.head.nextTargetAt) {
+    if (this.openingMode) {
+      this.faceBehavior.glance.active = false;
+      this.lookAtPresentation = false;
+      this.faceBehavior.head.targetYaw = motionTokens.attention.audienceYaw;
+      this.faceBehavior.head.targetPitch = 0.008;
+      this.faceBehavior.head.targetRoll = -0.008;
+      this.faceBehavior.head.targetBob = 0;
+    } else if (now > this.faceBehavior.head.nextTargetAt) {
       this.setHeadAttentionTarget(now, this.lookAtPresentation);
     }
 

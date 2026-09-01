@@ -21,9 +21,10 @@
 
 /* Reacomodación cuando el Visor 3D Cartesiano está abierto */
 .app-shell.has-active-3d-graph .procedimiento-layer {
-  top: var(--deck-gap);
+  top: auto;
+  bottom: calc(clamp(74px, 7vh, 90px) + min(34vh, 360px) + var(--deck-gap));
   transform: none;
-  max-height: calc(100vh - clamp(74px, 7vh, 90px) - min(34vh, 360px) - (var(--deck-gap) * 2));
+  max-height: 88vh;
 }
 
 /* Grillas adaptativas proporcionales */
