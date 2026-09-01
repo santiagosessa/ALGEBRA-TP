@@ -1,11 +1,11 @@
-# Agent Instructions
+# Instrucciones para el Agente
 
-## Repository
-- Remote `origin`: `https://github.com/santiagosessa/ALGEBRA-TP.git`
-- Work from `D:\Presentacion ALGEBRA`; the web app lives in `face-lab\`.
+## Repositorio
+- Remoto `origin`: `https://github.com/santiagosessa/ALGEBRA-TP.git`
+- Trabajar desde `D:\Presentacion ALGEBRA`; la web app reside en `face-lab\`.
 
-## Before Editing Code
-- Inspect the latest remote and local state before every code change:
+## Antes de Editar Código
+- Inspecciona el estado más reciente, tanto remoto como local, antes de realizar cualquier cambio en el código:
 
 ```powershell
 git fetch origin
@@ -14,44 +14,49 @@ git log --oneline --decorate -5
 git diff --stat
 ```
 
-- If the worktree is clean, fast-forward from `main` before editing:
+- Si el worktree está limpio, realiza un fast-forward desde `main` antes de editar:
 
 ```powershell
 git pull --ff-only origin main
 ```
 
-- If local changes exist, inspect and preserve them; never reset, checkout, or overwrite user work.
+- Si existen cambios locales, inspecciónalos y presérvalos; nunca hagas reset, checkout ni sobrescribas el trabajo del usuario.
 
 ## Package Manager
-- Use **npm** in `face-lab\`: `npm install`, `npm run dev`.
-- Keep dependencies local; do not add runtime CDN dependencies.
+- Usa **npm** en `face-lab\`: `npm install`, `npm run dev`.
+- Mantén las dependencias locales; no agregues dependencias de CDN en runtime.
 
 ## File-Scoped Commands
 | Task | Command |
-|------|---------|
-| Check server syntax | `node --check face-lab\server.mjs` |
-| Render deck assets | `node face-lab\scripts\render-google-deck.mjs` |
-| Run app | `npm run dev` from `face-lab\` |
+|---|---|
+| Comprobar sintaxis del servidor | `node --check face-lab\server.mjs` |
+| Renderizar assets de la presentación | `node face-lab\scripts\render-google-deck.mjs` |
+| Ejecutar aplicación | `npm run dev` desde `face-lab\` |
 
-## Commit and Push
-- After each completed code change, review `git diff`, stage only intended files, commit, and push:
+## Commit y Push
+- Después de completar cada cambio de código, revisa `git diff`, añade al stage solo los archivos previstos, haz commit y push:
 
 ```powershell
 git add <intended-files>
-git commit -m "Describe the change"
+git commit -m "Describe el cambio"
 git push origin HEAD:main
 ```
 
-- Do not force-push. If pull, commit, or push fails, report the exact blocker instead of bypassing it.
+- No hagas force-push. Si pull, commit o push fallan, reporta el bloqueo exacto en lugar de ignorarlo.
 
-## Commit Attribution
-- AI commits MUST include:
+## Autoría y Contribuidores
+- El único autor y contribuidor de este repositorio es **santiagosessa** (`santiagosessa <santiagosessa07@gmail.com>`).
+- **PROHIBIDO** agregar líneas de coautoría o atribución como `Co-Authored-By: ...` (incluyendo `Co-Authored-By: OpenAI Codex <noreply@openai.com>` o cualquier otra IA o entidad) en los mensajes de commit.
+- Ninguna IA ni agente debe figurar como autor, co-autor ni contribuidor.
 
-```text
-Co-Authored-By: OpenAI Codex <noreply@openai.com>
-```
 
-## Key Conventions
-- Keep the 3D presenter fixed to the right and the deck visual layer to the left.
-- Prefer transforms and GSAP timelines for motion; respect `prefers-reduced-motion`.
-- Preserve the local `face-lab\presentation-assets\` and `face-lab\models\facecap.glb` assets used by the page.
+## Convenciones Clave
+- Mantén el presentador 3D fijo a la derecha y el deck visual layer a la izquierda.
+- Prefiere transforms y GSAP timelines para las animaciones; respeta `prefers-reduced-motion`.
+- Preserva los assets locales en `face-lab\presentation-assets\` y `face-lab\models\facecap.glb` utilizados por la página.
+
+Agrega al commit una breve descripción del cambio hecho
+
+## Contenido generado por IA
+- No publiques en GitHub contenidos hechos por o para IAs: prompts, respuestas, transcripciones, datasets, assets generados, outputs de herramientas, credenciales ni archivos temporales.
+- Antes de hacer commit, revisa el stage y excluye ese material; publica únicamente código, configuración y assets originales autorizados por el usuario.

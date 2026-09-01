@@ -14,7 +14,8 @@ const mime = {
   ".png": "image/png",
 };
 const securityHeaders = {
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+  // Report only: KTX2Loader needs a trusted local worker with runtime evaluation.
+  "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
   "Cross-Origin-Resource-Policy": "same-origin",
   "Permissions-Policy": "camera=(), geolocation=(), microphone=()",
   "Referrer-Policy": "no-referrer",
@@ -40,10 +41,19 @@ createServer(async (request, response) => {
   }
   const relativePath = requestPath === "/" ? "/index.html" : requestPath;
   const visualAssetsRoot = normalize(join(root, "..", "assets_utn_visuales"));
-  const filePath = requestPath.startsWith("/assets/utn_visuales/")
-    ? normalize(join(visualAssetsRoot, requestPath.slice("/assets/utn_visuales/".length)))
-    : normalize(join(root, relativePath));
-  const allowedRoot = requestPath.startsWith("/assets/utn_visuales/") ? visualAssetsRoot : root;
+  const procedimientoAssetsRoot = normalize(join(root, "..", "procedimiento antigravity imagenes", "transparentes"));
+  let filePath;
+  let allowedRoot;
+  if (requestPath.startsWith("/assets/procedimiento/")) {
+    filePath = normalize(join(procedimientoAssetsRoot, requestPath.slice("/assets/procedimiento/".length)));
+    allowedRoot = procedimientoAssetsRoot;
+  } else if (requestPath.startsWith("/assets/utn_visuales/")) {
+    filePath = normalize(join(visualAssetsRoot, requestPath.slice("/assets/utn_visuales/".length)));
+    allowedRoot = visualAssetsRoot;
+  } else {
+    filePath = normalize(join(root, relativePath));
+    allowedRoot = root;
+  }
 
   if (!isWithinRoot(filePath, allowedRoot)) {
     response.writeHead(403, { ...securityHeaders, "Content-Type": "text/plain; charset=utf-8" });

@@ -1,0 +1,255 @@
+import * as THREE from "three";
+import { slides } from "./data/slides.js";
+import { procedimientoScenes } from "./data/procedimiento-scenes.js";
+import { ForestEnvironment } from "./avatar/forest-env.js";
+import { AvatarController } from "./avatar/avatar-controller.js";
+import { SpeechSystem } from "./audio/speech-system.js";
+import { ProcedimientoView } from "./ui/procedimiento-view.js";
+import { PresentationController } from "./ui/presentation-controller.js";
+import { Cartesian3DExplorer } from "../cartesian-3d-explorer.js";
+
+class App {
+  constructor() {
+    this.canvas = document.querySelector("#avatar-canvas");
+    this.avatarStage = document.querySelector("#avatar-stage");
+
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(36, 1, 0.01, 100);
+    this.camera.position.set(0, 0.08, 6.2);
+    this.camera.lookAt(0, 0.02, 0);
+
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
+
+    const mobile = window.matchMedia("(max-width: 820px)").matches;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 0.85 : 1));
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.08;
+    this.renderer.shadowMap.enabled = false;
+
+    this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    this.lastFrameAt = 0;
+    this.elapsedTime = 0;
+
+    this.initLighting();
+    this.initModules();
+    this.initCartesian3D();
+    this.initResize();
+    this.start();
+  }
+
+  initLighting() {
+    this.scene.add(new THREE.HemisphereLight(0xb5d8d2, 0x071018, 1.5));
+    const key = new THREE.DirectionalLight(0xffe9c5, 2.8);
+    key.position.set(1.4, 3.8, 5);
+    this.scene.add(key);
+
+    const rim = new THREE.PointLight(0x75d3c0, 12, 9, 2);
+    rim.position.set(3.4, 1.1, 2.8);
+    this.scene.add(rim);
+
+    const warm = new THREE.PointLight(0xf0b36c, 9, 7, 2);
+    warm.position.set(-1.8, 0.4, 3);
+    this.scene.add(warm);
+  }
+
+  initModules() {
+    const statusEl = document.querySelector("#live-status");
+    const moodEl = document.querySelector("#avatar-mood");
+
+    this.forestEnv = new ForestEnvironment(this.scene);
+
+    this.avatar = new AvatarController({
+      canvas: this.canvas,
+      scene: this.scene,
+      camera: this.camera,
+      renderer: this.renderer,
+      onStatus: text => {
+        if (statusEl) statusEl.textContent = text;
+      },
+      onMood: (title, desc) => {
+        if (moodEl) moodEl.innerHTML = `<span>${title}</span><strong>${desc}</strong>`;
+      }
+    });
+
+    this.speech = new SpeechSystem({
+      slides,
+      scene: this.scene,
+      onStatus: text => {
+        if (statusEl) statusEl.textContent = text;
+      },
+      onStateChange: state => {
+        this.presentation.setVoiceState(state);
+        this.avatar.speaking = state === "speaking";
+        this.procedimientoView.updateFocus(this.speech.dialogueSentenceIndex, state === "speaking");
+      },
+      onSentenceChange: sentenceIdx => {
+        this.procedimientoView.updateFocus(sentenceIdx, this.speech.speaking);
+      },
+      onEnded: () => {
+        if (this.presentation.activeIndex === slides.length - 1) {
+          this.avatar.triggerFinalSmile();
+        } else {
+          window.setTimeout(() => {
+            if (!this.speech.speaking && !this.speech.paused) {
+              this.presentation.next();
+              this.speech.play();
+            }
+          }, 850);
+        }
+      }
+    });
+
+    this.procedimientoView = new ProcedimientoView({
+      layerEl: document.querySelector("#procedimiento-layer"),
+      headerEl: document.querySelector(".procedimiento-header"),
+      phaseEl: document.querySelector("#procedimiento-phase"),
+      titleEl: document.querySelector("#procedimiento-title"),
+      subtitleEl: document.querySelector("#procedimiento-subtitle"),
+      gridEl: document.querySelector("#procedimiento-grid"),
+      scenes: procedimientoScenes,
+      slides
+    });
+
+    this.presentation = new PresentationController({
+      slides,
+      elements: {
+        stageIndex: document.querySelector("#stage-index"),
+        stageTitle: document.querySelector("#stage-title"),
+        stageSubtitle: document.querySelector("#stage-subtitle"),
+        phaseTag: document.querySelector("#phase-tag"),
+        stageProgress: document.querySelector("#stage-progress"),
+        railCurrent: document.querySelector("#rail-current"),
+        scriptText: document.querySelector("#script-text"),
+        prevBtn: document.querySelector("#prev-btn"),
+        nextBtn: document.querySelector("#next-btn"),
+        speakBtn: document.querySelector("#speak-btn"),
+        stopBtn: document.querySelector("#stop-btn"),
+        pauseBtn: document.querySelector("#pause-btn"),
+        avatarState: document.querySelector("#avatar-state"),
+        avatarStage: document.querySelector("#avatar-stage"),
+        talkingTopic: document.querySelector("#talking-topic"),
+        talkingTopicText: document.querySelector("#talking-topic-text")
+      },
+      onSlideChange: index => {
+        this.speech.setSlide(index);
+        this.procedimientoView.renderScene(index);
+        if (statusEl) statusEl.textContent = "Modelo 3D: listo · Voz: lista";
+      },
+      onPlay: () => {
+        this.speech.play();
+      },
+      onPause: () => {
+        this.speech.pause();
+      },
+      onResume: () => {
+        this.speech.resume();
+      },
+      onStop: () => {
+        this.speech.stop();
+      }
+    });
+  }
+
+  initCartesian3D() {
+    const slideTo3DScene = {
+      0: "interseccion",
+      1: "interseccion",
+      2: "interseccion",
+      3: "angulo",
+      4: "parametro_paralelo",
+      5: "proyectantes",
+      6: "auditoria",
+      7: "parametro_incompatible",
+      8: "auditoria",
+      9: "interseccion"
+    };
+
+    const c3dContainer = document.querySelector("#cartesian-3d-container");
+    if (c3dContainer) {
+      this.c3dExplorer = new Cartesian3DExplorer(c3dContainer);
+    }
+
+    const btnToggle3D = document.querySelector("#btn-toggle-3d");
+    if (btnToggle3D && this.c3dExplorer) {
+      btnToggle3D.addEventListener("click", () => {
+        if (c3dContainer.classList.contains("is-visible")) {
+          this.c3dExplorer.hide();
+        } else {
+          const sceneKey = slideTo3DScene[this.presentation.activeIndex] || "interseccion";
+          this.c3dExplorer.show(sceneKey);
+        }
+      });
+    }
+  }
+
+  initResize() {
+    const handleResize = () => {
+      if (!this.renderer || !this.avatarStage) return;
+      const rect = this.avatarStage.getBoundingClientRect();
+      this.camera.aspect = Math.max(rect.width, 1) / Math.max(rect.height, 1);
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(Math.max(rect.width, 1), Math.max(rect.height, 1), false);
+    };
+
+    new ResizeObserver(handleResize).observe(this.avatarStage);
+    window.addEventListener("resize", handleResize);
+    handleResize();
+  }
+
+  async start() {
+    this.presentation.updateUI();
+    this.procedimientoView.renderScene(0);
+    this.speech.setSlide(0);
+
+    const loaded = await this.avatar.load();
+    if (loaded) {
+      const fallback = document.querySelector("#avatar-fallback");
+      if (fallback) fallback.hidden = true;
+      this.avatar.triggerOpeningSmile();
+    }
+
+    this.animate();
+  }
+
+  animate(now = performance.now()) {
+    requestAnimationFrame(time => this.animate(time));
+    if (document.hidden) return;
+
+    const targetFps = this.speech.speaking ? 36 : 24;
+    const frameInterval = 1000 / targetFps;
+    if (this.lastFrameAt && now - this.lastFrameAt < frameInterval) return;
+
+    const delta = Math.min(this.lastFrameAt ? (now - this.lastFrameAt) / 1000 : 0.016, 0.05);
+    this.lastFrameAt = now;
+    this.elapsedTime += delta;
+
+    this.forestEnv.update(this.elapsedTime, this.reducedMotion);
+    this.speech.updateDialogue();
+    this.speech.updateAudioReactive();
+
+    const currentCue = this.avatar.speaking ? this.speech.getCurrentMouthCue() : null;
+    const speechProgress = this.speech.getSpeechProgress();
+    this.avatar.voiceEnergy = this.speech.voiceEnergy;
+
+    this.avatar.update(delta, this.elapsedTime, this.reducedMotion, currentCue, speechProgress);
+
+    if (this.renderer) {
+      this.renderer.render(this.scene, this.camera);
+    }
+  }
+}
+
+// Instantiate immediately or on DOM ready
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    window.app = new App();
+  });
+} else {
+  window.app = new App();
+}
