@@ -105,6 +105,7 @@ export class PresentationController {
   updateUI() {
     const slide = this.slides[this.activeIndex] || this.slides[0];
 
+    if (this.els.slideTitle) this.els.slideTitle.textContent = slide.title;
     if (this.els.stageIndex) this.els.stageIndex.textContent = slide.index;
     if (this.els.stageTitle) this.els.stageTitle.textContent = slide.title;
     if (this.els.stageSubtitle) this.els.stageSubtitle.textContent = slide.subtitle;

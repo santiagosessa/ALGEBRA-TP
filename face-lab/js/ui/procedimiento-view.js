@@ -3,10 +3,6 @@ import { gsap } from "gsap";
 export class ProcedimientoView {
   constructor(options) {
     this.layerEl = options.layerEl;
-    this.headerEl = options.headerEl;
-    this.phaseEl = options.phaseEl;
-    this.titleEl = options.titleEl;
-    this.subtitleEl = options.subtitleEl;
     this.gridEl = options.gridEl;
     this.scenes = options.scenes;
     this.slides = options.slides;
@@ -19,19 +15,8 @@ export class ProcedimientoView {
     if (!this.layerEl || !this.gridEl) return;
     this.currentSceneIndex = index;
     const scene = this.scenes[index] || this.scenes[0];
-    const slide = this.slides[index] || this.slides[0];
 
     this.procDomItems.forEach(item => gsap.killTweensOf(item));
-
-    if (this.phaseEl) {
-      this.phaseEl.textContent = (slide.phase || "Fase").toUpperCase();
-    }
-    if (this.titleEl) {
-      this.titleEl.textContent = `${slide.index} · ${slide.title}`;
-    }
-    if (this.subtitleEl) {
-      this.subtitleEl.textContent = slide.subtitle;
-    }
 
     this.gridEl.className = `procedimiento-grid ${scene.layout || "grid-s1"}`;
     this.gridEl.innerHTML = "";
@@ -46,7 +31,15 @@ export class ProcedimientoView {
       itemEl.setAttribute("role", "img");
       itemEl.setAttribute("aria-label", itemDef.label);
 
-      itemEl.innerHTML = `<img class="proc-card-img" src="./cards/${itemDef.cardFile}" alt="${itemDef.label}" draggable="false" />`;
+      itemEl.innerHTML = `
+        <img class="proc-card-img" src="./cards/${itemDef.cardFile}" alt="${itemDef.label}" draggable="false" />
+        <div class="proc-spotlight-frame" aria-hidden="true">
+          <span class="spotlight-bracket top-left"></span>
+          <span class="spotlight-bracket top-right"></span>
+          <span class="spotlight-bracket bottom-left"></span>
+          <span class="spotlight-bracket bottom-right"></span>
+        </div>
+      `;
 
       itemEl._dragX = 0;
       itemEl._dragY = 0;
@@ -92,8 +85,8 @@ export class ProcedimientoView {
         const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
         const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
         gsap.to(itemEl, {
-          rotateY: nx * 4.5,
-          rotateX: -ny * 4.5,
+          rotateY: nx * 4,
+          rotateX: -ny * 4,
           duration: 0.25,
           ease: "power2.out",
           overwrite: "auto"
@@ -123,7 +116,7 @@ export class ProcedimientoView {
         opacity: 0.92,
         y: 0,
         scale: 1,
-        duration: 0.42,
+        duration: 0.4,
         stagger: 0.05,
         ease: "power2.out"
       }
@@ -137,45 +130,79 @@ export class ProcedimientoView {
     if (!this.procDomItems.length) return;
 
     const scene = this.scenes[this.currentSceneIndex] || this.scenes[0];
+    const highlightDef = scene.sentenceHighlights?.[dialogueSentenceIndex];
 
-    scene.items.forEach((itemDef, idx) => {
-      const itemEl = this.procDomItems[idx];
-      if (!itemEl) return;
-      if (!speaking) {
-        if (itemEl.classList.contains("is-focused")) {
-          itemEl.classList.remove("is-focused");
-          gsap.to(itemEl, {
-            opacity: 0.92,
-            scale: 1,
-            duration: 0.35,
-            ease: "power2.out",
+    this.procDomItems.forEach((itemEl, idx) => {
+      const frameEl = itemEl.querySelector(".proc-spotlight-frame");
+
+      if (!speaking || !highlightDef) {
+        gsap.to(itemEl, {
+          opacity: 0.92,
+          scale: 1,
+          duration: 0.35,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+        if (frameEl) {
+          gsap.to(frameEl, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.25,
+            ease: "power1.out",
             overwrite: "auto"
           });
         }
         return;
       }
 
-      const isTarget = itemDef.focusSteps ? itemDef.focusSteps.includes(dialogueSentenceIndex) : true;
-      const wasFocused = itemEl.classList.contains("is-focused");
+      // Check if target is all cards (-1) or this specific card
+      const isTargetCard = highlightDef.cardIndex === -1 || highlightDef.cardIndex === idx;
 
-      if (isTarget && !wasFocused) {
-        itemEl.classList.add("is-focused");
+      if (isTargetCard) {
         gsap.to(itemEl, {
           opacity: 1,
-          scale: 1.025,
-          duration: 0.4,
-          ease: "back.out(1.4)",
-          overwrite: "auto"
-        });
-      } else if (!isTarget && wasFocused) {
-        itemEl.classList.remove("is-focused");
-        gsap.to(itemEl, {
-          opacity: 0.25,
-          scale: 1,
+          scale: highlightDef.cardIndex === -1 ? 1 : 1.015,
           duration: 0.35,
           ease: "power2.out",
           overwrite: "auto"
         });
+
+        if (frameEl && highlightDef.cardIndex === idx) {
+          // Morph spotlight frame over the exact formula / line
+          gsap.to(frameEl, {
+            top: highlightDef.top,
+            left: highlightDef.left,
+            width: highlightDef.width,
+            height: highlightDef.height,
+            opacity: 1,
+            scale: 1,
+            duration: 0.38,
+            ease: "back.out(1.2)",
+            overwrite: "auto"
+          });
+        } else if (frameEl) {
+          gsap.to(frameEl, {
+            opacity: 0,
+            duration: 0.2,
+            overwrite: "auto"
+          });
+        }
+      } else {
+        // Dim other non-target cards
+        gsap.to(itemEl, {
+          opacity: 0.35,
+          scale: 0.99,
+          duration: 0.35,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+        if (frameEl) {
+          gsap.to(frameEl, {
+            opacity: 0,
+            duration: 0.2,
+            overwrite: "auto"
+          });
+        }
       }
     });
   }

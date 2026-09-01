@@ -107,10 +107,6 @@ class App {
 
     this.procedimientoView = new ProcedimientoView({
       layerEl: document.querySelector("#procedimiento-layer"),
-      headerEl: document.querySelector(".procedimiento-header"),
-      phaseEl: document.querySelector("#procedimiento-phase"),
-      titleEl: document.querySelector("#procedimiento-title"),
-      subtitleEl: document.querySelector("#procedimiento-subtitle"),
       gridEl: document.querySelector("#procedimiento-grid"),
       scenes: procedimientoScenes,
       slides
@@ -119,27 +115,29 @@ class App {
     this.presentation = new PresentationController({
       slides,
       elements: {
-        stageIndex: document.querySelector("#stage-index"),
-        stageTitle: document.querySelector("#stage-title"),
-        stageSubtitle: document.querySelector("#stage-subtitle"),
-        phaseTag: document.querySelector("#phase-tag"),
-        stageProgress: document.querySelector("#stage-progress"),
-        railCurrent: document.querySelector("#rail-current"),
-        scriptText: document.querySelector("#script-text"),
+        slideTitle: document.querySelector("#slide-title"),
         prevBtn: document.querySelector("#prev-btn"),
         nextBtn: document.querySelector("#next-btn"),
         speakBtn: document.querySelector("#speak-btn"),
         stopBtn: document.querySelector("#stop-btn"),
         pauseBtn: document.querySelector("#pause-btn"),
         avatarState: document.querySelector("#avatar-state"),
-        avatarStage: document.querySelector("#avatar-stage"),
-        talkingTopic: document.querySelector("#talking-topic"),
-        talkingTopicText: document.querySelector("#talking-topic-text")
+        avatarStage: document.querySelector("#avatar-stage")
       },
       onSlideChange: index => {
         this.speech.setSlide(index);
         this.procedimientoView.renderScene(index);
         if (statusEl) statusEl.textContent = "Modelo 3D: listo · Voz: lista";
+
+        if (document.querySelector(".app-shell")?.classList.contains("has-active-3d-graph") && this.c3dExplorer) {
+          const slideTo3DScene = {
+            0: "interseccion", 1: "interseccion", 2: "interseccion",
+            3: "angulo", 4: "parametro_paralelo", 5: "proyectantes",
+            6: "auditoria", 7: "parametro_incompatible", 8: "auditoria", 9: "interseccion"
+          };
+          const sceneKey = slideTo3DScene[index] || "interseccion";
+          this.c3dExplorer.show(sceneKey);
+        }
       },
       onPlay: () => {
         this.speech.play();
@@ -170,6 +168,7 @@ class App {
       9: "interseccion"
     };
 
+    const appShell = document.querySelector(".app-shell");
     const c3dContainer = document.querySelector("#cartesian-3d-container");
     if (c3dContainer) {
       this.c3dExplorer = new Cartesian3DExplorer(c3dContainer);
@@ -178,11 +177,24 @@ class App {
     const btnToggle3D = document.querySelector("#btn-toggle-3d");
     if (btnToggle3D && this.c3dExplorer) {
       btnToggle3D.addEventListener("click", () => {
-        if (c3dContainer.classList.contains("is-visible")) {
+        const isVisible = appShell?.classList.contains("has-active-3d-graph");
+        if (isVisible) {
+          appShell?.classList.remove("has-active-3d-graph");
+          btnToggle3D.classList.remove("is-active");
           this.c3dExplorer.hide();
         } else {
+          appShell?.classList.add("has-active-3d-graph");
+          btnToggle3D.classList.add("is-active");
           const sceneKey = slideTo3DScene[this.presentation.activeIndex] || "interseccion";
           this.c3dExplorer.show(sceneKey);
+        }
+      });
+
+      // Also listen to close button inside 3D explorer
+      c3dContainer.addEventListener("click", e => {
+        if (e.target.closest(".c3d-btn-close")) {
+          appShell?.classList.remove("has-active-3d-graph");
+          btnToggle3D.classList.remove("is-active");
         }
       });
     }

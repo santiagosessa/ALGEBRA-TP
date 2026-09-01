@@ -759,7 +759,8 @@ export class Cartesian3DExplorer {
     if (sceneKey) {
       this.loadScene(sceneKey);
     }
-    this.onResize();
+    requestAnimationFrame(() => this.onResize());
+    setTimeout(() => this.onResize(), 150);
   }
 
   hide() {

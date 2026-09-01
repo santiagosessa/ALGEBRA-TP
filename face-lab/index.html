@@ -10,99 +10,70 @@
   </head>
   <body>
     <main class="app-shell" aria-label="Presentación interactiva de Álgebra y Geometría Analítica">
-      <!-- Topbar Header -->
-      <header class="topbar">
-        <div class="brand-lockup">
-          <div class="brand-mark" aria-hidden="true">R³</div>
-          <div>
-            <p class="eyebrow">UTN · FRLP · COMISIÓN S16</p>
-            <p class="brand-name">Auditoría en R³ <span style="color: var(--orange)">/</span> presentación interactiva</p>
-          </div>
-        </div>
-        <div class="topbar-meta">
-          <a class="source-link" href="https://docs.google.com/presentation/d/1AuNEaZbGGlhHWnt8OZZ2UVr4Fr9Z_kfQi5df2maS-Jk/edit" target="_blank" rel="noopener noreferrer" aria-label="Abrir presentación original de Google Slides">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>
-            Fuente original
-          </a>
-          <div class="live-pill"><span class="live-dot" aria-hidden="true"></span><span id="avatar-state">En línea</span></div>
-        </div>
-      </header>
+      <!-- Título de la diapositiva en la esquina superior izquierda -->
+      <h1 id="slide-title" class="slide-corner-title">Informe técnico &amp; auditoría epistemológica</h1>
 
       <!-- Main Presentation Workspace -->
       <section class="workspace">
         <!-- Stage Area (Left Side) -->
-        <section class="stage-panel panel" aria-label="Diapositiva actual">
+        <section class="stage-panel" aria-label="Diapositiva actual">
+          <!-- Procedimiento Visual Cards Layer -->
+          <div id="procedimiento-layer" class="procedimiento-layer" aria-live="polite" aria-label="Apoyo visual interactivo de la escena actual">
+            <div id="procedimiento-grid" class="procedimiento-grid" role="region" aria-label="Objetos visuales de la escena"></div>
+          </div>
+
+          <!-- Cartesian 3D Viewer Container (Opens below presentation) -->
           <div id="cartesian-3d-container"></div>
-
-          <div id="talking-topic" class="talking-topic" aria-live="polite">
-            <span>Hablando ahora</span>
-            <strong id="talking-topic-text">Informe técnico</strong>
-          </div>
-
-          <!-- Bottom Control Bar -->
-          <div class="stage-controls" role="group" aria-label="Controles de presentación">
-            <button id="prev-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva anterior" title="Atrás">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-              <span>Atrás</span>
-            </button>
-            <button id="next-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva siguiente" title="Siguiente">
-              <span>Siguiente</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <button id="speak-btn" class="presentation-button start-button" type="button" aria-label="Iniciar párrafo" title="Iniciar párrafo">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg>
-              <span>Iniciar</span>
-            </button>
-            <button id="stop-btn" class="presentation-button stop-button" type="button" aria-label="Detener párrafo" title="Detener párrafo">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10"/></svg>
-              <span>Detener</span>
-            </button>
-            <button id="pause-btn" class="presentation-button pause-button" type="button" aria-label="Pausar párrafo" title="Pausar párrafo" aria-pressed="false" disabled>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
-              <span>Pausar</span>
-            </button>
-          </div>
         </section>
 
-        <!-- Presenter Panel (Right Side 3D Avatar) -->
-        <aside class="presenter-panel panel" aria-label="Presentador 3D">
+        <!-- Presenter 3D Scene (Right Side Avatar) -->
+        <aside class="presenter-panel" aria-label="Presentador 3D">
           <div id="avatar-stage" class="avatar-stage">
-            <div id="avatar-mood" class="avatar-mood"><span>Neutro</span><strong>Listo para explicar</strong></div>
             <canvas id="avatar-canvas" role="application" tabindex="0" aria-label="Presentador 3D interactivo"></canvas>
             <div id="avatar-fallback" class="avatar-fallback" hidden aria-hidden="true">R³</div>
-            <div class="speech-wave" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-          </div>
-          <div class="teleprompter">
-            <p class="micro-label">Investigación en curso</p>
-            <p id="script-text" class="script-text">Cargando guion…</p>
           </div>
         </aside>
       </section>
 
-      <!-- Procedimiento Visual Cards Layer -->
-      <div id="procedimiento-layer" class="procedimiento-layer" aria-live="polite" aria-label="Apoyo visual interactivo de la escena actual">
-        <div class="procedimiento-header">
-          <div class="procedimiento-meta-row">
-            <span id="procedimiento-phase" class="procedimiento-phase">APERTURA</span>
-            <button id="btn-toggle-3d" class="btn-open-3d" type="button" title="Abrir Visor 3D Interactivo para rotar los gráficos cartesianos">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                <line x1="12" y1="22.08" x2="12" y2="12"></line>
-              </svg>
-              <span>Girar Gráfico 3D</span>
-            </button>
-          </div>
-          <h2 id="procedimiento-title" class="procedimiento-title">01 · Informe técnico &amp; auditoría epistemológica</h2>
-          <p id="procedimiento-subtitle" class="procedimiento-subtitle">Trabajo Práctico N° 3 · Recta y plano en R³</p>
-        </div>
-        <div id="procedimiento-grid" class="procedimiento-grid" role="region" aria-label="Objetos visuales de la escena"></div>
-      </div>
+      <!-- Bottom Control Bar (Rectangular, Centered at bottom) -->
+      <nav class="stage-controls" role="group" aria-label="Controles de presentación">
+        <button id="prev-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva anterior" title="Atrás">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          <span>Atrás</span>
+        </button>
+        <button id="next-btn" class="presentation-button nav-button" type="button" aria-label="Diapositiva siguiente" title="Siguiente">
+          <span>Siguiente</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button id="speak-btn" class="presentation-button start-button" type="button" aria-label="Iniciar párrafo" title="Iniciar párrafo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg>
+          <span>Iniciar</span>
+        </button>
+        <button id="stop-btn" class="presentation-button stop-button" type="button" aria-label="Detener párrafo" title="Detener párrafo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10"/></svg>
+          <span>Detener</span>
+        </button>
+        <button id="pause-btn" class="presentation-button pause-button" type="button" aria-label="Pausar párrafo" title="Pausar párrafo" aria-pressed="false" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+          <span>Pausar</span>
+        </button>
+        <!-- 3D Graph Button with Custom Paper & Pencil Icon -->
+        <button id="btn-toggle-3d" class="presentation-button graph-button" type="button" aria-label="Girar Gráfico 3D" title="Girar Gráfico 3D en R³">
+          <svg viewBox="0 0 24 24" class="icon-paper-pencil" aria-hidden="true">
+            <!-- Sheet of paper -->
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+            <polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="1.8"></polyline>
+            <!-- Lines on paper -->
+            <line x1="7" y1="12" x2="11" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></line>
+            <line x1="7" y1="16" x2="10" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></line>
+            <!-- Pencil with eraser -->
+            <path d="M18.85 9.15l2 2a1.2 1.2 0 0 1 0 1.7l-7.35 7.35-3.5.8 0.8-3.5 7.35-7.35a1.2 1.2 0 0 1 1.7 0z" fill="var(--orange)" stroke="var(--orange)" stroke-width="1.2"></path>
+          </svg>
+          <span>Gráfico 3D</span>
+        </button>
+      </nav>
 
-      <footer class="statusbar">
-        <span><strong>Santiago Sessa · Mateo Rau · Lucio Pieroni · Lucas Bazan</strong></span>
-        <span id="live-status" aria-live="polite">Modelo 3D: cargando · Voz: lista</span>
-      </footer>
+      <span id="live-status" class="visually-hidden" aria-live="polite">Modelo 3D: cargando · Voz: lista</span>
     </main>
 
     <!-- Dependencies via local ES Modules Map -->
