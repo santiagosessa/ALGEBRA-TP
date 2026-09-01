@@ -129,14 +129,14 @@ class App {
         this.procedimientoView.renderScene(index);
         if (statusEl) statusEl.textContent = "Modelo 3D: listo · Voz: lista";
 
-        if (document.querySelector(".app-shell")?.classList.contains("has-active-3d-graph") && this.c3dExplorer) {
+        if (this.c3dExplorer) {
           const slideTo3DScene = {
             0: "interseccion", 1: "interseccion", 2: "interseccion",
             3: "angulo", 4: "parametro_paralelo", 5: "proyectantes",
-            6: "auditoria", 7: "parametro_incompatible", 8: "auditoria", 9: "interseccion"
+            6: "auditoria", 7: "parametro_incompatible", 8: "auditoria", 9: "proyectantes"
           };
           const sceneKey = slideTo3DScene[index] || "interseccion";
-          this.c3dExplorer.show(sceneKey);
+          this.c3dExplorer.loadScene(sceneKey);
         }
       },
       onPlay: () => {
@@ -165,7 +165,7 @@ class App {
       6: "auditoria",
       7: "parametro_incompatible",
       8: "auditoria",
-      9: "interseccion"
+      9: "proyectantes"
     };
 
     const appShell = document.querySelector(".app-shell");
@@ -195,6 +195,7 @@ class App {
         if (e.target.closest(".c3d-btn-close")) {
           appShell?.classList.remove("has-active-3d-graph");
           btnToggle3D.classList.remove("is-active");
+          this.c3dExplorer.hide();
         }
       });
     }

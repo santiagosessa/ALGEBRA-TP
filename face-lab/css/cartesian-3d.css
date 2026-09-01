@@ -1,11 +1,11 @@
 /* Cartesian 3D Explorer Overlay & Embedding Styles */
 #cartesian-3d-container.cartesian-3d-wrapper {
   position: fixed;
-  left: clamp(24px, 4vw, 56px);
+  left: clamp(24px, 3.5vw, 48px);
   top: auto;
-  bottom: 80px;
+  bottom: 78px;
   width: min(58vw, 1080px);
-  height: min(44vh, 370px);
+  height: min(52vh, 480px);
   z-index: 15;
   display: flex;
   flex-direction: column;
@@ -37,6 +37,7 @@
   border-bottom: 1px solid rgba(56, 189, 248, 0.22);
   gap: 10px;
   flex-shrink: 0;
+  height: 38px;
 }
 
 .c3d-title-group {
@@ -70,7 +71,7 @@
   padding: 4px 8px;
   outline: none;
   cursor: pointer;
-  max-width: min(34vw, 480px);
+  max-width: min(36vw, 500px);
 }
 
 .c3d-scene-select:focus {
@@ -105,6 +106,12 @@
   color: #38bdf8;
 }
 
+.c3d-btn.is-active {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
 .c3d-btn-close {
   border-color: rgba(244, 63, 94, 0.4);
   color: #fda4af;
@@ -123,6 +130,7 @@
   flex: 1;
   min-height: 0;
   width: 100%;
+  overflow: hidden;
 }
 
 .c3d-canvas {
@@ -134,110 +142,4 @@
 
 .c3d-canvas:active {
   cursor: grabbing;
-}
-
-.c3d-hud {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  max-width: 300px;
-  padding: 8px 10px;
-  background: rgba(6, 17, 24, 0.85);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-left: 3px solid #38bdf8;
-  border-radius: 4px;
-  backdrop-filter: blur(12px);
-  pointer-events: auto;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.c3d-info-title {
-  margin: 0 0 3px;
-  color: #38bdf8;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.c3d-info-equation {
-  color: #fbbf24;
-  font-size: 10px;
-  font-family: var(--font-mono);
-  margin-bottom: 3px;
-}
-
-.c3d-info-details {
-  color: #cbd5e1;
-  font-size: 9.5px;
-  line-height: 1.35;
-  font-family: var(--font-mono);
-  margin-bottom: 6px;
-}
-
-.c3d-layers-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(205, 225, 222, 0.12);
-}
-
-.c3d-toggle-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  color: #94a3b8;
-  font-size: 9px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.c3d-toggle-label input {
-  accent-color: #38bdf8;
-  cursor: pointer;
-}
-
-.c3d-camera-presets {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  margin-top: 5px;
-}
-
-.c3d-cam-label {
-  color: #64748b;
-  font-size: 8.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.c3d-cam-btn {
-  background: rgba(15, 33, 44, 0.7);
-  border: 1px solid rgba(205, 225, 222, 0.15);
-  border-radius: 3px;
-  color: #cbd5e1;
-  font-size: 8.5px;
-  padding: 1px 4px;
-  cursor: pointer;
-}
-
-.c3d-cam-btn:hover {
-  background: #38bdf8;
-  color: #061118;
-}
-
-.c3d-hint {
-  position: absolute;
-  bottom: 6px;
-  right: 8px;
-  padding: 3px 8px;
-  background: rgba(6, 17, 24, 0.75);
-  border: 1px solid rgba(205, 225, 222, 0.12);
-  border-radius: 4px;
-  color: #94a3b8;
-  font-size: 8.5px;
-  pointer-events: none;
-  backdrop-filter: blur(8px);
 }

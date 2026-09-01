@@ -117,8 +117,8 @@ export class SpeechSystem {
 
   createDialogueSprite(position) {
     const surface = document.createElement("canvas");
-    surface.width = 1280;
-    surface.height = 280;
+    surface.width = 860;
+    surface.height = 260;
     const ctx = surface.getContext("2d");
     const texture = new THREE.CanvasTexture(surface);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -136,8 +136,8 @@ export class SpeechSystem {
 
     const sprite = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
     sprite.position.set(...position);
-    sprite.rotation.set(-0.015, -0.02, -0.012);
-    sprite.scale.set(3.72, 3.72 * (surface.height / surface.width), 1);
+    sprite.rotation.set(-0.012, -0.02, -0.01);
+    sprite.scale.set(2.45, 2.45 * (surface.height / surface.width), 1);
     sprite.userData.baseScale = sprite.scale.clone();
     sprite.userData.baseRotationZ = sprite.rotation.z;
     sprite.userData.hover = 0;
@@ -163,7 +163,7 @@ export class SpeechSystem {
     this.dialogueSentenceStartedAt = performance.now() / 1000;
     this.infoGroup.position.set(0, 0, -0.18);
 
-    const position = window.innerWidth < 900 ? [0.25, -1.48, 0.16] : [2.02, -1.58, 0.16];
+    const position = window.innerWidth < 900 ? [0.65, -1.48, 0.16] : [2.26, -1.56, 0.18];
     this.createDialogueSprite(position);
     this.drawDialogue("");
   }
@@ -176,12 +176,13 @@ export class SpeechSystem {
     ctx.clearRect(0, 0, this.dialogueCanvas.width, this.dialogueCanvas.height);
     ctx.font = "500 27px Arial, sans-serif";
     ctx.textBaseline = "top";
+    ctx.textAlign = "left";
     ctx.fillStyle = "#f3f4ed";
     ctx.shadowColor = "rgba(240,179,108,.9)";
-    ctx.shadowBlur = 19;
+    ctx.shadowBlur = 18;
     ctx.shadowOffsetY = 3;
-    const lines = wrapInfoText(ctx, `“${text}”`, 1180).slice(0, 5);
-    lines.forEach((line, index) => ctx.fillText(line, 42, 28 + index * 35));
+    const lines = wrapInfoText(ctx, `“${text}”`, 810).slice(0, 4);
+    lines.forEach((line, index) => ctx.fillText(line, 24, 22 + index * 36));
     this.dialogueTexture.needsUpdate = true;
   }
 

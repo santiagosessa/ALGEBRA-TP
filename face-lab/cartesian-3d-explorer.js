@@ -65,7 +65,7 @@ export class Cartesian3DExplorer {
         </div>
         <div class="c3d-header-actions">
           <button class="c3d-btn c3d-btn-autorotate" title="Activar/Desactivar giro automático">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
             <span>Auto-Giro</span>
           </button>
           <button class="c3d-btn c3d-btn-close" title="Cerrar visor 3D">✕</button>
@@ -74,40 +74,6 @@ export class Cartesian3DExplorer {
 
       <div class="c3d-viewport">
         <canvas class="c3d-canvas"></canvas>
-        
-        <!-- Interactive 3D Math HUD -->
-        <div class="c3d-hud">
-          <div class="c3d-info-card">
-            <h4 class="c3d-info-title">Cargando...</h4>
-            <div class="c3d-info-equation"></div>
-            <div class="c3d-info-details"></div>
-          </div>
-
-          <!-- Layer Toggles -->
-          <div class="c3d-layers-bar">
-            <label class="c3d-toggle-label"><input type="checkbox" data-layer="plane" checked> <span>Plano π</span></label>
-            <label class="c3d-toggle-label"><input type="checkbox" data-layer="line" checked> <span>Recta r</span></label>
-            <label class="c3d-toggle-label"><input type="checkbox" data-layer="normal" checked> <span>Normal n</span></label>
-            <label class="c3d-toggle-label"><input type="checkbox" data-layer="points" checked> <span>Puntos</span></label>
-            <label class="c3d-toggle-label"><input type="checkbox" data-layer="grid" checked> <span>Ejes R³</span></label>
-          </div>
-
-          <!-- Camera Preset Bar -->
-          <div class="c3d-camera-presets">
-            <span class="c3d-cam-label">Vistas:</span>
-            <button class="c3d-cam-btn" data-cam="iso">Isométrica</button>
-            <button class="c3d-cam-btn" data-cam="xy">Superior (XY)</button>
-            <button class="c3d-cam-btn" data-cam="xz">Frontal (XZ)</button>
-            <button class="c3d-cam-btn" data-cam="yz">Lateral (YZ)</button>
-            <button class="c3d-cam-btn" data-cam="reset">Reset</button>
-          </div>
-        </div>
-
-        <div class="c3d-hint">
-          <span>🖱️ Arrastra para <strong>GIRAR</strong></span> · 
-          <span>🔍 Rueda para <strong>ZOOM</strong></span> · 
-          <span>🖱️ Clic derecho para <strong>DESPLAZAR</strong></span>
-        </div>
       </div>
     `;
 
@@ -115,9 +81,6 @@ export class Cartesian3DExplorer {
     this.sceneSelect = this.container.querySelector(".c3d-scene-select");
     this.autoRotateBtn = this.container.querySelector(".c3d-btn-autorotate");
     this.closeBtn = this.container.querySelector(".c3d-btn-close");
-    this.infoTitle = this.container.querySelector(".c3d-info-title");
-    this.infoEquation = this.container.querySelector(".c3d-info-equation");
-    this.infoDetails = this.container.querySelector(".c3d-info-details");
   }
 
   initThree() {
@@ -126,9 +89,9 @@ export class Cartesian3DExplorer {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x061118);
-    this.scene.fog = new THREE.FogExp2(0x061118, 0.018);
+    this.scene.fog = new THREE.FogExp2(0x061118, 0.015);
 
-    this.camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 1000);
     this.camera.position.set(18, 14, 22);
 
     this.renderer = new THREE.WebGLRenderer({
@@ -144,14 +107,14 @@ export class Cartesian3DExplorer {
     this.renderer.toneMappingExposure = 1.15;
 
     // Lighting
-    const ambient = new THREE.AmbientLight(0xdcf0ee, 1.2);
+    const ambient = new THREE.AmbientLight(0xdcf0ee, 1.4);
     this.scene.add(ambient);
 
-    const dirLight1 = new THREE.DirectionalLight(0xfff3d6, 2.4);
+    const dirLight1 = new THREE.DirectionalLight(0xfff3d6, 2.6);
     dirLight1.position.set(20, 35, 25);
     this.scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 1.8);
+    const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 2.0);
     dirLight2.position.set(-20, -10, -20);
     this.scene.add(dirLight2);
 
@@ -163,85 +126,63 @@ export class Cartesian3DExplorer {
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.06;
-    this.controls.screenSpacePanning = true;
-    this.controls.minDistance = 3;
+    this.controls.rotateSpeed = 0.85;
+    this.controls.zoomSpeed = 1.0;
+    this.controls.panSpeed = 0.8;
+    this.controls.target.set(3, 2, -2);
+    this.controls.autoRotate = this.options.autoRotate;
+    this.controls.autoRotateSpeed = 1.2;
     this.controls.maxDistance = 80;
-    this.controls.target.set(0, 0, 0);
+    this.controls.minDistance = 2;
   }
 
   setupEventListeners() {
-    // Scene Selector
-    this.sceneSelect.addEventListener("change", (e) => {
+    this.sceneSelect.addEventListener("change", e => {
       this.loadScene(e.target.value);
     });
 
-    // Auto-Rotate Button
     this.autoRotateBtn.addEventListener("click", () => {
       this.controls.autoRotate = !this.controls.autoRotate;
       this.autoRotateBtn.classList.toggle("is-active", this.controls.autoRotate);
     });
 
-    // Close Button
     this.closeBtn.addEventListener("click", () => {
-      this.container.classList.remove("is-visible");
+      this.hide();
     });
 
-    // Layer Toggles
-    const checkboxes = this.container.querySelectorAll(".c3d-toggle-label input");
-    checkboxes.forEach(cb => {
-      cb.addEventListener("change", (e) => {
-        const layer = e.target.dataset.layer;
-        this.layers[layer] = e.target.checked;
-        if (this.layerGroups[layer]) {
-          this.layerGroups[layer].visible = e.target.checked;
-        }
-      });
-    });
-
-    // Camera Presets
-    const camBtns = this.container.querySelectorAll(".c3d-cam-btn");
-    camBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const preset = btn.dataset.cam;
-        this.setCameraPreset(preset);
-      });
-    });
-
-    // Resize Observer
-    this.resizeObserver = new ResizeObserver(() => this.onResize());
-    this.resizeObserver.observe(this.container);
+    window.addEventListener("resize", () => this.onResize());
+    new ResizeObserver(() => this.onResize()).observe(this.container);
   }
 
   onResize() {
-    if (!this.renderer || !this.camera) return;
-    const rect = this.canvas.getBoundingClientRect();
-    const width = Math.max(rect.width, 100);
-    const height = Math.max(rect.height, 100);
+    if (!this.canvas || !this.renderer || !this.camera) return;
+    const width = this.canvas.clientWidth || this.container.clientWidth;
+    const height = this.canvas.clientHeight || (this.container.clientHeight - 40);
+    if (width <= 0 || height <= 0) return;
+
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height, false);
   }
 
-  setCameraPreset(preset) {
-    const duration = 0.6;
-    let targetPos = new THREE.Vector3(18, 14, 22);
-    let targetLook = new THREE.Vector3(0, 0, 0);
+  setCameraView(presetKey, duration = 0.8) {
+    const targetPos = new THREE.Vector3();
+    const targetLook = new THREE.Vector3(3, 2, -2);
 
-    if (preset === "xy") {
-      // Top view Looking down Z
-      targetPos.set(0, 32, 0.001);
-    } else if (preset === "xz") {
-      // Front view looking at XZ (Y is depth)
-      targetPos.set(0, 0.001, 32);
-    } else if (preset === "yz") {
-      // Side view looking at YZ (X is depth)
-      targetPos.set(32, 0.001, 0);
-    } else if (preset === "iso" || preset === "reset") {
+    if (presetKey === "iso") {
+      targetPos.set(16, 13, 20);
+    } else if (presetKey === "xy") {
+      targetPos.set(0.01, 28, 0.01);
+    } else if (presetKey === "xz") {
+      targetPos.set(0.01, 0.01, 28);
+    } else if (presetKey === "yz") {
+      targetPos.set(28, 0.01, 0.01);
+    } else {
       targetPos.set(18, 14, 22);
     }
 
     if (window.gsap) {
-      gsap.to(this.camera.position, {
+      window.gsap.to(this.camera.position, {
         x: targetPos.x,
         y: targetPos.y,
         z: targetPos.z,
@@ -249,7 +190,7 @@ export class Cartesian3DExplorer {
         ease: "power2.out",
         onUpdate: () => this.controls.update()
       });
-      gsap.to(this.controls.target, {
+      window.gsap.to(this.controls.target, {
         x: targetLook.x,
         y: targetLook.y,
         z: targetLook.z,
@@ -291,12 +232,9 @@ export class Cartesian3DExplorer {
     g.add(gridHelper);
 
     // Axis Lines & Arrows
-    // X Axis: Red/Cyan
     const xAxis = this.createArrow(new THREE.Vector3(-size, 0, 0), new THREE.Vector3(1, 0, 0), size * 2, 0xf87171, "+X");
-    // Y Axis: Green (Vertical)
-    const yAxis = this.createArrow(new THREE.Vector3(0, -size * 0.6, 0), new THREE.Vector3(0, 1, 0), size * 1.6, 0x4ade80, "+Y");
-    // Z Axis: Blue (Depth)
-    const zAxis = this.createArrow(new THREE.Vector3(0, 0, -size), new THREE.Vector3(0, 0, 1), size * 2, 0x38bdf8, "+Z");
+    const yAxis = this.createArrow(new THREE.Vector3(0, -size * 0.6, 0), new THREE.Vector3(0, 1, 0), size * 1.6, 0x4ade80, "+Z");
+    const zAxis = this.createArrow(new THREE.Vector3(0, 0, -size), new THREE.Vector3(0, 0, 1), size * 2, 0x38bdf8, "+Y");
 
     g.add(xAxis);
     g.add(yAxis);
@@ -312,14 +250,14 @@ export class Cartesian3DExplorer {
   createArrow(origin, dir, length, colorHex, label) {
     const group = new THREE.Group();
     const normalizedDir = dir.clone().normalize();
-    const arrow = new THREE.ArrowHelper(normalizedDir, origin, length, colorHex, 0.8, 0.4);
+    const arrow = new THREE.ArrowHelper(normalizedDir, origin, length, colorHex, 0.7, 0.35);
     group.add(arrow);
 
     if (label) {
-      const tipPos = origin.clone().add(normalizedDir.clone().multiplyScalar(length + 0.6));
-      const sprite = this.createTextSprite(label, { color: colorHex, fontSize: 32, bold: true });
+      const tipPos = origin.clone().add(normalizedDir.clone().multiplyScalar(length + 0.5));
+      const sprite = this.createTextSprite(label, { color: colorHex, fontSize: 28, bold: true });
       sprite.position.copy(tipPos);
-      sprite.scale.set(1.5, 0.75, 1);
+      sprite.scale.set(1.4, 0.7, 1);
       group.add(sprite);
     }
     return group;
@@ -343,7 +281,6 @@ export class Cartesian3DExplorer {
     const cylinder = new THREE.Mesh(geometry, material);
     cylinder.position.copy(position);
 
-    // Orient cylinder along vector
     const orientation = new THREE.Matrix4();
     const offsetRotation = new THREE.Matrix4();
     orientation.lookAt(v1, v2, new THREE.Vector3(0, 1, 0));
@@ -358,23 +295,24 @@ export class Cartesian3DExplorer {
     const group = new THREE.Group();
     group.position.copy(pos);
 
-    // Core Sphere
-    const geo = new THREE.SphereGeometry(0.35, 24, 24);
-    const mat = new THREE.MeshStandardMaterial({
+    // Inner Sphere
+    const sphereGeo = new THREE.SphereGeometry(0.24, 20, 20);
+    const sphereMat = new THREE.MeshStandardMaterial({
       color: colorHex,
       emissive: colorHex,
-      emissiveIntensity: 0.6,
-      roughness: 0.1
+      emissiveIntensity: 0.85,
+      roughness: 0.1,
+      metalness: 0.8
     });
-    const sphere = new THREE.Mesh(geo, mat);
+    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
     group.add(sphere);
 
-    // Outer Halo
-    const haloGeo = new THREE.SphereGeometry(0.55, 16, 16);
+    // Outer Glow Halo
+    const haloGeo = new THREE.SphereGeometry(0.45, 16, 16);
     const haloMat = new THREE.MeshBasicMaterial({
       color: colorHex,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.3,
       wireframe: true
     });
     const halo = new THREE.Mesh(haloGeo, haloMat);
@@ -384,13 +322,11 @@ export class Cartesian3DExplorer {
     if (labelText) {
       const sprite = this.createTextSprite(labelText, {
         color: colorHex,
-        bgColor: "rgba(8, 27, 36, 0.88)",
-        borderColor: colorHex,
-        fontSize: 28,
+        fontSize: 26,
         bold: true
       });
-      sprite.position.set(0, 0.9, 0);
-      sprite.scale.set(3.2, 1.1, 1);
+      sprite.position.set(0, 0.85, 0);
+      sprite.scale.set(3.0, 1.0, 1);
       group.add(sprite);
     }
 
@@ -404,14 +340,12 @@ export class Cartesian3DExplorer {
         opacity: 0.7
       });
 
-      // Line to Y=0 plane
       const pGround = new THREE.Vector3(pos.x, 0, pos.z);
       const geomY = new THREE.BufferGeometry().setFromPoints([pos, pGround]);
       const lineY = new THREE.Line(geomY, dropMat);
       lineY.computeLineDistances();
       this.layerGroups.points.add(lineY);
 
-      // Footprint marker on ground
       const ringGeo = new THREE.RingGeometry(0.15, 0.3, 16);
       const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, side: THREE.DoubleSide });
       const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -423,16 +357,16 @@ export class Cartesian3DExplorer {
     return group;
   }
 
-  createPlaneMesh(normalVec, pointOnPlane, sizeX = 16, sizeZ = 16, colorHex = 0x0284c7, opacity = 0.42) {
+  createPlaneMesh(normalVec, pointOnPlane, sizeX = 18, sizeZ = 18, colorHex = 0x0284c7, opacity = 0.42) {
     const group = new THREE.Group();
-    const geom = new THREE.PlaneGeometry(sizeX, sizeZ, 10, 10);
+    const geom = new THREE.PlaneGeometry(sizeX, sizeZ, 12, 12);
     const mat = new THREE.MeshStandardMaterial({
       color: colorHex,
       transparent: true,
       opacity: opacity,
       side: THREE.DoubleSide,
       roughness: 0.15,
-      metalness: 0.2,
+      metalness: 0.25,
       depthWrite: false
     });
 
@@ -448,7 +382,7 @@ export class Cartesian3DExplorer {
 
     // Glowing Wireframe border
     const edgeGeom = new THREE.EdgesGeometry(geom);
-    const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.85, linewidth: 2 });
+    const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.9, linewidth: 2 });
     const wireframe = new THREE.LineSegments(edgeGeom, edgeMat);
     wireframe.quaternion.copy(quaternion);
     wireframe.position.copy(pointOnPlane);
@@ -463,18 +397,16 @@ export class Cartesian3DExplorer {
     canvas.height = 160;
     const ctx = canvas.getContext("2d");
 
-    const fontSize = opts.fontSize || 32;
+    const fontSize = opts.fontSize || 28;
     const color = typeof opts.color === "number" ? `#${opts.color.toString(16).padStart(6, "0")}` : (opts.color || "#ffffff");
-    const bgColor = opts.bgColor || "rgba(8, 27, 36, 0.85)";
+    const bgColor = opts.bgColor || "rgba(8, 27, 36, 0.88)";
     const borderColor = typeof opts.borderColor === "number" ? `#${opts.borderColor.toString(16).padStart(6, "0")}` : (opts.borderColor || color);
 
-    // Background rounded box
     ctx.fillStyle = bgColor;
     ctx.strokeStyle = borderColor;
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 3;
     
-    // Draw rounded rect
-    const r = 16;
+    const r = 14;
     ctx.beginPath();
     ctx.moveTo(r, 6);
     ctx.arcTo(512 - 6, 6, 512 - 6, 160 - 6, r);
@@ -485,7 +417,6 @@ export class Cartesian3DExplorer {
     ctx.fill();
     ctx.stroke();
 
-    // Text
     ctx.fillStyle = color;
     ctx.font = `${opts.bold ? "bold " : ""}${fontSize}px Arial, sans-serif`;
     ctx.textAlign = "center";
@@ -503,7 +434,9 @@ export class Cartesian3DExplorer {
   // -----------------------------------------------------------
   loadScene(sceneKey) {
     this.currentSceneKey = sceneKey;
-    this.sceneSelect.value = sceneKey;
+    if (this.sceneSelect) {
+      this.sceneSelect.value = sceneKey;
+    }
     this.clearSceneGroups();
     this.buildCoordinateAxes(16);
 
@@ -535,30 +468,23 @@ export class Cartesian3DExplorer {
     }
   }
 
-  // 1. Intersección r ∩ π
+  // 1. Intersección r ∩ π = {I}
   buildSceneInterseccion() {
-    this.infoTitle.textContent = "01 · Intersección Recta-Plano en R³";
-    this.infoEquation.innerHTML = "Plano π: <code>2x − y + z − 6 = 0</code> &nbsp;|&nbsp; Recta r: <code>(-1+3λ, 2+λ, -2λ)</code>";
-    this.infoDetails.innerHTML = "• Parámetro exacto: <strong>λ = 10/3</strong><br>• Punto de Intersección: <strong style='color:#4ade80'>I(9, 16/3, -20/3) ≈ (9, 5.33, -6.67)</strong><br>• Verificación: <code>2(9) − 16/3 − 20/3 − 6 = 0 ✓</code>";
-
-    // In engineering math 3D: X=Forward, Y=Right, Z=Up. In Three.js: X=Right, Y=Up, Z=Forward.
-    // We map: X_math -> X, Z_math -> Y_three, Y_math -> Z_three.
     const toThree = (x, y, z) => new THREE.Vector3(x, z, y);
 
     // Plane 2x - y + z - 6 = 0 -> Normal n=(2, -1, 1), Point P_plane=(3, 0, 0)
     const normalMath = new THREE.Vector3(2, -1, 1);
     const nThree = toThree(normalMath.x, normalMath.y, normalMath.z);
-    const pCenterThree = toThree(3, 2, 2);
+    const pCenterThree = toThree(4.5, 2.6, -3.3);
 
-    const planeObj = this.createPlaneMesh(nThree, pCenterThree, 26, 26, 0x0284c7, 0.4);
+    const planeObj = this.createPlaneMesh(nThree, pCenterThree, 26, 26, 0x0284c7, 0.42);
     this.layerGroups.plane.add(planeObj);
 
     // Normal Vector n=(2, -1, 1) starting from plane center
-    const nArrow = this.createArrow(pCenterThree, nThree, 4, 0x38bdf8, "n = (2, -1, 1)");
+    const nArrow = this.createArrow(pCenterThree, nThree, 4.5, 0x38bdf8, "n = (2, -1, 1)");
     this.layerGroups.normal.add(nArrow);
 
     // Line r: P0(-1, 2, 0) + lambda*(3, 1, -2)
-    // From lambda = -1 to lambda = 5
     const pStart = toThree(-1 + 3 * (-1), 2 + 1 * (-1), -2 * (-1));
     const pEnd = toThree(-1 + 3 * 5, 2 + 1 * 5, -2 * 5);
     const lineMesh = this.createLineCylinder(pStart, pEnd, 0xf0b36c, 0.12);
@@ -573,20 +499,19 @@ export class Cartesian3DExplorer {
     const IThree = toThree(9, 16/3, -20/3);
     const IBeacon = this.createPointBeacon(IThree, 0x4ade80, "I(9, 16/3, -20/3) ∈ π ∩ r", true);
     this.layerGroups.points.add(IBeacon);
+
+    this.controls.target.copy(pCenterThree);
+    this.camera.position.set(16, 12, 18);
+    this.controls.update();
   }
 
   // 2. Ángulo Recta-Plano
   buildSceneAngulo() {
-    this.infoTitle.textContent = "02 · Geometría del Ángulo Recta-Plano";
-    this.infoEquation.innerHTML = "Vector Director: <code>d = (1, 2, 2)</code> &nbsp;|&nbsp; Normal: <code>n = (1, -2, 2)</code>";
-    this.infoDetails.innerHTML = "• Ángulo con la Normal: <strong style='color:#38bdf8'>β ≈ 83,62°</strong> (<code>cos β = 1/9</code>)<br>• Ángulo con el Plano: <strong style='color:#4ade80'>α ≈ 6,38° = 6° 22' 46''</strong> (<code>sin α = 1/9</code>)<br>• Relación de complementariedad: <code>α + β = 90°</code>";
-
     const toThree = (x, y, z) => new THREE.Vector3(x, z, y);
 
-    // Plane through origin with normal n=(1, -2, 2)
     const nMath = new THREE.Vector3(1, -2, 2);
     const nThree = toThree(nMath.x, nMath.y, nMath.z);
-    const planeObj = this.createPlaneMesh(nThree, new THREE.Vector3(0, 0, 0), 20, 20, 0x0284c7, 0.35);
+    const planeObj = this.createPlaneMesh(nThree, new THREE.Vector3(0, 0, 0), 20, 20, 0x0284c7, 0.38);
     this.layerGroups.plane.add(planeObj);
 
     // Normal Vector n = (1, -2, 2)
@@ -610,113 +535,134 @@ export class Cartesian3DExplorer {
     this.layerGroups.line.add(dropLine);
 
     // Badges in 3D
-    const betaSprite = this.createTextSprite("β ≈ 83,62° (Normal)", { color: 0x38bdf8, fontSize: 24 });
+    const betaSprite = this.createTextSprite("β ≈ 83,62° (con la Normal)", { color: 0x38bdf8, fontSize: 24 });
     betaSprite.position.set(1.5, 3.2, 0.5);
-    betaSprite.scale.set(3, 1, 1);
+    betaSprite.scale.set(2.8, 0.9, 1);
     this.layerGroups.points.add(betaSprite);
 
-    const alphaSprite = this.createTextSprite("α ≈ 6,38° (Plano)", { color: 0x4ade80, fontSize: 24 });
+    const alphaSprite = this.createTextSprite("α ≈ 6,38° (con el Plano)", { color: 0x4ade80, fontSize: 24 });
     alphaSprite.position.set(2.8, 1.5, 2.5);
-    alphaSprite.scale.set(3, 1, 1);
+    alphaSprite.scale.set(2.8, 0.9, 1);
     this.layerGroups.points.add(alphaSprite);
+
+    this.controls.target.set(1.5, 1.5, 1.5);
+    this.camera.position.set(13, 11, 15);
+    this.controls.update();
   }
 
   // 3.a Parámetro m (Paralelo)
   buildSceneParametroParalelo() {
-    this.infoTitle.textContent = "03.a · Recta Paralela al Plano (d ⟂ n)";
-    this.infoEquation.innerHTML = "Plano π: <code>3x + y − 2z = 0</code> &nbsp;|&nbsp; Vector: <code>d = (m, 6, 4)</code>";
-    this.infoDetails.innerHTML = "• Condición r ∥ π: <strong>d ⟂ n ⟺ d · n = 0</strong><br>• Producto escalar: <code>3m + 6(1) + 4(-2) = 3m − 2 = 0</code><br>• Solución única: <strong style='color:#4ade80'>m = 2/3  →  d = (2/3, 6, 4)</strong>";
-
     const toThree = (x, y, z) => new THREE.Vector3(x, z, y);
 
     // Normal n = (3, 1, -2)
     const nMath = new THREE.Vector3(3, 1, -2);
     const nThree = toThree(nMath.x, nMath.y, nMath.z);
 
-    const planeObj = this.createPlaneMesh(nThree, new THREE.Vector3(0, 0, 0), 22, 22, 0x059669, 0.35);
+    const planeObj = this.createPlaneMesh(nThree, new THREE.Vector3(0, 0, 0), 22, 22, 0x059669, 0.38);
     this.layerGroups.plane.add(planeObj);
 
     const nArrow = this.createArrow(new THREE.Vector3(0, 0, 0), nThree, 6, 0x38bdf8, "n = (3, 1, -2)");
     this.layerGroups.normal.add(nArrow);
 
-    // Vector d = (2/3, 6, 4) contained in plane (parallel)
+    // Direction Vector d = (2/3, 6, 4) perpendicular to n
     const dMath = new THREE.Vector3(2/3, 6, 4);
     const dThree = toThree(dMath.x, dMath.y, dMath.z);
-    const dArrow = this.createArrow(new THREE.Vector3(0, 0, 0), dThree, 7, 0x4ade80, "d = (2/3, 6, 4) [r ∥ π]");
+    const dArrow = this.createArrow(new THREE.Vector3(0, 0, 0), dThree, 6.5, 0xf0b36c, "d = (2/3, 6, 4) [m=2/3]");
     this.layerGroups.line.add(dArrow);
+
+    // Line r through P(0, 2, 1) parallel to plane
+    const pCenter = toThree(0, 2, 1);
+    const pStart = pCenter.clone().add(dThree.clone().multiplyScalar(-1.5));
+    const pEnd = pCenter.clone().add(dThree.clone().multiplyScalar(1.5));
+    const lineMesh = this.createLineCylinder(pStart, pEnd, 0xf0b36c, 0.1);
+    this.layerGroups.line.add(lineMesh);
+
+    const badge = this.createTextSprite("r ∥ π ⟺ d ⟂ n (d · n = 0)", { color: 0x4ade80, fontSize: 24 });
+    badge.position.set(0, 4.2, 0);
+    badge.scale.set(3.2, 1.0, 1);
+    this.layerGroups.points.add(badge);
+
+    this.controls.target.set(0, 2, 1);
+    this.camera.position.set(14, 12, 16);
+    this.controls.update();
   }
 
   // 3.b Parámetro m (Incompatible)
   buildSceneParametroIncompatible() {
-    this.infoTitle.textContent = "03.b · Recta Perpendicular al Plano (Incompatible)";
-    this.infoEquation.innerHTML = "Condición r ⟂ π: <code>d = k · n</code>  (Colinealidad vectorial)";
-    this.infoDetails.innerHTML = "• Razones escalares: <code>m/3 = 6/1 = 4/(-2) = k</code><br>• Contradicción: <strong style='color:#f87171'>6 ≠ -2</strong> (Inconsistencia)<br>• Dictamen: <strong>∄ m ∈ ℝ  tal que  r ⟂ π  (S = ∅)</strong>";
-
     const toThree = (x, y, z) => new THREE.Vector3(x, z, y);
 
     const nMath = new THREE.Vector3(3, 1, -2);
     const nThree = toThree(nMath.x, nMath.y, nMath.z);
 
+    const planeObj = this.createPlaneMesh(nThree, new THREE.Vector3(0, 0, 0), 22, 22, 0xe11d48, 0.32);
+    this.layerGroups.plane.add(planeObj);
+
     const nArrow = this.createArrow(new THREE.Vector3(0, 0, 0), nThree, 6, 0x38bdf8, "n = (3, 1, -2)");
     this.layerGroups.normal.add(nArrow);
 
-    // Target Collinear direction (dashed)
-    const targetArrow = this.createArrow(new THREE.Vector3(0, 0, 0), nThree, 10, 0x1e3a5f, "Dirección n");
-    this.layerGroups.line.add(targetArrow);
+    // Vector attempting d = k*n with k=6 -> (18, 6, -12) vs required d=(m, 6, 4)
+    const dTarget = toThree(18, 6, -12);
+    const dGiven = toThree(2, 6, 4);
 
-    // Candidate vector d=(2, 6, 4) with divergent Y/Z ratios
-    const dMath = new THREE.Vector3(2, 6, 4);
-    const dThree = toThree(dMath.x, dMath.y, dMath.z);
-    const dArrow = this.createArrow(new THREE.Vector3(0, 0, 0), dThree, 7, 0xf87171, "d = (m, 6, 4) [6 ≠ -2]");
-    this.layerGroups.line.add(dArrow);
+    const dArrow1 = this.createArrow(new THREE.Vector3(0, 0, 0), dTarget, 5.5, 0x38bdf8, "6·n = (18, 6, -12)");
+    const dArrow2 = this.createArrow(new THREE.Vector3(0, 0, 0), dGiven, 5.5, 0xf87171, "d = (m, 6, 4) [Contradicción]");
+    this.layerGroups.line.add(dArrow1);
+    this.layerGroups.line.add(dArrow2);
+
+    const badge = this.createTextSprite("6/1 ≠ 4/(-2) ⟹ ∄ m ∈ ℝ (S = ∅)", { color: 0xf87171, fontSize: 24 });
+    badge.position.set(0, 4.2, 0);
+    badge.scale.set(3.4, 1.0, 1);
+    this.layerGroups.points.add(badge);
+
+    this.controls.target.set(0, 2, 0);
+    this.camera.position.set(14, 12, 16);
+    this.controls.update();
   }
 
   // 4. Tres Planos Proyectantes
   buildSceneProyectantes() {
-    this.infoTitle.textContent = "04 · Tres Planos Proyectantes en R³";
-    this.infoEquation.innerHTML = "πxy: <code>3x+4y-2=0</code> &nbsp;|&nbsp; πxz: <code>x-4z+18=0</code> &nbsp;|&nbsp; πyz: <code>y+3z-14=0</code>";
-    this.infoDetails.innerHTML = "• Intersección Triple: <strong style='color:#f0b36c'>πxy ∩ πxz ∩ πyz = { r }</strong><br>• Recta continua: <code>(x-2)/4 = (y+1)/-3 = (z-5)/1</code><br>• Punto de paso común: <strong style='color:#4ade80'>P(2, -1, 5) ∈ r</strong>";
-
     const toThree = (x, y, z) => new THREE.Vector3(x, z, y);
 
-    // 1. Plane pi_xy (parallel to Z) -> Normal (3, 4, 0)
-    const nXY = toThree(3, 4, 0);
-    const pPassXY = toThree(2, -1, 5);
-    const planeXY = this.createPlaneMesh(nXY, pPassXY, 18, 18, 0x0284c7, 0.3);
-    this.layerGroups.plane.add(planeXY);
+    // Line r: P(2, -1, 5) + lambda*(4, -3, 1)
+    const pBase = toThree(2, -1, 5);
+    const dMath = new THREE.Vector3(4, -3, 1);
+    const dThree = toThree(dMath.x, dMath.y, dMath.z);
 
-    // 2. Plane pi_xz (parallel to Y) -> Normal (1, 0, -4)
-    const nXZ = toThree(1, 0, -4);
-    const planeXZ = this.createPlaneMesh(nXZ, pPassXY, 18, 18, 0xd97706, 0.3);
-    this.layerGroups.plane.add(planeXZ);
-
-    // 3. Plane pi_yz (parallel to X) -> Normal (0, 1, 3)
-    const nYZ = toThree(0, 1, 3);
-    const planeYZ = this.createPlaneMesh(nYZ, pPassXY, 18, 18, 0x059669, 0.3);
-    this.layerGroups.plane.add(planeYZ);
-
-    // The common line r: P(2, -1, 5) + lambda*(4, -3, 1)
-    const pStart = toThree(2 + 4 * (-2), -1 - 3 * (-2), 5 + 1 * (-2));
-    const pEnd = toThree(2 + 4 * 2, -1 - 3 * 2, 5 + 1 * 2);
-    const lineMesh = this.createLineCylinder(pStart, pEnd, 0xffffff, 0.14);
+    const pStart = pBase.clone().add(dThree.clone().multiplyScalar(-2));
+    const pEnd = pBase.clone().add(dThree.clone().multiplyScalar(2));
+    const lineMesh = this.createLineCylinder(pStart, pEnd, 0xf0b36c, 0.14);
     this.layerGroups.line.add(lineMesh);
 
-    // Point P(2, -1, 5)
-    const pBeacon = this.createPointBeacon(pPassXY, 0xf0b36c, "P(2, -1, 5) ∈ r", true);
+    const pBeacon = this.createPointBeacon(pBase, 0xf0b36c, "P(2, -1, 5) ∈ r", true);
     this.layerGroups.points.add(pBeacon);
+
+    // Plane πxy: 3x + 4y - 2 = 0 -> Normal n_xy = (3, 4, 0)
+    const nXY = toThree(3, 4, 0);
+    const planeXY = this.createPlaneMesh(nXY, pBase, 18, 18, 0x0284c7, 0.32);
+    this.layerGroups.plane.add(planeXY);
+
+    // Plane πxz: x - 4z + 18 = 0 -> Normal n_xz = (1, 0, -4)
+    const nXZ = toThree(1, 0, -4);
+    const planeXZ = this.createPlaneMesh(nXZ, pBase, 18, 18, 0x8b5cf6, 0.32);
+    this.layerGroups.plane.add(planeXZ);
+
+    // Plane πyz: y + 3z - 14 = 0 -> Normal n_yz = (0, 1, 3)
+    const nYZ = toThree(0, 1, 3);
+    const planeYZ = this.createPlaneMesh(nYZ, pBase, 18, 18, 0x10b981, 0.32);
+    this.layerGroups.plane.add(planeYZ);
+
+    this.controls.target.copy(pBase);
+    this.camera.position.set(16, 14, 18);
+    this.controls.update();
   }
 
-  // 5. Auditoría Técnica (Error del TP)
+  // 5. Auditoría Técnica (I ∈ π vs P ∉ π)
   buildSceneAuditoria() {
-    this.infoTitle.textContent = "05 · Auditoría Cartesiana: Patrón vs. Error del Grupo";
-    this.infoEquation.innerHTML = "Plano π: <code>2x − y + z − 6 = 0</code> &nbsp;|&nbsp; Recta r: <code>(-1+3λ, 2+λ, -2λ)</code>";
-    this.infoDetails.innerHTML = "• Punto Patrón (λ=10/3): <strong style='color:#4ade80'>I(9, 16/3, -20/3) ∈ π  (Residuo = 0 ✓)</strong><br>• Error del TP (λ=5): <strong style='color:#f87171'>P(14, 7, -10) ∉ π  (Residuo = 5 ≠ 0 ✗)</strong><br>• Distancia ortogonal al plano: <strong>d(P, π) = 5/√6 ≈ 2,04</strong>";
-
     const toThree = (x, y, z) => new THREE.Vector3(x, z, y);
 
     const normalMath = new THREE.Vector3(2, -1, 1);
     const nThree = toThree(normalMath.x, normalMath.y, normalMath.z);
-    const pCenter = toThree(10, 5, -8);
+    const pCenter = toThree(9, 16/3, -20/3);
 
     const planeObj = this.createPlaneMesh(nThree, pCenter, 28, 28, 0x0284c7, 0.35);
     this.layerGroups.plane.add(planeObj);
@@ -744,8 +690,12 @@ export class Cartesian3DExplorer {
 
     const distSprite = this.createTextSprite("d = 5/√6 ≠ 0", { color: 0xf87171, fontSize: 24 });
     distSprite.position.copy(PThree.clone().add(projP).multiplyScalar(0.5).add(new THREE.Vector3(0, 0.6, 0)));
-    distSprite.scale.set(2.4, 0.8, 1);
+    distSprite.scale.set(2.2, 0.75, 1);
     this.layerGroups.points.add(distSprite);
+
+    this.controls.target.copy(pCenter);
+    this.camera.position.set(18, 14, 20);
+    this.controls.update();
   }
 
   animate() {
@@ -767,4 +717,3 @@ export class Cartesian3DExplorer {
     this.container.classList.remove("is-visible");
   }
 }
-
