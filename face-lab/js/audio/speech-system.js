@@ -20,10 +20,10 @@ function wrapInfoText(ctx, text, maxWidth) {
 }
 
 const PUNCTUATION_PAUSES = {
-  ",": 0.18,
-  ".": 0.46,
-  "?": 0.46,
-  "!": 0.46
+  ",": { hold: 0.14, fadeOut: 0.075, fadeIn: 0.105 },
+  ".": { hold: 0.30, fadeOut: 0.105, fadeIn: 0.145 },
+  "?": { hold: 0.30, fadeOut: 0.105, fadeIn: 0.145 },
+  "!": { hold: 0.30, fadeOut: 0.105, fadeIn: 0.145 }
 };
 
 export const SLIDE_AUDIO_DURATIONS = [
@@ -56,6 +56,7 @@ export class SpeechSystem {
     this.audioAnalyser = null;
     this.audioData = null;
     this.audioSource = null;
+    this.audioGain = null;
 
     this.activeAudio = null;
     this.speaking = false;
@@ -164,6 +165,24 @@ export class SpeechSystem {
       this.punctuationPauseTimer = null;
     }
     this.isPunctuationPause = false;
+    this.restoreAudioGain();
+  }
+
+  fadeAudioTo(value, duration) {
+    if (!this.audioGain || !this.audioContext) return;
+    const now = this.audioContext.currentTime;
+    const gain = this.audioGain.gain;
+    gain.cancelScheduledValues(now);
+    gain.setValueAtTime(gain.value, now);
+    gain.linearRampToValueAtTime(value, now + duration);
+  }
+
+  restoreAudioGain() {
+    if (!this.audioGain || !this.audioContext) return;
+    const now = this.audioContext.currentTime;
+    const gain = this.audioGain.gain;
+    gain.cancelScheduledValues(now);
+    gain.setValueAtTime(1, now);
   }
 
   maybePauseAtPunctuation(currentTime, duration) {
@@ -175,15 +194,30 @@ export class SpeechSystem {
 
     this.nextPunctuationMarkerIndex += 1;
     this.isPunctuationPause = true;
-    this.activeAudio.pause();
+    this.fadeAudioTo(0.08, marker.duration.fadeOut);
     this.punctuationPauseTimer = window.setTimeout(() => {
       this.punctuationPauseTimer = null;
-      this.isPunctuationPause = false;
-      if (!this.speaking || this.paused || !this.activeAudio) return;
-      this.activeAudio.play().catch(error => {
-        console.warn("No se pudo reanudar la pausa de puntuación:", error);
-      });
-    }, marker.duration * 1000);
+      if (!this.speaking || this.paused || !this.activeAudio) {
+        this.restoreAudioGain();
+        this.isPunctuationPause = false;
+        return;
+      }
+
+      this.activeAudio.pause();
+      this.punctuationPauseTimer = window.setTimeout(() => {
+        this.punctuationPauseTimer = null;
+        this.isPunctuationPause = false;
+        this.fadeAudioTo(1, marker.duration.fadeIn);
+        if (!this.speaking || this.paused || !this.activeAudio) {
+          this.restoreAudioGain();
+          return;
+        }
+        this.activeAudio.play().catch(error => {
+          console.warn("No se pudo reanudar la pausa de puntuación:", error);
+          this.restoreAudioGain();
+        });
+      }, marker.duration.hold * 1000);
+    }, marker.duration.fadeOut * 1000);
   }
 
   configureAudioAnalyser() {
@@ -194,13 +228,17 @@ export class SpeechSystem {
       this.audioAnalyser.fftSize = 256;
       this.audioAnalyser.smoothingTimeConstant = 0.82;
       this.audioSource = this.audioContext.createMediaElementSource(this.audioPlayer);
-      this.audioSource.connect(this.audioAnalyser);
+      this.audioGain = this.audioContext.createGain();
+      this.audioGain.gain.value = 1;
+      this.audioSource.connect(this.audioGain);
+      this.audioGain.connect(this.audioAnalyser);
       this.audioAnalyser.connect(this.audioContext.destination);
       this.audioData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
     } catch (error) {
       console.warn("Audio reactivo no disponible", error);
       this.audioContext = null;
       this.audioAnalyser = null;
+      this.audioGain = null;
     }
   }
 
@@ -386,6 +424,7 @@ export class SpeechSystem {
 
   resume() {
     if (this.activeAudio) {
+      this.restoreAudioGain();
       this.activeAudio.play().then(() => {
         this.speaking = true;
         this.paused = false;
