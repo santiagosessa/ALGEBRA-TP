@@ -32,12 +32,14 @@ export class ProcedimientoView {
       itemEl.setAttribute("aria-label", itemDef.label);
 
       itemEl.innerHTML = `
-        <img class="proc-card-img" src="./cards/${itemDef.cardFile}" alt="${itemDef.label}" draggable="false" />
-        <div class="proc-spotlight-frame" aria-hidden="true">
-          <span class="spotlight-bracket top-left"></span>
-          <span class="spotlight-bracket top-right"></span>
-          <span class="spotlight-bracket bottom-left"></span>
-          <span class="spotlight-bracket bottom-right"></span>
+        <div class="proc-card-surface">
+          <img class="proc-card-img" src="./cards/${itemDef.cardFile}" alt="${itemDef.label}" draggable="false" />
+          <div class="proc-spotlight-frame" aria-hidden="true">
+            <span class="spotlight-bracket top-left"></span>
+            <span class="spotlight-bracket top-right"></span>
+            <span class="spotlight-bracket bottom-left"></span>
+            <span class="spotlight-bracket bottom-right"></span>
+          </div>
         </div>
       `;
 
@@ -79,12 +81,13 @@ export class ProcedimientoView {
       itemEl.addEventListener("pointerup", endDrag);
       itemEl.addEventListener("pointercancel", endDrag);
 
-      itemEl.addEventListener("mousemove", e => {
+      const surfaceEl = itemEl.querySelector(".proc-card-surface");
+      surfaceEl.addEventListener("mousemove", e => {
         if (isDragging) return;
-        const rect = itemEl.getBoundingClientRect();
+        const rect = surfaceEl.getBoundingClientRect();
         const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
         const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-        gsap.to(itemEl, {
+        gsap.to(surfaceEl, {
           rotateY: nx * 4,
           rotateX: -ny * 4,
           duration: 0.25,
@@ -93,9 +96,9 @@ export class ProcedimientoView {
         });
       });
 
-      itemEl.addEventListener("mouseleave", () => {
+      surfaceEl.addEventListener("mouseleave", () => {
         if (isDragging) return;
-        gsap.to(itemEl, {
+        gsap.to(surfaceEl, {
           rotateY: 0,
           rotateX: 0,
           duration: 0.45,
@@ -111,11 +114,10 @@ export class ProcedimientoView {
     // Enter animation
     gsap.fromTo(
       this.procDomItems,
-      { opacity: 0, y: 16, scale: 0.97 },
+      { opacity: 0, y: 16 },
       {
         opacity: 0.92,
         y: 0,
-        scale: 1,
         duration: 0.4,
         stagger: 0.05,
         ease: "power2.out"
@@ -161,7 +163,7 @@ export class ProcedimientoView {
       if (isTargetCard) {
         gsap.to(itemEl, {
           opacity: 1,
-          scale: highlightDef.cardIndex === -1 ? 1 : 1.015,
+          scale: 1,
           duration: 0.35,
           ease: "power2.out",
           overwrite: "auto"
@@ -191,7 +193,7 @@ export class ProcedimientoView {
         // Dim other non-target cards
         gsap.to(itemEl, {
           opacity: 0.35,
-          scale: 0.99,
+          scale: 1,
           duration: 0.35,
           ease: "power2.out",
           overwrite: "auto"

@@ -4,8 +4,8 @@
   left: clamp(24px, 3.5vw, 48px);
   top: auto;
   bottom: clamp(74px, 7vh, 90px);
-  width: min(calc(64vw - clamp(24px, 3.5vw, 48px)), 1600px);
-  height: min(68vh, calc(100vh - 150px), 960px);
+  width: min(38vw, 720px);
+  height: min(34vh, 360px);
   z-index: 15;
   display: flex;
   flex-direction: column;
@@ -162,8 +162,8 @@
 
 @media (max-width: 1100px) and (min-width: 901px) {
   #cartesian-3d-container.cartesian-3d-wrapper {
-    width: calc(64vw - clamp(24px, 3.5vw, 48px));
-    height: min(68vh, calc(100vh - 150px));
+    width: min(38vw, 560px);
+    height: min(34vh, 340px);
   }
 }
 
@@ -171,6 +171,6 @@
   #cartesian-3d-container.cartesian-3d-wrapper {
     left: 4vw;
     width: 92vw;
-    height: min(58vh, calc(100vh - 150px));
+    height: min(34vh, 300px);
   }
 }
