@@ -8,6 +8,8 @@ export class PresentationController {
     this.onResume = options.onResume || (() => {});
     this.onStop = options.onStop || (() => {});
     this.onOpeningExit = options.onOpeningExit || (() => {});
+    this.getDialogueState = options.getDialogueState || (() => null);
+    this.onDialogueChange = options.onDialogueChange || (() => {});
 
     this.activeIndex = 0;
     this.isOpening = Boolean(options.startInOpening);
@@ -75,15 +77,42 @@ export class PresentationController {
 
     if (nextIndex === this.activeIndex) return;
     this.activeIndex = nextIndex;
-    this.updateUI();
     this.onSlideChange(this.activeIndex);
+    this.updateUI();
   }
 
   next() {
+    if (!this.isOpening) {
+      const dialogue = this.getDialogueState();
+      if (dialogue && dialogue.count > 0 && dialogue.index < dialogue.count - 1) {
+        this.onDialogueChange(dialogue.index + 1);
+        this.updateUI();
+        return;
+      }
+    }
     this.goTo(this.activeIndex + 1);
   }
 
   prev() {
+    if (!this.isOpening) {
+      const dialogue = this.getDialogueState();
+      if (dialogue && dialogue.index > 0) {
+        this.onDialogueChange(dialogue.index - 1);
+        this.updateUI();
+        return;
+      }
+
+      if (this.activeIndex > 0) {
+        this.activeIndex -= 1;
+        this.onSlideChange(this.activeIndex);
+        const previousDialogue = this.getDialogueState();
+        if (previousDialogue && previousDialogue.count > 0) {
+          this.onDialogueChange(previousDialogue.count - 1);
+        }
+        this.updateUI();
+        return;
+      }
+    }
     this.goTo(this.activeIndex - 1);
   }
 
@@ -149,10 +178,13 @@ export class PresentationController {
     }
 
     if (this.els.prevBtn) {
-      this.els.prevBtn.disabled = this.activeIndex === 0;
+      const dialogue = this.getDialogueState();
+      this.els.prevBtn.disabled = this.activeIndex === 0 && (!dialogue || dialogue.index <= 0);
     }
     if (this.els.nextBtn) {
-      this.els.nextBtn.disabled = this.activeIndex === this.slides.length - 1;
+      const dialogue = this.getDialogueState();
+      this.els.nextBtn.disabled = this.activeIndex === this.slides.length - 1
+        && (!dialogue || dialogue.index >= dialogue.count - 1);
     }
   }
 }

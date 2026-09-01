@@ -193,6 +193,48 @@ export class SpeechSystem {
     this.drawDialogue("");
   }
 
+  getDialogueState() {
+    return {
+      index: this.dialogueSentenceIndex,
+      count: this.dialogueSentences.length
+    };
+  }
+
+  getDialogueStartTime(index, duration = this.getAudioDuration()) {
+    if (!this.dialogueSentences.length || duration <= 0) return 0;
+    const totalChars = this.dialogueSentences.reduce((acc, sentence) => acc + sentence.length, 0);
+    if (!totalChars) return 0;
+    const safeIndex = Math.max(0, Math.min(index, this.dialogueSentences.length - 1));
+    const charsBefore = this.dialogueSentences
+      .slice(0, safeIndex)
+      .reduce((acc, sentence) => acc + sentence.length, 0);
+    return (charsBefore / totalChars) * duration;
+  }
+
+  jumpToDialogue(index) {
+    if (!this.dialogueSentences.length) return;
+
+    const nextIndex = Math.max(0, Math.min(index, this.dialogueSentences.length - 1));
+    this.dialogueSentenceIndex = nextIndex;
+    this.dialogueSentenceStartedAt = performance.now() / 1000;
+    this.dialogueDrawnText = "";
+
+    if (this.activeAudio) {
+      const duration = this.getAudioDuration();
+      const startTime = this.getDialogueStartTime(nextIndex, duration);
+      this.activeAudio.currentTime = startTime;
+      const progress = duration > 0 ? startTime / duration : 0;
+      this.nextPunctuationMarkerIndex = this.punctuationMarkers.findIndex(marker => marker.progress > progress);
+      if (this.nextPunctuationMarkerIndex < 0) {
+        this.nextPunctuationMarkerIndex = this.punctuationMarkers.length;
+      }
+      this.clearPunctuationCadence();
+    }
+
+    this.drawDialogue(this.dialogueSentences[nextIndex] || "");
+    this.onSentenceChange(nextIndex);
+  }
+
   drawDialogue(text) {
     if (!this.dialogueEl) return;
     if (text === this.dialogueDrawnText) return;

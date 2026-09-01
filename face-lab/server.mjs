@@ -4,6 +4,9 @@ import { extname, join, normalize, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
+const configuredPort = Number.parseInt(process.env.PORT || "4173", 10);
+const port = Number.isFinite(configuredPort) && configuredPort > 0 ? configuredPort : 4173;
+const host = process.env.HOST || "0.0.0.0";
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -34,6 +37,16 @@ const isWithinRoot = (candidate, allowedRoot) => {
 };
 
 createServer(async (request, response) => {
+  if (request.url === "/healthz") {
+    response.writeHead(200, {
+      ...securityHeaders,
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store"
+    });
+    response.end(JSON.stringify({ status: "ok" }));
+    return;
+  }
+
   let requestPath;
   try {
     requestPath = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
@@ -43,20 +56,11 @@ createServer(async (request, response) => {
     return;
   }
   const relativePath = requestPath === "/" ? "/index.html" : requestPath;
-  const projectRoot = normalize(join(root, ".."));
-  const visualAssetsRoot = normalize(join(root, "..", "assets_utn_visuales"));
-  const procedimientoAssetsRoot = normalize(join(root, "..", "procedimiento antigravity imagenes", "transparentes"));
   let filePath;
   let allowedRoot;
   if (requestPath === "/tp-trabajo-grupal.pdf" || requestPath === "/TP Trabajo Grupal.pdf" || requestPath === "/pdf/tp-trabajo-grupal.pdf") {
-    filePath = normalize(join(projectRoot, "TP Trabajo Grupal.pdf"));
-    allowedRoot = projectRoot;
-  } else if (requestPath.startsWith("/assets/procedimiento/")) {
-    filePath = normalize(join(procedimientoAssetsRoot, requestPath.slice("/assets/procedimiento/".length)));
-    allowedRoot = procedimientoAssetsRoot;
-  } else if (requestPath.startsWith("/assets/utn_visuales/")) {
-    filePath = normalize(join(visualAssetsRoot, requestPath.slice("/assets/utn_visuales/".length)));
-    allowedRoot = visualAssetsRoot;
+    filePath = normalize(join(root, "tp-trabajo-grupal.pdf"));
+    allowedRoot = root;
   } else {
     filePath = normalize(join(root, relativePath));
     allowedRoot = root;
@@ -73,13 +77,13 @@ createServer(async (request, response) => {
     response.writeHead(200, {
       ...securityHeaders,
       "Content-Type": mime[extname(filePath)] ?? "application/octet-stream",
-      "Cache-Control": "no-store",
+      "Cache-Control": extname(filePath) === ".html" ? "no-store" : "public, max-age=3600",
     });
     response.end(file);
   } catch {
     response.writeHead(404, { ...securityHeaders, "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found");
   }
-}).listen(4173, "127.0.0.1", () => {
-  console.log("Face Lab running at http://127.0.0.1:4173");
+}).listen(port, host, () => {
+  console.log(`Face Lab running at http://${host}:${port}`);
 });

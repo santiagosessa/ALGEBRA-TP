@@ -1,7 +1,11 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "node server.mjs"
+    "dev": "node server.mjs",
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "gsap": "^3.15.0",

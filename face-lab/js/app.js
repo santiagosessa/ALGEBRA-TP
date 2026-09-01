@@ -129,6 +129,8 @@ class App {
         avatarStage: document.querySelector("#avatar-stage")
       },
       startInOpening: true,
+      getDialogueState: () => this.speech.getDialogueState(),
+      onDialogueChange: index => this.speech.jumpToDialogue(index),
       onOpeningExit: autoPlay => this.enterPresentation(autoPlay),
       onSlideChange: index => {
         this.speech.setSlide(index);
