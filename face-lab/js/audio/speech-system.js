@@ -186,13 +186,42 @@ export class SpeechSystem {
     this.dialogueTexture.needsUpdate = true;
   }
 
+  getSentenceIndexAndProgress(currentTime, duration) {
+    if (!this.dialogueSentences.length) return { index: 0, sentenceProgress: 0 };
+    if (!duration || duration <= 0) return { index: 0, sentenceProgress: 0 };
+
+    const totalChars = this.dialogueSentences.reduce((acc, s) => acc + s.length, 0);
+    if (totalChars === 0) return { index: 0, sentenceProgress: 0 };
+
+    let prevChars = 0;
+    for (let i = 0; i < this.dialogueSentences.length; i++) {
+      const len = this.dialogueSentences[i].length;
+      const startSec = (prevChars / totalChars) * duration;
+      const endSec = ((prevChars + len) / totalChars) * duration;
+      if (currentTime < endSec || i === this.dialogueSentences.length - 1) {
+        const sentenceDur = Math.max(0.1, endSec - startSec);
+        const sProg = Math.max(0, Math.min(1, (currentTime - startSec) / sentenceDur));
+        return { index: i, sentenceProgress: sProg };
+      }
+      prevChars += len;
+    }
+    return { index: 0, sentenceProgress: 0 };
+  }
+
   updateDialogue() {
     if (!this.dialogueSprite || !this.dialogueSentences.length) return;
     const now = performance.now() / 1000;
-    const progress = this.getSpeechProgress();
-    const wantedIndex = this.speaking
-      ? Math.min(this.dialogueSentences.length - 1, Math.floor(progress * this.dialogueSentences.length))
-      : this.dialogueSentenceIndex;
+    const audioDuration = this.activeAudio && Number.isFinite(this.activeAudio.duration) && this.activeAudio.duration > 0
+      ? this.activeAudio.duration
+      : (this.lipSyncCache[this.activeSlideIndex]?.[this.lipSyncCache[this.activeSlideIndex]?.length - 1]?.end || 16.0);
+
+    const currentTime = this.activeAudio && Number.isFinite(this.activeAudio.currentTime)
+      ? this.activeAudio.currentTime
+      : (this.speaking ? Math.min(audioDuration, now - this.speakStartedAt) : 0);
+
+    const { index: wantedIndex, sentenceProgress } = this.speaking
+      ? this.getSentenceIndexAndProgress(currentTime, audioDuration)
+      : { index: this.dialogueSentenceIndex, sentenceProgress: 1 };
 
     if (wantedIndex !== this.dialogueSentenceIndex) {
       this.dialogueSentenceIndex = wantedIndex;
@@ -203,10 +232,9 @@ export class SpeechSystem {
     }
 
     const sentence = this.dialogueSentences[this.dialogueSentenceIndex] || "";
-    const typingDuration = Math.max(0.5, sentence.length * 0.032);
     const amount = this.paused
       ? sentence.length
-      : Math.min(sentence.length, Math.floor(Math.max(0, now - this.dialogueSentenceStartedAt) / typingDuration * sentence.length));
+      : Math.min(sentence.length, Math.floor(sentenceProgress * sentence.length));
     this.drawDialogue(sentence.slice(0, amount));
   }
 

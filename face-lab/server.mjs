@@ -12,6 +12,9 @@ const mime = {
   ".css": "text/css; charset=utf-8",
   ".glb": "model/gltf-binary",
   ".png": "image/png",
+  ".pdf": "application/pdf",
+  ".wav": "audio/wav",
+  ".svg": "image/svg+xml",
 };
 const securityHeaders = {
   // Report only: KTX2Loader needs a trusted local worker with runtime evaluation.
@@ -40,11 +43,18 @@ createServer(async (request, response) => {
     return;
   }
   const relativePath = requestPath === "/" ? "/index.html" : requestPath;
+  const projectRoot = normalize(join(root, ".."));
   const visualAssetsRoot = normalize(join(root, "..", "assets_utn_visuales"));
   const procedimientoAssetsRoot = normalize(join(root, "..", "procedimiento antigravity imagenes", "transparentes"));
   let filePath;
   let allowedRoot;
-  if (requestPath.startsWith("/assets/procedimiento/")) {
+  if (requestPath === "/tp-trabajo-grupal.pdf" || requestPath === "/TP Trabajo Grupal.pdf" || requestPath === "/pdf/tp-trabajo-grupal.pdf") {
+    filePath = normalize(join(projectRoot, "TP Trabajo Grupal.pdf"));
+    allowedRoot = projectRoot;
+  } else if (requestPath === "/cuadro-comparativo.pdf" || requestPath === "/pdf/cuadro-comparativo.pdf") {
+    filePath = normalize(join(projectRoot, "Cuadro_Comparativo_Actualizado_Patron_vs_Grupo.pdf"));
+    allowedRoot = projectRoot;
+  } else if (requestPath.startsWith("/assets/procedimiento/")) {
     filePath = normalize(join(procedimientoAssetsRoot, requestPath.slice("/assets/procedimiento/".length)));
     allowedRoot = procedimientoAssetsRoot;
   } else if (requestPath.startsWith("/assets/utn_visuales/")) {

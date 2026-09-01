@@ -4,8 +4,8 @@
   left: clamp(24px, 4vw, 56px);
   top: 50%;
   transform: translateY(-50%);
-  width: min(58vw, 1080px);
-  max-height: 84vh;
+  width: min(64vw, 1240px);
+  max-height: 88vh;
   z-index: 4;
   display: flex;
   flex-direction: column;
@@ -93,7 +93,11 @@
   border-radius: 12px;
   transform-origin: center center;
   transform-style: preserve-3d;
+  transform: translateZ(0);
   will-change: transform, opacity, filter;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
   outline: none;
   opacity: 0.92;
   filter: drop-shadow(0 14px 32px rgba(0, 0, 0, 0.5));
@@ -114,8 +118,12 @@
   display: block;
   width: 100%;
   height: auto;
-  max-height: 82vh;
+  max-height: 86vh;
   object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -143,6 +151,7 @@
   pointer-events: none;
   opacity: 0;
   z-index: 5;
+  will-change: top, left, width, height, opacity, transform;
   transition: border-color 200ms ease;
 }
 

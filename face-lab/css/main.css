@@ -85,7 +85,7 @@ html, body {
 .stage-panel {
   position: relative;
   z-index: 3;
-  width: min(58vw, 1120px);
+  width: min(64vw, 1260px);
   height: 100%;
   pointer-events: none;
 }
@@ -217,4 +217,313 @@ html, body {
   background: rgba(20, 52, 70, 0.95);
   color: #e0f2fe;
   box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+}
+
+/* Botón de Bibliografía (Esquina inferior derecha) */
+.biblio-toggle-btn {
+  position: fixed;
+  right: 28px;
+  bottom: 24px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(205, 225, 222, 0.18);
+  background: rgba(8, 22, 30, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #dbe8e3;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+.biblio-toggle-btn svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.biblio-toggle-btn:hover {
+  border-color: rgba(117, 211, 192, 0.6);
+  background: rgba(18, 48, 60, 0.92);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65), 0 0 20px rgba(117, 211, 192, 0.3);
+}
+
+.biblio-toggle-btn:active {
+  transform: translateY(0);
+}
+
+/* Modal de Bibliografía e Informe Extendido */
+.biblio-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(4, 12, 17, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: 24px;
+}
+
+.biblio-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.biblio-modal-container {
+  position: relative;
+  width: min(94vw, 1080px);
+  height: min(90vh, 820px);
+  background: rgba(10, 26, 36, 0.96);
+  border: 1px solid rgba(117, 211, 192, 0.24);
+  border-radius: 16px;
+  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.8), 0 0 40px rgba(117, 211, 192, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.96) translateY(12px);
+  transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.biblio-modal-backdrop.is-open .biblio-modal-container {
+  transform: scale(1) translateY(0);
+}
+
+.biblio-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(205, 225, 222, 0.12);
+  background: rgba(6, 17, 23, 0.6);
+}
+
+.biblio-modal-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: #f4f8f6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.biblio-modal-title svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.biblio-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(205, 225, 222, 0.15);
+  background: rgba(14, 38, 48, 0.7);
+  color: #8fa6a8;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.biblio-modal-close svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.biblio-modal-close:hover {
+  background: rgba(243, 139, 130, 0.2);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.biblio-tabs-nav {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(8, 22, 30, 0.4);
+  border-bottom: 1px solid rgba(205, 225, 222, 0.08);
+}
+
+.biblio-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #8fa6a8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.biblio-tab-btn:hover {
+  color: #e0f2fe;
+  background: rgba(205, 225, 222, 0.06);
+}
+
+.biblio-tab-btn.is-active {
+  color: var(--teal);
+  background: rgba(117, 211, 192, 0.12);
+  border-color: rgba(117, 211, 192, 0.3);
+}
+
+.biblio-tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: none;
+}
+
+.biblio-tab-content.is-active {
+  display: block;
+}
+
+/* Tab 1: PDF Viewer */
+.biblio-pdf-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 12px;
+}
+
+.biblio-pdf-frame {
+  width: 100%;
+  flex: 1;
+  min-height: 480px;
+  border: 1px solid rgba(205, 225, 222, 0.12);
+  border-radius: 8px;
+  background: #15222e;
+}
+
+.biblio-pdf-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.biblio-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: rgba(117, 211, 192, 0.15);
+  border: 1px solid rgba(117, 211, 192, 0.4);
+  color: var(--teal);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 180ms ease;
+}
+
+.biblio-link-btn:hover {
+  background: var(--teal);
+  color: #061117;
+}
+
+.biblio-link-btn.google-deck {
+  background: rgba(240, 179, 108, 0.15);
+  border-color: rgba(240, 179, 108, 0.4);
+  color: var(--orange);
+}
+
+.biblio-link-btn.google-deck:hover {
+  background: var(--orange);
+  color: #061117;
+}
+
+/* Tab 2 & 3: Documentation & Audit Report Styling */
+.biblio-report-section {
+  color: #dbe8e3;
+  line-height: 1.7;
+  font-size: 14px;
+  max-width: 960px;
+}
+
+.biblio-report-section h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.biblio-report-section h3 {
+  font-size: 16px;
+  color: var(--orange);
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+
+.biblio-card-box {
+  background: rgba(14, 38, 48, 0.6);
+  border: 1px solid rgba(205, 225, 222, 0.12);
+  border-radius: 8px;
+  padding: 18px;
+  margin: 14px 0;
+}
+
+.biblio-card-box strong {
+  color: var(--yellow);
+}
+
+.biblio-audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
+.biblio-audit-table th,
+.biblio-audit-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border: 1px solid rgba(205, 225, 222, 0.12);
+}
+
+.biblio-audit-table th {
+  background: rgba(8, 22, 30, 0.7);
+  color: var(--teal);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.biblio-audit-table td {
+  background: rgba(14, 38, 48, 0.35);
 }

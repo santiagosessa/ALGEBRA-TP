@@ -86,6 +86,14 @@ export class PresentationController {
       const actionLabel = this.paused ? "Reanudar" : "Pausar";
       const span = this.els.pauseBtn.querySelector("span");
       if (span) span.textContent = actionLabel;
+      const svg = this.els.pauseBtn.querySelector("svg");
+      if (svg) {
+        if (this.paused) {
+          svg.innerHTML = `<polygon points="6 4 20 12 6 20 6 4" fill="currentColor"></polygon>`;
+        } else {
+          svg.innerHTML = `<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"></rect><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"></rect>`;
+        }
+      }
       this.els.pauseBtn.setAttribute("aria-label", `${actionLabel} párrafo`);
       this.els.pauseBtn.disabled = !(this.speaking || this.paused);
       this.els.pauseBtn.setAttribute("aria-pressed", String(this.paused));

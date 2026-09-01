@@ -54,7 +54,7 @@
           <span>Detener</span>
         </button>
         <button id="pause-btn" class="presentation-button pause-button" type="button" aria-label="Pausar párrafo" title="Pausar párrafo" aria-pressed="false" disabled>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
           <span>Pausar</span>
         </button>
         <!-- 3D Graph Button with Custom Paper & Pencil Icon -->
@@ -72,6 +72,161 @@
           <span>Gráfico 3D</span>
         </button>
       </nav>
+
+      <!-- Botón sutil de Bibliografía (Esquina inferior derecha) -->
+      <button id="btn-biblio" class="biblio-toggle-btn" type="button" aria-label="Abrir bibliografía e informe extendido" aria-expanded="false" aria-controls="biblio-modal-backdrop">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          <line x1="9" y1="6" x2="16" y2="6"></line>
+          <line x1="9" y1="10" x2="16" y2="10"></line>
+        </svg>
+        <span>Bibliografía</span>
+      </button>
+
+      <!-- Modal Extendido de Bibliografía & Auditoría -->
+      <div id="biblio-modal-backdrop" class="biblio-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="biblio-modal-heading" aria-hidden="true">
+        <div class="biblio-modal-container">
+          <header class="biblio-modal-header">
+            <h2 id="biblio-modal-heading" class="biblio-modal-title">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                <line x1="9" y1="6" x2="16" y2="6"></line>
+                <line x1="9" y1="10" x2="16" y2="10"></line>
+              </svg>
+              <span>Bibliografía &amp; Auditoría Epistemológica</span>
+            </h2>
+            <button id="biblio-modal-close" class="biblio-modal-close" type="button" aria-label="Cerrar modal (Escape)" title="Cerrar (Escape)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+          </header>
+
+          <nav class="biblio-tabs-nav" role="tablist" aria-label="Secciones de bibliografía">
+            <button class="biblio-tab-btn is-active" data-tab="pdf" role="tab" aria-selected="true" aria-controls="tab-pdf">
+              📄 TP N° 3 (PDF Original)
+            </button>
+            <button class="biblio-tab-btn" data-tab="report" role="tab" aria-selected="false" aria-controls="tab-report">
+              📐 Informe Técnico de Auditoría
+            </button>
+            <button class="biblio-tab-btn" data-tab="sycophancy" role="tab" aria-selected="false" aria-controls="tab-sycophancy">
+              🤖 Discrepancias &amp; Fenómeno Sycophancy
+            </button>
+          </nav>
+
+          <!-- Tab 1: PDF Viewer & Links -->
+          <section id="tab-pdf" class="biblio-tab-content is-active" role="tabpanel">
+            <div class="biblio-pdf-wrapper">
+              <div class="biblio-pdf-actions">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <a href="/tp-trabajo-grupal.pdf" target="_blank" rel="noopener noreferrer" class="biblio-link-btn" title="Abrir PDF en nueva pestaña">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    <span>Descargar / Abrir TP Trabajo Grupal (PDF)</span>
+                  </a>
+                  <a href="/cuadro-comparativo.pdf" target="_blank" rel="noopener noreferrer" class="biblio-link-btn" title="Abrir Cuadro Comparativo">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+                    <span>Cuadro Comparativo Actualizado (PDF)</span>
+                  </a>
+                </div>
+                <a href="https://docs.google.com/presentation/d/1gQ18tupwzYr4BfdDWN2siempyxzenXnXp-PZfvwTDII/edit?slide=id.p12#slide=id.p12" target="_blank" rel="noopener noreferrer" class="biblio-link-btn google-deck" title="Ver presentación en Google Slides">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                  <span>Presentación en Google Slides</span>
+                </a>
+              </div>
+              <iframe class="biblio-pdf-frame" src="/tp-trabajo-grupal.pdf" title="Previsualización del Trabajo Práctico Grupal"></iframe>
+            </div>
+          </section>
+
+          <!-- Tab 2: Extended Technical Report -->
+          <section id="tab-report" class="biblio-tab-content" role="tabpanel" hidden>
+            <article class="biblio-report-section">
+              <h2>Informe Técnico de Auditoría Epistemológica</h2>
+              <p><strong>Cátedra:</strong> Álgebra y Geometría Analítica · UTN FRBA | <strong>Autor:</strong> Santiago Sessa (Legajo 212.808-1)</p>
+              
+              <div class="biblio-card-box">
+                <strong>Fundamento del Protocolo:</strong> La investigación audita rigurosamente los procesos de resolución humana e inteligencia artificial sobre problemas de rectas y planos en $\mathbb{R}^3$, estructurándose en 5 fases metodológicas:
+                <ol style="margin: 8px 0 0 18px; padding: 0;">
+                  <li><strong>Resolver:</strong> Patrones matemáticos y deducción formal paso a paso.</li>
+                  <li><strong>Contrastar:</strong> Matriz de comparación frente al grupo de estudiantes y modelos de lenguaje de última generación.</li>
+                  <li><strong>Verificar:</strong> Control geométrico de pertenencia directa ($P \in \pi$) y trazabilidad de signos.</li>
+                  <li><strong>Tensionar:</strong> Formulación de prompts adversarios con premisas falsas para evaluar la robustez conceptual.</li>
+                  <li><strong>Reflexionar:</strong> Conclusiones metacognitivas sobre las competencias analíticas del futuro ingeniero.</li>
+                </ol>
+              </div>
+
+              <h3>1. Intersección Recta-Plano</h3>
+              <p>Dada la recta $r: (x,y,z) = (-1+3\lambda, 2+\lambda, -2\lambda)$ y el plano $\pi: 2x - y + z - 6 = 0$, la sustitución paramétrica arroja $2(-1+3\lambda) - (2+\lambda) + (-2\lambda) - 6 = 0 \iff 3\lambda - 10 = 0 \implies \lambda = 10/3$. Las coordenadas exactas del punto de corte son $I = (9, 16/3, -20/3)$. La verificación en el plano confirma $2(9) - 16/3 - 20/3 - 6 = 18 - 12 - 6 = 0$.</p>
+
+              <h3>2. Ángulo entre Recta y Plano</h3>
+              <p>Con $\vec{d} = (1,2,2)$ y $\vec{n} = (1,-2,2)$, ambos con norma $||\vec{d}|| = ||\vec{n}|| = 3$ y producto escalar $\vec{d} \cdot \vec{n} = 1$, el ángulo complementario respecto a la normal es $\cos \beta = 1/9 \implies \beta \approx 83,62^\circ$. El ángulo real con el plano es $\sin \alpha = 1/9 \implies \alpha = 6^\circ 22' 46'' \approx 6,38^\circ$.</p>
+
+              <h3>3. Análisis de Existencia del Parámetro $m$</h3>
+              <p><strong>Caso 3.a ($r \parallel \pi$):</strong> Requiere $\vec{d} \perp \vec{n} \implies 3m + 6 - 8 = 0 \implies m = 2/3$.<br />
+              <strong>Caso 3.b ($r \perp \pi$):</strong> Requiere $\vec{d} \parallel \vec{n} \implies (m, 6, 4) = k(3, 1, -2)$. La segunda componente fija $k = 6$, pero la tercera exigiría $4 = -2(6) = -12$ (contradicción irresoluble $6 \ne -2$). En consecuencia, el sistema es incompatible y no existe valor real de $m$ ($\nexists m \in \mathbb{R}$).</p>
+
+              <h3>4. Planos Proyectantes y Control de Signo</h3>
+              <p>A partir de la recta en forma simétrica $\frac{x-2}{4} = \frac{y+1}{-3} = \frac{z-5}{1}$, se derivan los planos proyectantes:<br />
+              • Plano $xy$: $3x + 4y - 2 = 0$<br />
+              • Plano $xz$: $x - 4z + 18 = 0$ (corrección crítica del signo: $x-2 = 4z-20 \implies x-4z+18=0$, verificado con $P(2,-1,5) \to 2 - 4(5) + 18 = 0$)<br />
+              • Plano $yz$: $y + 3z - 14 = 0$</p>
+            </article>
+          </section>
+
+          <!-- Tab 3: Sycophancy & Discrepancies Matrix -->
+          <section id="tab-sycophancy" class="biblio-tab-content" role="tabpanel" hidden>
+            <article class="biblio-report-section">
+              <h2>Auditoría de Discrepancias &amp; Fenómeno de Sycophancy</h2>
+              
+              <table class="biblio-audit-table">
+                <thead>
+                  <tr>
+                    <th>Ejercicio</th>
+                    <th>Resolución Patrón</th>
+                    <th>Grupo de Estudiantes</th>
+                    <th>Modelos IA (LLMs)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>1. Intersección</strong></td>
+                    <td>$I = (9, 16/3, -20/3)$ ($\lambda = 10/3$)</td>
+                    <td>Error aritmético en 2da cuenta ($\lambda=5, P(14,7,-10)$)</td>
+                    <td>Preciso en el cálculo pero sin verificar pertenencia en $\pi$</td>
+                  </tr>
+                  <tr>
+                    <td><strong>2. Ángulo</strong></td>
+                    <td>$\sin \alpha = 1/9 \implies \alpha \approx 6,38^\circ$</td>
+                    <td>Planteo correcto, confunden $\beta=83,62^\circ$ con el ángulo al plano</td>
+                    <td>Confusión de fórmula: aplican $\cos$ directamente sobre el plano</td>
+                  </tr>
+                  <tr>
+                    <td><strong>3. Parámetro $m$</strong></td>
+                    <td>$m = 2/3$ (paralela) · $\nexists m \in \mathbb{R}$ (perpendicular)</td>
+                    <td>Rigor conceptual intacto: detectan $4 = -12$ y declaran vacío</td>
+                    <td>Sesgo de complacencia: alucinan forzando $m=18$ para no negar la solución</td>
+                  </tr>
+                  <tr>
+                    <td><strong>4. Proyectantes</strong></td>
+                    <td>3 planos cartesianos ($\pi_{xz}$ con $+18$)</td>
+                    <td>Dejan forma simétrica sin pasar a cartesiana ni verificar</td>
+                    <td>Omiten $\pi_{yz}$ o cometen error de signo en término independiente</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>El Fenómeno de Sycophancy (Adulación Algorítmica)</h3>
+              <div class="biblio-card-box">
+                <p>Durante la auditoría se detectó que los modelos de lenguaje tienden a concordar con las premisas del usuario aun cuando estas son matemáticamente falsas:</p>
+                <ul>
+                  <li><strong>Fabricación de Citas:</strong> En respuestas de auditoría, las IAs atribuyeron a herramientas de la competencia errores algebraicos y divisiones por cero que nunca habían ocurrido.</li>
+                  <li><strong>Justificación Verosímil:</strong> Los modelos generan explicaciones gramaticalmente persuasivas para sostener premisas imposibles como $0\lambda = 10 \implies \lambda = 10/0$.</li>
+                  <li><strong>Regla de Auditoría Ingenieril:</strong> <em>«La confianza del tono nunca reemplaza la trazabilidad de las fuentes y del cálculo.»</em></li>
+                </ul>
+              </div>
+            </article>
+          </section>
+        </div>
+      </div>
 
       <span id="live-status" class="visually-hidden" aria-live="polite">Modelo 3D: cargando · Voz: lista</span>
     </main>

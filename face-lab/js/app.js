@@ -6,6 +6,7 @@ import { AvatarController } from "./avatar/avatar-controller.js";
 import { SpeechSystem } from "./audio/speech-system.js";
 import { ProcedimientoView } from "./ui/procedimiento-view.js";
 import { PresentationController } from "./ui/presentation-controller.js";
+import { BiblioModal } from "./ui/biblio-modal.js";
 import { Cartesian3DExplorer } from "../cartesian-3d-explorer.js";
 
 class App {
@@ -152,6 +153,8 @@ class App {
         this.speech.stop();
       }
     });
+
+    this.biblioModal = new BiblioModal();
   }
 
   initCartesian3D() {
@@ -233,10 +236,6 @@ class App {
   animate(now = performance.now()) {
     requestAnimationFrame(time => this.animate(time));
     if (document.hidden) return;
-
-    const targetFps = this.speech.speaking ? 36 : 24;
-    const frameInterval = 1000 / targetFps;
-    if (this.lastFrameAt && now - this.lastFrameAt < frameInterval) return;
 
     const delta = Math.min(this.lastFrameAt ? (now - this.lastFrameAt) / 1000 : 0.016, 0.05);
     this.lastFrameAt = now;

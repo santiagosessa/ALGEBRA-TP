@@ -8,13 +8,13 @@ export const procedimientoScenes = [
       { id: "s0-right", cardFile: "card-01-2.png", label: "Condición de intersección y verificación r ∩ π = {I}" }
     ],
     sentenceHighlights: [
-      { cardIndex: 1, top: "14%", left: "5%", width: "90%", height: "26%" }, // 0: Bienvenidos
-      { cardIndex: 1, top: "14%", left: "5%", width: "90%", height: "26%" }, // 1: Criterio
-      { cardIndex: 1, top: "14%", left: "5%", width: "90%", height: "26%" }, // 2: Criterio punto
-      { cardIndex: 0, top: "14%", left: "5%", width: "90%", height: "42%" }, // 3: Plano pi y recta r
-      { cardIndex: 0, top: "58%", left: "5%", width: "90%", height: "20%" }, // 4: Punto P0
-      { cardIndex: 0, top: "75%", left: "5%", width: "90%", height: "20%" }, // 5: 2(-1) - ... != 0
-      { cardIndex: 1, top: "44%", left: "5%", width: "90%", height: "52%" }  // 6: Pasos 1 a 5
+      { cardIndex: 1, top: "8%", left: "4%", width: "92%", height: "30%" }, // 0: Bienvenidos
+      { cardIndex: 1, top: "8%", left: "4%", width: "92%", height: "30%" }, // 1: Criterio general
+      { cardIndex: 1, top: "8%", left: "4%", width: "92%", height: "30%" }, // 2: Criterio r ∩ π = {I}
+      { cardIndex: 0, top: "10%", left: "4%", width: "92%", height: "54%" }, // 3: Plano π y recta paramétrica
+      { cardIndex: 0, top: "68%", left: "4%", width: "92%", height: "13%" }, // 4: Punto de paso base P0
+      { cardIndex: 0, top: "80%", left: "4%", width: "92%", height: "15%" }, // 5: Comprobación 2(-1) - ... != 0
+      { cardIndex: 1, top: "41%", left: "3%", width: "94%", height: "54%" }  // 6: Pasos 1 a 5 de resolución
     ]
   },
   {
@@ -29,13 +29,13 @@ export const procedimientoScenes = [
       { id: "s1-p5", cardFile: "card-02-5.png", label: "Fase 5: Reflexionar sobre el rol profesional" }
     ],
     sentenceHighlights: [
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" }, // 0: Criterio / 5 fases
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" }, // 1: Fase 1 Resolver
-      { cardIndex: 1, top: "6%", left: "4%", width: "92%", height: "88%" }, // 2: Fase 2 Contrastar
-      { cardIndex: 2, top: "6%", left: "4%", width: "92%", height: "88%" }, // 3: Fase 3 Verificar
-      { cardIndex: 3, top: "6%", left: "4%", width: "92%", height: "88%" }, // 4: Fase 4 Tensionar
-      { cardIndex: 4, top: "6%", left: "4%", width: "92%", height: "88%" }, // 5: Fase 5 Reflexionar
-      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" } // 6: Todas las fases
+      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }, // 0: Criterio / 5 fases
+      { cardIndex: 0, top: "4%", left: "4%", width: "92%", height: "92%" },   // 1: Fase 1 Resolver
+      { cardIndex: 1, top: "4%", left: "4%", width: "92%", height: "92%" },   // 2: Fase 2 Contrastar
+      { cardIndex: 2, top: "4%", left: "4%", width: "92%", height: "92%" },   // 3: Fase 3 Verificar
+      { cardIndex: 3, top: "4%", left: "4%", width: "92%", height: "92%" },   // 4: Fase 4 Tensionar
+      { cardIndex: 4, top: "4%", left: "4%", width: "92%", height: "92%" },   // 5: Fase 5 Reflexionar
+      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }  // 6: Todas las fases conectadas
     ]
   },
   {
@@ -48,13 +48,14 @@ export const procedimientoScenes = [
       { id: "s2-punto", cardFile: "card-03-3.png", label: "Punto de intersección I y verificación doble" }
     ],
     sentenceHighlights: [
-      { cardIndex: 0, top: "12%", left: "5%", width: "90%", height: "46%" }, // 0: Planteo algebraico
-      { cardIndex: 0, top: "60%", left: "5%", width: "90%", height: "20%" }, // 1: Vectores director y normal
-      { cardIndex: 0, top: "78%", left: "5%", width: "90%", height: "18%" }, // 2: d . n = 3 != 0
-      { cardIndex: 1, top: "12%", left: "5%", width: "90%", height: "30%" }, // 3: Sustitución 2(-1+3λ)...
-      { cardIndex: 1, top: "45%", left: "5%", width: "90%", height: "50%" }, // 4: 3λ - 10 = 0 -> λ = 10/3
-      { cardIndex: 2, top: "12%", left: "5%", width: "90%", height: "48%" }, // 5: Punto I = (9, 16/3, -20/3)
-      { cardIndex: 2, top: "62%", left: "5%", width: "90%", height: "32%" }  // 6: 2(9) - ... = 0 verificada
+      { cardIndex: 0, top: "10%", left: "4%", width: "92%", height: "48%" }, // 0: Planteo algebraico
+      { cardIndex: 0, top: "60%", left: "4%", width: "92%", height: "19%" }, // 1: Vectores director d y normal n
+      { cardIndex: 0, top: "78%", left: "4%", width: "92%", height: "16%" }, // 2: d · n = 3 != 0 (Secantes)
+      { cardIndex: 1, top: "10%", left: "4%", width: "92%", height: "24%" }, // 3: Sustitución en π
+      { cardIndex: 1, top: "45%", left: "4%", width: "92%", height: "50%" }, // 4: 3λ - 10 = 0 -> λ = 10/3
+      { cardIndex: 2, top: "10%", left: "4%", width: "92%", height: "52%" }, // 5: Coordenadas I = (9, 16/3, -20/3)
+      { cardIndex: 2, top: "66%", left: "4%", width: "92%", height: "28%" }, // 6: 2(9) - ... = 0 en el plano
+      { cardIndex: 2, top: "40%", left: "4%", width: "92%", height: "54%" }  // 7: Verificación completa
     ]
   },
   {
@@ -67,13 +68,13 @@ export const procedimientoScenes = [
       { id: "s3-deduccion", cardFile: "card-04-3.png", label: "Deducción ángulo recta-plano α = 6,38°" }
     ],
     sentenceHighlights: [
-      { cardIndex: 0, top: "12%", left: "5%", width: "90%", height: "45%" }, // 0: Ángulo recta plano
-      { cardIndex: 0, top: "12%", left: "5%", width: "90%", height: "45%" }, // 1: Vectores n y d
-      { cardIndex: 0, top: "58%", left: "5%", width: "90%", height: "38%" }, // 2: Norma 3 y producto 1
-      { cardIndex: 1, top: "12%", left: "5%", width: "90%", height: "45%" }, // 3: cos β = 1/9
-      { cardIndex: 1, top: "58%", left: "5%", width: "90%", height: "38%" }, // 4: β ≈ 83,62° con la normal
-      { cardIndex: 2, top: "12%", left: "5%", width: "90%", height: "45%" }, // 5: sin α = 1/9
-      { cardIndex: 2, top: "58%", left: "5%", width: "90%", height: "38%" }  // 6: α ≈ 6,38°
+      { cardIndex: 0, top: "10%", left: "4%", width: "92%", height: "52%" }, // 0: Ángulo recta-plano
+      { cardIndex: 0, top: "10%", left: "4%", width: "92%", height: "54%" }, // 1: Vectores director y normal
+      { cardIndex: 0, top: "48%", left: "4%", width: "92%", height: "44%" }, // 2: Normas 3 y producto escalar 1
+      { cardIndex: 1, top: "12%", left: "4%", width: "92%", height: "30%" }, // 3: cos β = 1/9
+      { cardIndex: 1, top: "40%", left: "4%", width: "92%", height: "54%" }, // 4: β ≈ 83,62° respecto a la normal
+      { cardIndex: 2, top: "12%", left: "4%", width: "92%", height: "30%" }, // 5: sin α = 1/9 por complementariedad
+      { cardIndex: 2, top: "66%", left: "4%", width: "92%", height: "26%" }  // 6: α ≈ 6,38° ángulo final
     ]
   },
   {
@@ -85,12 +86,13 @@ export const procedimientoScenes = [
       { id: "s4-caso-b", cardFile: "card-05-2.png", label: "Caso 3.b: Recta perpendicular al plano (Incompatible 6 ≠ -2)" }
     ],
     sentenceHighlights: [
-      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }, // 0: Dos casos
-      { cardIndex: 0, top: "12%", left: "5%", width: "90%", height: "40%" },  // 1: Paralela -> d . n = 0
-      { cardIndex: 0, top: "45%", left: "5%", width: "90%", height: "50%" },  // 2: 3m + 6 - 8 = 0 -> m = 2/3
-      { cardIndex: 1, top: "12%", left: "5%", width: "90%", height: "30%" },  // 3: Perpendicular -> d = k . n
-      { cardIndex: 1, top: "42%", left: "5%", width: "90%", height: "26%" },  // 4: 6 = 1k -> 4 = -12 contradicción
-      { cardIndex: 1, top: "68%", left: "5%", width: "90%", height: "28%" }   // 5: 6 != -2 -> Incompatible no existe m
+      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }, // 0: Dos casos geométricos
+      { cardIndex: 0, top: "12%", left: "4%", width: "92%", height: "35%" },  // 1: Paralela -> d ⟂ n
+      { cardIndex: 0, top: "42%", left: "4%", width: "92%", height: "50%" },  // 2: 3m + 6 - 8 = 0 -> m = 2/3
+      { cardIndex: 1, top: "12%", left: "4%", width: "92%", height: "26%" },  // 3: Perpendicular -> d || n
+      { cardIndex: 1, top: "34%", left: "4%", width: "92%", height: "30%" },  // 4: 6 = 1k -> k=6, 4 = -12 contradicción
+      { cardIndex: 1, top: "64%", left: "4%", width: "92%", height: "28%" },  // 5: 6 != -2 -> Incompatible
+      { cardIndex: 1, top: "64%", left: "4%", width: "92%", height: "28%" }   // 6: No fuerzo solución donde no la hay
     ]
   },
   {
@@ -104,12 +106,13 @@ export const procedimientoScenes = [
       { id: "s5-plano-yz", cardFile: "card-06-4.png", label: "Proyección plano coordenado πyz" }
     ],
     sentenceHighlights: [
-      { cardIndex: 0, top: "8%", left: "4%", width: "92%", height: "84%" },  // 0: Planos proyectantes
-      { cardIndex: 0, top: "8%", left: "4%", width: "92%", height: "84%" },  // 1: P(2, -1, 5) y d(4, -3, 1)
-      { cardIndex: 1, top: "8%", left: "4%", width: "92%", height: "84%" },  // 2: Plano xy: 3x + 4y - 2 = 0
-      { cardIndex: 2, top: "8%", left: "4%", width: "92%", height: "84%" },  // 3: Plano xz: x - 4z + 18 = 0
-      { cardIndex: 3, top: "8%", left: "4%", width: "92%", height: "84%" },  // 4: Plano yz: y + 3z - 14 = 0
-      { cardIndex: 2, top: "52%", left: "4%", width: "92%", height: "42%" }  // 5: Verificación +18: 2 - 20 + 18 = 0
+      { cardIndex: 0, top: "6%", left: "2%", width: "96%", height: "88%" },  // 0: Planos proyectantes
+      { cardIndex: 0, top: "6%", left: "2%", width: "96%", height: "88%" },  // 1: P(2, -1, 5) y d(4, -3, 1)
+      { cardIndex: 1, top: "6%", left: "4%", width: "92%", height: "88%" },  // 2: Plano πxy: 3x + 4y - 2 = 0
+      { cardIndex: 2, top: "6%", left: "4%", width: "92%", height: "88%" },  // 3: Plano πxz: x - 4z + 18 = 0
+      { cardIndex: 3, top: "6%", left: "4%", width: "92%", height: "88%" },  // 4: Plano πyz: y + 3z - 14 = 0
+      { cardIndex: 2, top: "58%", left: "4%", width: "92%", height: "36%" },  // 5: Verificación +18: 2 - 20 + 18 = 0
+      { cardIndex: 2, top: "58%", left: "4%", width: "92%", height: "36%" }   // 6: Filtro de signo
     ]
   },
   {
@@ -120,12 +123,12 @@ export const procedimientoScenes = [
       { id: "s6-matriz", cardFile: "card-07-1.png", label: "Matriz comparativa: Resolución patrón vs Grupo vs Modelos IA" }
     ],
     sentenceHighlights: [
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" },  // 0: Comparación general
-      { cardIndex: 0, top: "20%", left: "4%", width: "92%", height: "18%" }, // 1: Fila 1 Intersección
-      { cardIndex: 0, top: "38%", left: "4%", width: "92%", height: "18%" }, // 2: Fila 2 Ángulo
-      { cardIndex: 0, top: "56%", left: "4%", width: "92%", height: "18%" }, // 3: Fila 3 Parámetro
-      { cardIndex: 0, top: "74%", left: "4%", width: "92%", height: "18%" }, // 4: Fila 4 Proyectantes
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" }   // 5: Conclusión de matriz
+      { cardIndex: 0, top: "4%", left: "2%", width: "96%", height: "92%" },  // 0: Matriz completa
+      { cardIndex: 0, top: "23%", left: "2%", width: "96%", height: "18%" }, // 1: Fila 1 Intersección
+      { cardIndex: 0, top: "41%", left: "2%", width: "96%", height: "18%" }, // 2: Fila 2 Ángulo
+      { cardIndex: 0, top: "59%", left: "2%", width: "96%", height: "18%" }, // 3: Fila 3 Parámetro m
+      { cardIndex: 0, top: "77%", left: "2%", width: "96%", height: "18%" }, // 4: Fila 4 Planos Proyectantes
+      { cardIndex: 0, top: "4%", left: "2%", width: "96%", height: "92%" }   // 5: Conclusión y justificación
     ]
   },
   {
@@ -139,12 +142,12 @@ export const procedimientoScenes = [
       { id: "s7-prueba-4", cardFile: "card-08-4.png", label: "Prueba 4: Componente nula dy = 0" }
     ],
     sentenceHighlights: [
-      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }, // 0: 4 pruebas
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" },   // 1: Prueba 1 Incompatibilidad
-      { cardIndex: 1, top: "6%", left: "4%", width: "92%", height: "88%" },   // 2: Prueba 2 División por cero
-      { cardIndex: 2, top: "6%", left: "4%", width: "92%", height: "88%" },   // 3: Prueba 3 Fórmula errónea
-      { cardIndex: 3, top: "6%", left: "4%", width: "92%", height: "88%" },   // 4: Prueba 4 Componente nula
-      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }  // 5: Todas las pruebas
+      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }, // 0: Cuatro pruebas adversarias
+      { cardIndex: 0, top: "4%", left: "4%", width: "92%", height: "92%" },   // 1: Prueba 1 Incompatibilidad
+      { cardIndex: 1, top: "4%", left: "4%", width: "92%", height: "92%" },   // 2: Prueba 2 División por cero
+      { cardIndex: 2, top: "4%", left: "4%", width: "92%", height: "92%" },   // 3: Prueba 3 Fórmula errónea
+      { cardIndex: 3, top: "4%", left: "4%", width: "92%", height: "92%" },   // 4: Prueba 4 Componente nula
+      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }  // 5: Sostener la matemática
     ]
   },
   {
@@ -156,12 +159,12 @@ export const procedimientoScenes = [
       { id: "s8-regla", cardFile: "card-09-2.png", label: "Regla de oro: Trazabilidad contra la confianza del tono" }
     ],
     sentenceHighlights: [
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" },  // 0: Fabricación
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" },  // 1: Citas inventadas
-      { cardIndex: 0, top: "50%", left: "4%", width: "92%", height: "45%" }, // 2: Sycophancy
-      { cardIndex: 1, top: "6%", left: "4%", width: "92%", height: "45%" },  // 3: Trazabilidad
-      { cardIndex: 1, top: "50%", left: "4%", width: "92%", height: "45%" }, // 4: Regla de auditoría
-      { cardIndex: 1, top: "6%", left: "4%", width: "92%", height: "88%" }   // 5: Cierre lámina 9
+      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "42%" },  // 0: Fabricación
+      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "42%" },  // 1: Citas y errores inventados
+      { cardIndex: 0, top: "50%", left: "4%", width: "92%", height: "44%" }, // 2: Mecanismo de Sycophancy
+      { cardIndex: 1, top: "8%", left: "4%", width: "92%", height: "30%" },  // 3: Regla de oro
+      { cardIndex: 1, top: "42%", left: "4%", width: "92%", height: "52%" }, // 4: Protocolo de control
+      { cardIndex: 1, top: "8%", left: "4%", width: "92%", height: "86%" }   // 5: Trazabilidad de fuentes
     ]
   },
   {
@@ -174,11 +177,11 @@ export const procedimientoScenes = [
       { id: "s9-rol", cardFile: "card-10-3.png", label: "Conclusión 3: El rol analítico del futuro ingeniero" }
     ],
     sentenceHighlights: [
-      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }, // 0: 3 conclusiones
-      { cardIndex: 0, top: "6%", left: "4%", width: "92%", height: "88%" },   // 1: Control geométrico directo
-      { cardIndex: 1, top: "6%", left: "4%", width: "92%", height: "88%" },   // 2: Reconocer límites IA
-      { cardIndex: 2, top: "6%", left: "4%", width: "92%", height: "88%" },   // 3: Rol analítico
-      { cardIndex: 2, top: "45%", left: "4%", width: "92%", height: "50%" },  // 4: Entender y verificar
+      { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }, // 0: Tres conclusiones
+      { cardIndex: 0, top: "4%", left: "4%", width: "92%", height: "92%" },   // 1: Control geométrico directo
+      { cardIndex: 1, top: "4%", left: "4%", width: "92%", height: "92%" },   // 2: Reconocer límites IA
+      { cardIndex: 2, top: "4%", left: "4%", width: "92%", height: "92%" },   // 3: Rol del futuro ingeniero
+      { cardIndex: 2, top: "4%", left: "4%", width: "92%", height: "92%" },   // 4: Entender y verificar
       { cardIndex: -1, top: "0%", left: "0%", width: "100%", height: "100%" }  // 5: Cierre final
     ]
   }
