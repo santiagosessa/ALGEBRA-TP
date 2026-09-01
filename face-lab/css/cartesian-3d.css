@@ -3,9 +3,9 @@
   position: fixed;
   left: clamp(24px, 3.5vw, 48px);
   top: auto;
-  bottom: 78px;
-  width: min(58vw, 1080px);
-  height: min(52vh, 480px);
+  bottom: clamp(74px, 7vh, 90px);
+  width: min(calc(64vw - clamp(24px, 3.5vw, 48px)), 1600px);
+  height: min(68vh, calc(100vh - 150px), 960px);
   z-index: 15;
   display: flex;
   flex-direction: column;
@@ -133,6 +133,22 @@
   overflow: hidden;
 }
 
+.c3d-disclaimer {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  z-index: 2;
+  max-width: 48%;
+  color: rgba(226, 232, 240, 0.58);
+  font-size: 9px;
+  font-style: italic;
+  letter-spacing: 0.025em;
+  line-height: 1.2;
+  text-align: right;
+  pointer-events: none;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.75);
+}
+
 .c3d-canvas {
   width: 100%;
   height: 100%;
@@ -142,4 +158,19 @@
 
 .c3d-canvas:active {
   cursor: grabbing;
+}
+
+@media (max-width: 1100px) and (min-width: 901px) {
+  #cartesian-3d-container.cartesian-3d-wrapper {
+    width: calc(64vw - clamp(24px, 3.5vw, 48px));
+    height: min(68vh, calc(100vh - 150px));
+  }
+}
+
+@media (max-width: 900px) {
+  #cartesian-3d-container.cartesian-3d-wrapper {
+    left: 4vw;
+    width: 92vw;
+    height: min(58vh, calc(100vh - 150px));
+  }
 }

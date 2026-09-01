@@ -14,7 +14,7 @@ export class Cartesian3DExplorer {
     }
 
     this.options = Object.assign({
-      autoRotate: false,
+      autoRotate: true,
       initialScene: "interseccion",
       onSceneChange: null
     }, options);
@@ -64,7 +64,7 @@ export class Cartesian3DExplorer {
           </select>
         </div>
         <div class="c3d-header-actions">
-          <button class="c3d-btn c3d-btn-autorotate" title="Activar/Desactivar giro automático">
+          <button class="c3d-btn c3d-btn-autorotate" title="Activar/Desactivar giro automático" aria-pressed="true">
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
             <span>Auto-Giro</span>
           </button>
@@ -74,6 +74,7 @@ export class Cartesian3DExplorer {
 
       <div class="c3d-viewport">
         <canvas class="c3d-canvas"></canvas>
+        <div class="c3d-disclaimer" role="note">el gráfico puede no ser fiel a la realidad.</div>
       </div>
     `;
 
@@ -134,6 +135,8 @@ export class Cartesian3DExplorer {
     this.controls.autoRotateSpeed = 1.2;
     this.controls.maxDistance = 80;
     this.controls.minDistance = 2;
+    this.autoRotateBtn.classList.toggle("is-active", this.controls.autoRotate);
+    this.autoRotateBtn.setAttribute("aria-pressed", String(this.controls.autoRotate));
   }
 
   setupEventListeners() {
@@ -144,6 +147,7 @@ export class Cartesian3DExplorer {
     this.autoRotateBtn.addEventListener("click", () => {
       this.controls.autoRotate = !this.controls.autoRotate;
       this.autoRotateBtn.classList.toggle("is-active", this.controls.autoRotate);
+      this.autoRotateBtn.setAttribute("aria-pressed", String(this.controls.autoRotate));
     });
 
     this.closeBtn.addEventListener("click", () => {
@@ -475,7 +479,7 @@ export class Cartesian3DExplorer {
     // Plane 2x - y + z - 6 = 0 -> Normal n=(2, -1, 1), Point P_plane=(3, 0, 0)
     const normalMath = new THREE.Vector3(2, -1, 1);
     const nThree = toThree(normalMath.x, normalMath.y, normalMath.z);
-    const pCenterThree = toThree(4.5, 2.6, -3.3);
+    const pCenterThree = toThree(3, 0, 0);
 
     const planeObj = this.createPlaneMesh(nThree, pCenterThree, 26, 26, 0x0284c7, 0.42);
     this.layerGroups.plane.add(planeObj);

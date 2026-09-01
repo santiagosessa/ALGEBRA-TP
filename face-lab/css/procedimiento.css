@@ -21,9 +21,9 @@
 
 /* Reacomodación cuando el Visor 3D Cartesiano está abierto */
 .app-shell.has-active-3d-graph .procedimiento-layer {
-  top: 24%;
-  transform: translateY(-50%) scale(0.86);
-  max-height: 38vh;
+  top: clamp(9%, 12vh, 15%);
+  transform: translateY(-50%) scale(0.78);
+  max-height: 23vh;
 }
 
 /* Grillas adaptativas proporcionales */
@@ -130,7 +130,7 @@
 }
 
 .app-shell.has-active-3d-graph .proc-card-img {
-  max-height: 36vh;
+  max-height: 21vh;
 }
 
 .proc-item:hover {

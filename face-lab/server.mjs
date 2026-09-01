@@ -51,9 +51,6 @@ createServer(async (request, response) => {
   if (requestPath === "/tp-trabajo-grupal.pdf" || requestPath === "/TP Trabajo Grupal.pdf" || requestPath === "/pdf/tp-trabajo-grupal.pdf") {
     filePath = normalize(join(projectRoot, "TP Trabajo Grupal.pdf"));
     allowedRoot = projectRoot;
-  } else if (requestPath === "/cuadro-comparativo.pdf" || requestPath === "/pdf/cuadro-comparativo.pdf") {
-    filePath = normalize(join(projectRoot, "Cuadro_Comparativo_Actualizado_Patron_vs_Grupo.pdf"));
-    allowedRoot = projectRoot;
   } else if (requestPath.startsWith("/assets/procedimiento/")) {
     filePath = normalize(join(procedimientoAssetsRoot, requestPath.slice("/assets/procedimiento/".length)));
     allowedRoot = procedimientoAssetsRoot;

@@ -19,6 +19,26 @@ function wrapInfoText(ctx, text, maxWidth) {
   return lines;
 }
 
+const PUNCTUATION_PAUSES = {
+  ",": 0.18,
+  ".": 0.46,
+  "?": 0.46,
+  "!": 0.46
+};
+
+export const SLIDE_AUDIO_DURATIONS = [
+  34.47, // Slide 1
+  36.20, // Slide 2
+  38.25, // Slide 3
+  38.43, // Slide 4
+  40.59, // Slide 5
+  41.81, // Slide 6
+  46.00, // Slide 7
+  43.49, // Slide 8
+  38.91, // Slide 9
+  38.29  // Slide 10
+];
+
 export class SpeechSystem {
   constructor(options) {
     this.slides = options.slides;
@@ -49,6 +69,10 @@ export class SpeechSystem {
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = 0;
     this.dialogueDrawnText = "";
+    this.punctuationMarkers = [];
+    this.nextPunctuationMarkerIndex = 0;
+    this.punctuationPauseTimer = null;
+    this.isPunctuationPause = false;
 
     this.infoGroup = new THREE.Group();
     this.scene.add(this.infoGroup);
@@ -75,26 +99,91 @@ export class SpeechSystem {
     );
   }
 
+  getAudioDuration() {
+    if (this.activeAudio && Number.isFinite(this.activeAudio.duration) && this.activeAudio.duration > 0) {
+      return this.activeAudio.duration;
+    }
+    return SLIDE_AUDIO_DURATIONS[this.activeSlideIndex] || 38.0;
+  }
+
+  getCurrentAudioTime() {
+    if (this.activeAudio && Number.isFinite(this.activeAudio.currentTime) && this.activeAudio.currentTime >= 0) {
+      return this.activeAudio.currentTime;
+    }
+    if (this.speaking) {
+      const elapsed = performance.now() / 1000 - this.speakStartedAt;
+      return Math.min(this.getAudioDuration(), Math.max(0, elapsed));
+    }
+    return 0;
+  }
+
   getCurrentMouthCue() {
     const cues = this.lipSyncCache[this.activeSlideIndex];
     if (!cues?.length) return null;
-    const audioDuration = this.activeAudio && Number.isFinite(this.activeAudio.duration) && this.activeAudio.duration > 0
-      ? this.activeAudio.duration
-      : cues[cues.length - 1].end;
-    const currentTime = this.activeAudio && Number.isFinite(this.activeAudio.currentTime)
-      ? this.activeAudio.currentTime
-      : this.getSpeechProgress() * audioDuration;
-    return cues.find(cue => currentTime >= cue.start && currentTime < cue.end) || cues[cues.length - 1];
+    const duration = this.getAudioDuration();
+    const currentTime = this.getCurrentAudioTime();
+    const cuesDuration = cues[cues.length - 1].end || 1;
+    const normalizedTime = Math.max(0, Math.min(cuesDuration, (currentTime / duration) * cuesDuration));
+    return cues.find(cue => normalizedTime >= cue.start && normalizedTime < cue.end) || cues[cues.length - 1];
   }
 
   getSpeechProgress() {
     if (!this.speaking) return 0;
-    if (this.activeAudio && Number.isFinite(this.activeAudio.duration) && this.activeAudio.duration > 0) {
-      return this.activeAudio.currentTime / this.activeAudio.duration;
+    const duration = this.getAudioDuration();
+    if (duration <= 0) return 0;
+    return Math.max(0, Math.min(1, this.getCurrentAudioTime() / duration));
+  }
+
+  buildPunctuationMarkers() {
+    const totalChars = this.dialogueSentences.reduce((acc, sentence) => acc + sentence.length, 0);
+    if (!totalChars) {
+      this.punctuationMarkers = [];
+      return;
     }
-    const currentScript = this.slides[this.activeSlideIndex]?.script || "";
-    const elapsed = performance.now() / 1000 - this.speakStartedAt;
-    return Math.min(1, elapsed / Math.max(5, currentScript.length * 0.055));
+
+    const markers = [];
+    let offset = 0;
+    this.dialogueSentences.forEach(sentence => {
+      [...sentence].forEach((character, index) => {
+        const pause = PUNCTUATION_PAUSES[character];
+        if (pause) {
+          markers.push({
+            progress: Math.min(0.999, (offset + index + 0.9) / totalChars),
+            duration: pause
+          });
+        }
+      });
+      offset += sentence.length;
+    });
+    this.punctuationMarkers = markers;
+  }
+
+  clearPunctuationPause() {
+    if (this.punctuationPauseTimer) {
+      window.clearTimeout(this.punctuationPauseTimer);
+      this.punctuationPauseTimer = null;
+    }
+    this.isPunctuationPause = false;
+  }
+
+  maybePauseAtPunctuation(currentTime, duration) {
+    if (!this.speaking || this.paused || this.isPunctuationPause || !this.activeAudio || duration <= 0) return;
+
+    const progress = currentTime / duration;
+    const marker = this.punctuationMarkers[this.nextPunctuationMarkerIndex];
+    if (!marker || progress < marker.progress) return;
+
+    this.nextPunctuationMarkerIndex += 1;
+    this.isPunctuationPause = true;
+    this.activeAudio.pause();
+    this.punctuationPauseTimer = window.setTimeout(() => {
+      this.punctuationPauseTimer = null;
+      this.isPunctuationPause = false;
+      if (!this.speaking || this.paused || !this.activeAudio) return;
+      this.activeAudio.play().catch(error => {
+        console.warn("No se pudo reanudar la pausa de puntuación:", error);
+      });
+    }, marker.duration * 1000);
   }
 
   configureAudioAnalyser() {
@@ -159,6 +248,8 @@ export class SpeechSystem {
     this.dialogueContext = null;
     this.dialogueTexture = null;
     this.dialogueSentences = splitDialogue(this.slides[index]?.script || "");
+    this.buildPunctuationMarkers();
+    this.nextPunctuationMarkerIndex = 0;
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = performance.now() / 1000;
     this.infoGroup.position.set(0, 0, -0.18);
@@ -211,13 +302,10 @@ export class SpeechSystem {
   updateDialogue() {
     if (!this.dialogueSprite || !this.dialogueSentences.length) return;
     const now = performance.now() / 1000;
-    const audioDuration = this.activeAudio && Number.isFinite(this.activeAudio.duration) && this.activeAudio.duration > 0
-      ? this.activeAudio.duration
-      : (this.lipSyncCache[this.activeSlideIndex]?.[this.lipSyncCache[this.activeSlideIndex]?.length - 1]?.end || 16.0);
+    const audioDuration = this.getAudioDuration();
+    const currentTime = this.getCurrentAudioTime();
 
-    const currentTime = this.activeAudio && Number.isFinite(this.activeAudio.currentTime)
-      ? this.activeAudio.currentTime
-      : (this.speaking ? Math.min(audioDuration, now - this.speakStartedAt) : 0);
+    this.maybePauseAtPunctuation(currentTime, audioDuration);
 
     const { index: wantedIndex, sentenceProgress } = this.speaking
       ? this.getSentenceIndexAndProgress(currentTime, audioDuration)
@@ -234,7 +322,9 @@ export class SpeechSystem {
     const sentence = this.dialogueSentences[this.dialogueSentenceIndex] || "";
     const amount = this.paused
       ? sentence.length
-      : Math.min(sentence.length, Math.floor(sentenceProgress * sentence.length));
+      : this.isPunctuationPause
+        ? Math.min(sentence.length, Math.ceil(sentenceProgress * sentence.length))
+        : Math.min(sentence.length, Math.floor(sentenceProgress * sentence.length));
     this.drawDialogue(sentence.slice(0, amount));
   }
 
@@ -242,6 +332,7 @@ export class SpeechSystem {
     this.stop();
     this.speaking = true;
     this.paused = false;
+    this.nextPunctuationMarkerIndex = 0;
     this.speakStartedAt = performance.now() / 1000;
     this.dialogueSentenceIndex = 0;
     this.dialogueSentenceStartedAt = this.speakStartedAt;
@@ -254,6 +345,7 @@ export class SpeechSystem {
       this.audioPlayer.currentTime = 0;
 
       this.audioPlayer.onended = () => {
+        this.clearPunctuationPause();
         this.activeAudio = null;
         this.speaking = false;
         this.paused = false;
@@ -263,6 +355,7 @@ export class SpeechSystem {
       };
 
       this.audioPlayer.onerror = () => {
+        this.clearPunctuationPause();
         this.activeAudio = null;
         this.speaking = false;
         this.paused = false;
@@ -282,6 +375,7 @@ export class SpeechSystem {
 
   pause() {
     if (this.activeAudio) {
+      this.clearPunctuationPause();
       this.activeAudio.pause();
       this.speaking = false;
       this.paused = true;
@@ -302,6 +396,7 @@ export class SpeechSystem {
   }
 
   stop() {
+    this.clearPunctuationPause();
     if (this.activeAudio) {
       this.activeAudio.pause();
       this.activeAudio.currentTime = 0;
@@ -311,6 +406,7 @@ export class SpeechSystem {
     }
     this.speaking = false;
     this.paused = false;
+    this.nextPunctuationMarkerIndex = 0;
     if (this.dialogueSentences.length) {
       this.dialogueSentenceIndex = 0;
       this.dialogueSentenceStartedAt = performance.now() / 1000;
@@ -322,6 +418,10 @@ export class SpeechSystem {
   }
 
   updateAudioReactive() {
+    if (this.isPunctuationPause) {
+      this.voiceEnergy = 0;
+      return;
+    }
     if (!this.audioAnalyser || !this.audioData) {
       this.voiceEnergy = this.speaking ? 0.16 : 0;
       return;

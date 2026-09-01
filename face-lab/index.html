@@ -73,18 +73,18 @@
         </button>
       </nav>
 
-      <!-- Botón sutil de Bibliografía (Esquina inferior derecha) -->
-      <button id="btn-biblio" class="biblio-toggle-btn" type="button" aria-label="Abrir bibliografía e informe extendido" aria-expanded="false" aria-controls="biblio-modal-backdrop">
+      <!-- Botón sutil de Cálculos manuales (Esquina inferior derecha) -->
+      <button id="btn-biblio" class="biblio-toggle-btn" type="button" aria-label="Abrir cálculos manuales" aria-expanded="false" aria-controls="biblio-modal-backdrop">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
           <line x1="9" y1="6" x2="16" y2="6"></line>
           <line x1="9" y1="10" x2="16" y2="10"></line>
         </svg>
-        <span>Bibliografía</span>
+        <span>Cálculos manuales</span>
       </button>
 
-      <!-- Modal Extendido de Bibliografía & Auditoría -->
+      <!-- Modal de Cálculos manuales -->
       <div id="biblio-modal-backdrop" class="biblio-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="biblio-modal-heading" aria-hidden="true">
         <div class="biblio-modal-container">
           <header class="biblio-modal-header">
@@ -95,28 +95,23 @@
                 <line x1="9" y1="6" x2="16" y2="6"></line>
                 <line x1="9" y1="10" x2="16" y2="10"></line>
               </svg>
-              <span>Bibliografía &amp; Auditoría Epistemológica</span>
+              <span>Cálculos manuales</span>
             </h2>
-            <button id="biblio-modal-close" class="biblio-modal-close" type="button" aria-label="Cerrar modal (Escape)" title="Cerrar (Escape)">
+            <button id="biblio-modal-close" class="biblio-modal-close" type="button" aria-label="Cerrar cálculos manuales (Escape)" title="Cerrar (Escape)">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
           </header>
 
-          <nav class="biblio-tabs-nav" role="tablist" aria-label="Secciones de bibliografía">
-            <button class="biblio-tab-btn is-active" data-tab="pdf" role="tab" aria-selected="true" aria-controls="tab-pdf">
-              📄 TP N° 3 (PDF Original)
-            </button>
-            <button class="biblio-tab-btn" data-tab="report" role="tab" aria-selected="false" aria-controls="tab-report">
-              📐 Informe Técnico de Auditoría
-            </button>
-            <button class="biblio-tab-btn" data-tab="sycophancy" role="tab" aria-selected="false" aria-controls="tab-sycophancy">
-              🤖 Discrepancias &amp; Fenómeno Sycophancy
-            </button>
-          </nav>
+          <p class="manual-calcs-intro">Abrí la imagen para consultar los cálculos originales.</p>
 
           <!-- Tab 1: PDF Viewer & Links -->
-          <section id="tab-pdf" class="biblio-tab-content is-active" role="tabpanel">
-            <div class="biblio-pdf-wrapper">
+          <section id="tab-pdf" class="manual-calcs-content" role="tabpanel">
+            <a class="manual-calcs-preview" href="/tp-trabajo-grupal.pdf" target="_blank" rel="noopener noreferrer" title="Abrir TP Trabajo Grupal (PDF)">
+              <img src="./presentation-assets/tp-manual/page-01.png" alt="Primera página de TP Trabajo Grupal (PDF)" />
+              <span>TP Trabajo Grupal (PDF)</span>
+            </a>
+            <!-- El visor PDF se mantiene como enlace sobre la imagen para evitar una segunda vista embebida. -->
+            <!-- <div class="biblio-pdf-wrapper" hidden>
               <div class="biblio-pdf-actions">
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                   <a href="/tp-trabajo-grupal.pdf" target="_blank" rel="noopener noreferrer" class="biblio-link-btn" title="Abrir PDF en nueva pestaña">
@@ -134,7 +129,7 @@
                 </a>
               </div>
               <iframe class="biblio-pdf-frame" src="/tp-trabajo-grupal.pdf" title="Previsualización del Trabajo Práctico Grupal"></iframe>
-            </div>
+            </div> -->
           </section>
 
           <!-- Tab 2: Extended Technical Report -->
